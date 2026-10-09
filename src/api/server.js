@@ -336,6 +336,43 @@ function startApiServer(client) {
         return res.json({ success: true, removed: removed[0] ? formatSong(removed[0]) : null });
     });
 
+    app.post('/api/guilds/:guildId/queue/move', async (req, res) => {
+        const { guildId } = req.params;
+        const { from, to } = req.body;
+        const queue = client.music?.distube?.getQueue(guildId);
+        if (!queue) return res.status(404).json({ error: 'No queue found' });
+
+        const t = i18n.forGuild(client.guilds.cache.get(guildId));
+        try {
+            const outcome = await actions.safely(
+                () => actions.move(queue, t, Number(from), Number(to)), t);
+            if (!outcome.ok) return res.status(400).json({ error: outcome.message });
+            client.music.changed(queue);
+            return res.json({ success: true, message: outcome.message });
+        } catch (error) {
+            log.error(`API Queue move error: ${error.message}`);
+            return res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.post('/api/guilds/:guildId/queue/jump', async (req, res) => {
+        const { guildId } = req.params;
+        const { position } = req.body;
+        const queue = client.music?.distube?.getQueue(guildId);
+        if (!queue) return res.status(404).json({ error: 'No queue found' });
+
+        const t = i18n.forGuild(client.guilds.cache.get(guildId));
+        try {
+            const outcome = await actions.safely(
+                () => actions.jump(queue, t, Number(position)), t);
+            if (!outcome.ok) return res.status(400).json({ error: outcome.message });
+            return res.json({ success: true, message: outcome.message });
+        } catch (error) {
+            log.error(`API Queue jump error: ${error.message}`);
+            return res.status(500).json({ error: error.message });
+        }
+    });
+
     app.delete('/api/guilds/:guildId/queue', (req, res) => {
         const { guildId } = req.params;
         const queue = client.music?.distube?.getQueue(guildId);
