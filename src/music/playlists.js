@@ -100,6 +100,7 @@ function mapRow(row) {
         url: row.url,
         cover: row.cover || tracks[0]?.albumArt || FALLBACK_COVER,
         tracks,
+        synced_at: row.synced_at || null,
         created_at: row.created_at,
     };
 }
@@ -118,8 +119,9 @@ async function fetchUserPlaylists(userId, { limit = 100 } = {}) {
 
 /**
  * Insert or update a playlist for a user (matched by user_id + url).
+ * `tracks` is only a snapshot (caché de lectura); the URL is the source of truth.
  */
-async function upsertUserPlaylist({ userId, name, url, source, cover, tracks }) {
+async function upsertUserPlaylist({ userId, name, url, source, cover, tracks, synced_at = null }) {
     if (!supabase) throw new Error('DB_UNAVAILABLE');
     const uid = String(userId);
     const cleanUrl = String(url).trim();
@@ -131,6 +133,7 @@ async function upsertUserPlaylist({ userId, name, url, source, cover, tracks }) 
         url: cleanUrl,
         cover: cover || payloadTracks[0]?.albumArt || FALLBACK_COVER,
         tracks: payloadTracks,
+        synced_at,
     };
 
     const { data: existing } = await supabase

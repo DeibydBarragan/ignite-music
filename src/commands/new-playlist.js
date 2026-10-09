@@ -48,7 +48,7 @@ module.exports = {
             return say(interaction, 'No encontré canciones en ese enlace. Revisa que la playlist sea pública.');
         }
 
-        // 2. Guardar en Supabase (upsert por usuario + url)
+        // 2. Guardar en Supabase (upsert por usuario + url, con snapshot inicial)
         const name = deriveName(url, customName || resolved.name);
         try {
             const { playlist, created } = await upsertUserPlaylist({
@@ -58,6 +58,7 @@ module.exports = {
                 source: resolved.source,
                 cover: resolved.tracks[0]?.albumArt,
                 tracks: resolved.tracks,
+                synced_at: new Date().toISOString(),
             });
             const verb = created ? 'guardada' : 'actualizada';
             const extra = resolved.truncated ? ' (recortada al máximo permitido)' : '';
