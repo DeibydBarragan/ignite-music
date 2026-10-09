@@ -81,6 +81,7 @@ const config = {
         cookiesFile: env('COOKIES_FILE'),
         cookiesFromBrowser: env('COOKIES_FROM_BROWSER'),
         poToken: env('YOUTUBE_PO_TOKEN'),
+        potGenerator: env('POT_GENERATOR'),
         extractorArgs: env('YTDLP_EXTRACTOR_ARGS'),
         concurrency: int('YTDLP_CONCURRENCY', 4, { min: 1, max: 32 }),
         timeoutMs: int('YTDLP_TIMEOUT', 30, { min: 5 }) * 1000,

@@ -6,6 +6,7 @@ const { spawn } = require('node:child_process');
 const { createHash } = require('node:crypto');
 const config = require('../config');
 const { Semaphore } = require('../core/cache');
+const { currentPoToken } = require('./pot');
 const log = require('../core/logger').createLogger('yt-dlp');
 
 const isWindows = process.platform === 'win32';
@@ -52,7 +53,9 @@ function baseArgs({ proxy = null, settings = config.ytdlp } = {}) {
     else if (settings.cookiesFromBrowser) args.push('--cookies-from-browser', settings.cookiesFromBrowser);
 
     const extractorArgs = [];
-    if (settings.poToken) extractorArgs.push(`youtube:po_token=web.gvs+${settings.poToken};player_client=web,default`);
+    // Live auto-renewed token first, static env token as fallback.
+    const poToken = currentPoToken() || settings.poToken;
+    if (poToken) extractorArgs.push(`youtube:po_token=web.gvs+${poToken};player_client=web,default`);
     if (settings.extractorArgs) extractorArgs.push(settings.extractorArgs);
     for (const value of extractorArgs) args.push('--extractor-args', value);
 
