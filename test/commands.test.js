@@ -11,7 +11,7 @@ const locales = new Set(Object.values(Locale));
 
 test('all commands serialize and respect Discord limits', () => {
     const bodies = commandBodies();
-    assert.equal(bodies.length, 22);
+    assert.equal(bodies.length, 24);
     const names = new Set();
     for (const body of bodies) {
         assert.match(body.name, /^[a-z0-9_-]{1,32}$/);

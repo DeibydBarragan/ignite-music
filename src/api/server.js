@@ -154,6 +154,35 @@ function startApiServer(client) {
         });
     });
 
+    // ─── Resolve playlist (no voice join, for web import preview) ─────
+    app.get('/api/guilds/:guildId/playlist/resolve', async (req, res) => {
+        const { guildId } = req.params;
+        const url = String(req.query.url || '').trim();
+        if (!url) return res.status(400).json({ error: 'Query param "url" is required' });
+
+        const guild = client.guilds.cache.get(guildId);
+        if (!guild) return res.status(404).json({ error: 'Guild not found' });
+
+        try {
+            const playlists = require('../music/playlists');
+            const result = await playlists.resolvePlaylist(client.music, guild, url, {
+                member: guild.members.me,
+            });
+            return res.json({
+                success: true,
+                kind: result.kind,
+                name: result.name,
+                source: result.source,
+                count: result.tracks.length,
+                truncated: result.truncated,
+                tracks: result.tracks,
+            });
+        } catch (error) {
+            log.error(`API Playlist resolve error: ${error.message}`);
+            return res.status(422).json({ success: false, error: error.message });
+        }
+    });
+
     // ─── Play / Add to Queue ──────────────────────────────────────────
     app.post('/api/guilds/:guildId/play', async (req, res) => {
         const { guildId } = req.params;
@@ -202,11 +231,15 @@ function startApiServer(client) {
             });
 
             const resolved = outcome?.resolved;
+            const isPlaylist = resolved && Array.isArray(resolved.songs);
             return res.json({
                 success: true,
                 started: Boolean(outcome?.started),
                 position: outcome?.position || 0,
-                song: resolved ? formatSong(resolved) : null,
+                song: resolved ? formatSong(isPlaylist ? resolved.songs[0] : resolved) : null,
+                playlist: isPlaylist
+                    ? { name: resolved.name || null, count: resolved.songs.length, truncated: Boolean(outcome?.truncated) }
+                    : null,
             });
         } catch (error) {
             log.error(`API Play error: ${error.message}`);

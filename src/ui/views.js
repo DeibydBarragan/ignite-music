@@ -266,6 +266,42 @@ function searchView(t, { query, results, token }) {
     return { components: [c], flags: EPHEMERAL_V2, allowedMentions: { parse: [] } };
 }
 
+const PLAYLISTS_PAGE_SIZE = 10;
+
+function playlistsTotalDuration(pl) {
+    return (pl.tracks || []).reduce((sum, track) => sum + (track.duration || 0), 0);
+}
+
+/**
+ * Paginated list of the user's saved playlists (ephemeral).
+ */
+function playlistsView(t, { playlists, total, page = 0, filter = null }) {
+    const pages = Math.max(1, Math.ceil(playlists.length / PLAYLISTS_PAGE_SIZE));
+    const safePage = Math.min(Math.max(0, page), pages - 1);
+    const c = container();
+    const title = filter
+        ? `### 🎵 Tus playlists · "${truncate(filter, 40)}" (${total})`
+        : `### 🎵 Tus playlists (${total})`;
+    c.addTextDisplayComponents(text(title));
+
+    if (!playlists.length) {
+        c.addTextDisplayComponents(text('-# Aún no tienes playlists guardadas.\nUsa `/new-playlist` con un enlace de Spotify, YouTube o SoundCloud para importar la primera.'));
+    } else {
+        const start = safePage * PLAYLISTS_PAGE_SIZE;
+        const lines = playlists.slice(start, start + PLAYLISTS_PAGE_SIZE).map((pl, index) => {
+            const count = (pl.tracks || []).length;
+            const duration = formatDuration(playlistsTotalDuration(pl));
+            return `\`${String(start + index + 1).padStart(2, ' ')}.\` **${escapeMarkdown(truncate(pl.name, 60))}**\n-# ${pl.source} · ${count} temas · ~${duration}`;
+        });
+        c.addSeparatorComponents(separator());
+        c.addTextDisplayComponents(text(lines.join('\n')));
+    }
+
+    const footer = [`-# ${t('ui.page', { page: safePage + 1, pages })}`, '-# `/playlists reproducir:<nombre>` para sonarla · `/new-playlist` para importar'].filter(Boolean);
+    c.addTextDisplayComponents(text(footer.join('\n')));
+    return { components: [c], flags: EPHEMERAL_V2, allowedMentions: { parse: [] } };
+}
+
 function helpView(t, { commands, stats }) {
     const c = container();
     c.addTextDisplayComponents(text(`### ${t('commands.help.title')}\n${t('commands.help.main_description')}`));
@@ -311,6 +347,7 @@ module.exports = {
     V2,
     EPHEMERAL_V2,
     QUEUE_PAGE_SIZE,
+    PLAYLISTS_PAGE_SIZE,
     notice,
     playerPanel,
     endedPanel,
@@ -319,6 +356,7 @@ module.exports = {
     searchView,
     helpView,
     languageView,
+    playlistsView,
     splitLyrics,
     loopLabel,
     filterLabel,
