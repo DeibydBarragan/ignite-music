@@ -237,6 +237,9 @@ function startApiServer(client) {
             });
         } catch (error) {
             log.error(`API Playlist resolve error: ${error.message}`);
+            if (String(url || '').toLowerCase().includes('soundcloud.com')) {
+                return res.status(422).json({ success: false, error: 'SoundCloud is no longer supported. Use a YouTube or Spotify link.' });
+            }
             return res.status(422).json({ success: false, error: error.message });
         }
     });
@@ -301,6 +304,9 @@ function startApiServer(client) {
             });
         } catch (error) {
             log.error(`API Play error: ${error.message}`);
+            if (String(query || '').toLowerCase().includes('soundcloud.com')) {
+                return res.status(400).json({ error: 'SoundCloud is no longer supported. Use a YouTube or Spotify link, or search by name.' });
+            }
             return res.status(500).json({ error: error.message });
         }
     });
