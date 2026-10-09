@@ -1,0 +1,149 @@
+{
+  "language": {
+    "name": "Italiano",
+    "code": "it"
+  },
+  "commands": {
+    "language": {
+      "title": "Impostazioni Lingua",
+      "current": "Lingua attuale",
+      "select": "Seleziona la lingua desiderata dai pulsanti qui sotto:",
+      "changed_desc": "La lingua del server è stata impostata su **{language}**!",
+      "permission_required_button": "Devi avere l’autorizzazione **Gestisci server** per usare questo pulsante!"
+    },
+    "help": {
+      "title": "Aiuto Bot Musicale",
+      "main_description": "**Il bot musicale più avanzato di Discord!** Puoi utilizzare i seguenti comandi e funzionalità.",
+      "commands_title": "Comandi",
+      "stats_servers": "**Server:** {count}",
+      "stats_active": "**Musica Attiva:** {count} server",
+      "stats_uptime": "**Tempo Attività:** {time}",
+      "button_website": "Sito Web",
+      "button_support": "Supporto"
+    },
+    "search": {
+      "no_results": "Nessun risultato di ricerca trovato!",
+      "title": "Risultati di ricerca per \"{query}\"",
+      "select_description": "Seleziona la canzone che vuoi riprodurre:"
+    },
+    "nowplaying": {
+      "no_track": "Nessuna musica in riproduzione al momento!",
+      "title": "In Riproduzione",
+      "requested_by": "Richiesto da",
+      "next_song": "Prossima Canzone",
+      "status_paused": "In Pausa",
+      "volume": "Volume: {volume}%",
+      "footer_more_songs": "Ci sono {count} canzoni in più nella coda",
+      "footer_no_songs": "Non ci sono più canzoni nella coda"
+    },
+    "play": {
+      "description": "Riproduci musica - supporta YouTube, Spotify, SoundCloud o link diretto",
+      "query_description": "Nome canzone, artista, URL YouTube/Spotify/SoundCloud o link diretto",
+      "voice_channel_required": "Devi essere in un canale vocale!",
+      "no_permissions": "Non ho il permesso di parlare in questo canale vocale!",
+      "same_channel_required": "Devi essere nello stesso canale vocale del bot!",
+      "playlist_success": "Playlist con **{count} canzoni** aggiunta alla coda!",
+      "track_started": "Iniziato a riprodurre **{title}**!",
+      "track_queued": "**{title}** aggiunto alla coda! (alla posizione {position})"
+    }
+  },
+  "youtube": {
+    "no_valid_tracks": "Nessuna traccia valida trovata nella playlist"
+  },
+  "musicplayer": {
+    "no_results_found": "Nessun risultato trovato!",
+    "failed_connect_voice": "Impossibile connettersi al canale vocale!",
+    "track_could_not_play": "La traccia non può essere riprodotta!",
+    "queue_completed": "Coda Completata",
+    "queue_completed_desc": "Tutte le tracce sono state riprodotte! Usa il comando `/play` per aggiungere una nuova traccia."
+  },
+  "modalhandler": {
+    "invalid_volume": "Il volume deve essere un numero tra 0-100!",
+    "volume_changed_desc": "Il volume è stato impostato al **{volume}%**!"
+  },
+  "buttonhandler": {
+    "processing_error": "Si è verificato un errore durante l'elaborazione!",
+    "music_paused": "Musica in Pausa",
+    "music_resumed": "Musica Ripresa",
+    "song_skipped_title": "Canzone Saltata",
+    "no_previous_song": "Nessuna canzone precedente!",
+    "moved_to_previous": "Spostato alla canzone precedente!",
+    "music_stopped_title": "Musica Fermata",
+    "songs_cleared": "Cancellate {count} canzoni dalla coda",
+    "no_songs_in_queue": "Nessuna canzone nella coda!",
+    "no_songs_to_skip": "Nessuna canzone da saltare! Non ci sono canzoni nella coda.",
+    "now_playing": "In Riproduzione",
+    "upcoming_songs": "Prossime Canzoni ({count})",
+    "total_songs": "Totale {count} canzoni",
+    "songs_shuffled": "{count} canzoni mescolate!",
+    "minimum_songs_shuffle": "Devono esserci almeno 2 canzoni nella coda per mescolare!",
+    "set_volume_title": "Imposta Volume",
+    "volume_label": "Volume (0-100)",
+    "search_expired": "Risultati di ricerca non trovati o scaduti! Cerca di nuovo.",
+    "invalid_selection": "Selezione non valida!",
+    "loop_mode_off": "La modalità ripeti è ora **disattivata**",
+    "loop_mode_track": "Modalità ripeti impostata su **ripeti brano**. Il brano corrente verrà riprodotto continuamente.",
+    "loop_mode_queue": "Modalità ripeti impostata su **ripeti coda**. La coda ripartirà quando finita.",
+    "no_lyrics_found": "Nessun testo trovato per questa canzone.",
+    "lyrics_unavailable": "Il testo non è disponibile.",
+    "lyrics_title": "Testo della Canzone",
+    "lyrics_error": "Impossibile caricare il testo. Riprova più tardi."
+  },
+  "musicmanager": {
+    "playback_ended": "Musica Finita"
+  },
+  "buttons": {
+    "pause": "Pausa",
+    "resume": "Riprendi",
+    "skip": "Salta",
+    "stop": "Ferma",
+    "queue": "Coda",
+    "shuffle": "Mescola",
+    "volume": "Volume",
+    "loop_off": "Ripeti: Disattivato",
+    "loop_track": "Ripeti: Brano",
+    "loop_queue": "Ripeti: Coda",
+    "autoplay_off": "Riproduzione Auto: Disattivata",
+    "autoplay_on": "Riproduzione Auto: Attivata",
+    "lyrics": "Testo"
+  },
+  "errors": {
+    "youtube_bot_detection": "**YouTube ha bloccato questa richiesta (rilevamento bot)**\nYouTube rifiuta le richieste dall'indirizzo IP di questo server.\n\n**Soluzione:** Aggiungi `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (o firefox/edge) o `YOUTUBE_PO_TOKEN` nel file `.env`. Vedi `README.md` per le istruzioni dettagliate.",
+    "youtube_age_restricted": "**Video con restrizione di età**\nQuesto video richiede un account YouTube connesso.\n\n**Soluzione:** Imposta `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` in `.env` affinché il bot possa usare la tua sessione YouTube del browser.",
+    "youtube_unavailable": "**Video non disponibile**\nQuesto video è privato, eliminato o non disponibile in questa regione. Prova un altro link o canzone.",
+    "youtube_geo_blocked": "**Contenuto con blocco geografico**\nQuesto video è limitato nella regione in cui è ospitato questo bot.\n\n**Soluzione:** Prova un link diverso.",
+    "rate_limited": "**Troppe richieste (limite di velocità)**\nYouTube o un'altra piattaforma sta temporaneamente bloccando le richieste.\n\n**Soluzione:** Aspetta qualche minuto e riprova. Se succede spesso, aggiungi `COOKIES_FILE` / `COOKIES_FROM_BROWSER` in `.env`.",
+    "network_error": "**Errore di rete**\nIl bot non è riuscito a connettersi alla piattaforma musicale. Di solito è un problema temporaneo.\n\n**Soluzione:** Aspetta un momento e riprova.",
+    "stream_failed": "**Stream audio fallito**\nIl bot ha trovato il brano ma non è riuscito ad avviare lo stream audio.\n\n**Soluzione:** Riprova o prova una versione diversa del brano.",
+    "voice_no_permission": "**Permessi canale vocale mancanti**\nIl bot non ha il permesso di unirsi o parlare nel tuo canale vocale.\n\n**Soluzione:** Impostazioni canale vocale → Permessi → dai al bot i permessi **Connetti** e **Parla**.",
+    "unknown": "**Si è verificato un errore inaspettato**\nQualcosa è andato storto durante l'elaborazione della richiesta.\n\n**Soluzione:** Riprova tra un momento. Se il problema persiste, controlla il log della console del bot."
+  },
+  "ui": {
+    "voice_full": "Quel canale vocale è pieno.",
+    "live": "Dal vivo",
+    "playlist_truncated": "Sono state aggiunte solo le prime {max} canzoni.",
+    "unsupported": "Questo link non è supportato.",
+    "queue_full": "La coda è piena ({max} canzoni).",
+    "autoplay_added": "Aggiunta dalla riproduzione automatica",
+    "filter": "Filtro: {filter}",
+    "filter_none": "Nessun filtro",
+    "filter_placeholder": "Filtro audio",
+    "left_empty": "Ho lasciato il canale vocale perché nessuno stava ascoltando.",
+    "no_related": "La riproduzione automatica non ha trovato canzoni simili.",
+    "previous": "Precedente",
+    "back": "Indietro",
+    "next": "Avanti",
+    "page": "Pagina {page}/{pages}",
+    "already_paused": "La musica è già in pausa.",
+    "not_paused": "La musica non è in pausa.",
+    "jumped": "Passato a **{title}**.",
+    "seeked": "Spostato a {time}.",
+    "seek_invalid": "Usa un tempo come 1:30 o 90 entro la durata della canzone.",
+    "seek_live": "Non puoi andare avanti o indietro in una diretta.",
+    "removed": "**{title}** è stata rimossa dalla coda.",
+    "moved": "**{title}** è stata spostata alla posizione {position}.",
+    "invalid_position": "Non c’è nessuna canzone alla posizione {position}.",
+    "invite": "Invita",
+    "fallback_soundcloud": "YouTube non ha funzionato per questa canzone, quindi viene riprodotta da SoundCloud."
+  }
+}

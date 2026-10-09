@@ -1,0 +1,12 @@
+node_modules/
+.env
+.env.*
+!.env.example
+data/
+audio_cache/
+bin/
+cookies.txt
+*.log
+*.bak
+.DS_Store
+

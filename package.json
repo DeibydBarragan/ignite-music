@@ -1,0 +1,46 @@
+{
+  "name": "musicbot",
+  "version": "17.0.0",
+  "description": "Fast, shard-ready Discord music bot built on discord.js v14 and DisTube v5 with Components V2 controls",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js",
+    "shard": "node shard.js",
+    "deploy": "node scripts/deploy-commands.js",
+    "test": "node --test \"test/*.test.js\"",
+    "check": "node scripts/check-syntax.js",
+    "postinstall": "node scripts/install-binaries.js"
+  },
+  "keywords": [
+    "discord",
+    "music",
+    "bot",
+    "distube",
+    "youtube",
+    "spotify",
+    "soundcloud",
+    "umutxyp"
+  ],
+  "author": "umutxyp",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/voice": "^0.19.2",
+    "@distube/direct-link": "^1.0.1",
+    "@distube/soundcloud": "^2.0.4",
+    "@distube/spotify": "^2.0.2",
+    "@supabase/supabase-js": "^2.117.3",
+    "cors": "^2.8.6",
+    "discord.js": "^14.27.0",
+    "distube": "^5.2.3",
+    "dotenv": "^16.4.7",
+    "express": "^5.2.1",
+    "opusscript": "^0.0.8"
+  },
+  "optionalDependencies": {
+    "ffmpeg-static": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

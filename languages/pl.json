@@ -1,0 +1,149 @@
+{
+  "language": {
+    "name": "Polski",
+    "code": "pl"
+  },
+  "commands": {
+    "language": {
+      "title": "Ustawienia Języka",
+      "current": "Obecny język",
+      "select": "Wybierz żądany język z przycisków poniżej:",
+      "changed_desc": "Język serwera został ustawiony na **{language}**!",
+      "permission_required_button": "Aby użyć tego przycisku, musisz mieć uprawnienie **Zarządzanie serwerem**!"
+    },
+    "help": {
+      "title": "Pomoc Bota Muzycznego",
+      "main_description": "**Najbardziej zaawansowany bot muzyczny Discorda!** Możesz używać następujących poleceń i funkcji.",
+      "commands_title": "Polecenia",
+      "stats_servers": "**Serwery:** {count}",
+      "stats_active": "**Aktywna Muzyka:** {count} serwerów",
+      "stats_uptime": "**Czas Działania:** {time}",
+      "button_website": "Strona",
+      "button_support": "Wsparcie"
+    },
+    "search": {
+      "no_results": "Nie znaleziono wyników wyszukiwania!",
+      "title": "Wyniki wyszukiwania dla \"{query}\"",
+      "select_description": "Wybierz piosenkę, którą chcesz odtworzyć:"
+    },
+    "nowplaying": {
+      "no_track": "Obecnie nie jest odtwarzana żadna muzyka!",
+      "title": "Teraz Odtwarzane",
+      "requested_by": "Zamówione przez",
+      "next_song": "Następna Piosenka",
+      "status_paused": "Wstrzymane",
+      "volume": "Głośność: {volume}%",
+      "footer_more_songs": "W kolejce jest jeszcze {count} piosenek",
+      "footer_no_songs": "W kolejce nie ma więcej piosenek"
+    },
+    "play": {
+      "description": "Odtwórz muzykę - obsługuje YouTube, Spotify, SoundCloud lub link bezpośredni",
+      "query_description": "Nazwa piosenki, artysta, URL YouTube/Spotify/SoundCloud lub link bezpośredni",
+      "voice_channel_required": "Musisz być na kanale głosowym!",
+      "no_permissions": "Nie mam uprawnień do mówienia na tym kanale głosowym!",
+      "same_channel_required": "Musisz być na tym samym kanale głosowym co bot!",
+      "playlist_success": "Playlista z **{count} piosenkami** dodana do kolejki!",
+      "track_started": "Rozpoczęto odtwarzanie **{title}**!",
+      "track_queued": "**{title}** dodane do kolejki! (na pozycji {position})"
+    }
+  },
+  "youtube": {
+    "no_valid_tracks": "Nie znaleziono prawidłowych utworów w playliście"
+  },
+  "musicplayer": {
+    "no_results_found": "Nie znaleziono wyników!",
+    "failed_connect_voice": "Nie udało się połączyć z kanałem głosowym!",
+    "track_could_not_play": "Utwór nie mógł zostać odtworzony!",
+    "queue_completed": "Kolejka Zakończona",
+    "queue_completed_desc": "Wszystkie utwory zostały odtworzone! Użyj polecenia `/play`, aby dodać nowy utwór."
+  },
+  "modalhandler": {
+    "invalid_volume": "Głośność musi być liczbą między 0-100!",
+    "volume_changed_desc": "Głośność została ustawiona na **{volume}%**!"
+  },
+  "buttonhandler": {
+    "processing_error": "Wystąpił błąd podczas przetwarzania!",
+    "music_paused": "Muzyka Wstrzymana",
+    "music_resumed": "Muzyka Wznowiona",
+    "song_skipped_title": "Piosenka Pominięta",
+    "no_previous_song": "Brak poprzedniej piosenki!",
+    "moved_to_previous": "Przesunięto do poprzedniej piosenki!",
+    "music_stopped_title": "Muzyka Zatrzymana",
+    "songs_cleared": "Wyczyszczono {count} piosenek z kolejki",
+    "no_songs_in_queue": "Brak piosenek w kolejce!",
+    "no_songs_to_skip": "Brak piosenek do pominięcia! Brak piosenek w kolejce.",
+    "now_playing": "Teraz Odtwarzane",
+    "upcoming_songs": "Nadchodzące Piosenki ({count})",
+    "total_songs": "Łącznie {count} piosenek",
+    "songs_shuffled": "{count} piosenek pomieszanych!",
+    "minimum_songs_shuffle": "W kolejce musi być co najmniej 2 piosenki, aby je pomieszać!",
+    "set_volume_title": "Ustaw Głośność",
+    "volume_label": "Głośność (0-100)",
+    "search_expired": "Wyniki wyszukiwania nie znalezione lub wygasłe! Proszę wyszukaj ponownie.",
+    "invalid_selection": "Nieprawidłowy wybór!",
+    "loop_mode_off": "Tryb pętli jest teraz **wyłączony**",
+    "loop_mode_track": "Tryb pętli ustawiony na **powtarzanie utworu**. Bieżący utwór będzie odtwarzany ciągle.",
+    "loop_mode_queue": "Tryb pętli ustawiony na **powtarzanie kolejki**. Kolejka zacznie się od nowa po zakończeniu.",
+    "no_lyrics_found": "Nie znaleziono tekstu dla tej piosenki.",
+    "lyrics_unavailable": "Tekst nie jest dostępny.",
+    "lyrics_title": "Tekst piosenki",
+    "lyrics_error": "Nie udało się załadować tekstu. Spróbuj ponownie później."
+  },
+  "musicmanager": {
+    "playback_ended": "Muzyka Zakończona"
+  },
+  "buttons": {
+    "pause": "Pauza",
+    "resume": "Wznów",
+    "skip": "Pomiń",
+    "stop": "Zatrzymaj",
+    "queue": "Kolejka",
+    "shuffle": "Pomieszaj",
+    "volume": "Głośność",
+    "loop_off": "Pętla: Wyłączona",
+    "loop_track": "Pętla: Utwór",
+    "loop_queue": "Pętla: Kolejka",
+    "autoplay_off": "Auto: Wyłączone",
+    "autoplay_on": "Auto: Włączone",
+    "lyrics": "Tekst"
+  },
+  "errors": {
+    "youtube_bot_detection": "**YouTube zablokował to żądanie (wykrycie bota)**\nYouTube odrzuca żądania z adresu IP tego serwera.\n\n**Rozwiązanie:** Dodaj `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (lub firefox/edge) lub `YOUTUBE_PO_TOKEN` do pliku `.env`. Zobacz `README.md` po instrukcje krok po kroku.",
+    "youtube_age_restricted": "**Film z ograniczeniem wiekowym**\nTen film wymaga zalogowanego konta YouTube.\n\n**Rozwiązanie:** Ustaw `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` w `.env`, aby bot mógł korzystać z sesji YouTube w przeglądarce.",
+    "youtube_unavailable": "**Film niedostępny**\nTen film jest prywatny, usunięty lub niedostępny w tym regionie. Spróbuj innego linku lub piosenki.",
+    "youtube_geo_blocked": "**Treść zablokowana geograficznie**\nTen film jest ograniczony w regionie, w którym działa ten bot.\n\n**Rozwiązanie:** Spróbuj innego linku.",
+    "rate_limited": "**Zbyt wiele żądań (limit szybkości)**\nYouTube lub inna platforma tymczasowo blokuje żądania.\n\n**Rozwiązanie:** Poczekaj kilka minut i spróbuj ponownie. Jeśli to się powtarza, dodaj `COOKIES_FILE` / `COOKIES_FROM_BROWSER` do `.env`.",
+    "network_error": "**Błąd sieci**\nBot nie mógł połączyć się z platformą muzyczną. Zwykle jest to tymczasowy problem.\n\n**Rozwiązanie:** Poczekaj chwilę i spróbuj ponownie.",
+    "stream_failed": "**Strumień audio nie powiódł się**\nBot znalazł utwór, ale nie mógł uruchomić strumienia audio.\n\n**Rozwiązanie:** Spróbuj ponownie lub wypróbuj inną wersję piosenki.",
+    "voice_no_permission": "**Brak uprawnień kanału głosowego**\nBot nie ma uprawnień do dołączenia lub mówienia na Twoim kanale głosowym.\n\n**Rozwiązanie:** Ustawienia kanału głosowego → Uprawnienia → przyznaj botowi uprawnienia **Połącz** i **Mów**.",
+    "unknown": "**Wystąpił nieoczekiwany błąd**\nCoś poszło nie tak podczas przetwarzania Twojego żądania.\n\n**Rozwiązanie:** Spróbuj ponownie za chwilę. Jeśli problem nadal występuje, sprawdź log konsoli bota."
+  },
+  "ui": {
+    "voice_full": "Ten kanał głosowy jest pełny.",
+    "live": "Na żywo",
+    "playlist_truncated": "Dodano tylko pierwsze {max} piosenek.",
+    "unsupported": "Ten link nie jest obsługiwany.",
+    "queue_full": "Kolejka jest pełna ({max} piosenek).",
+    "autoplay_added": "Dodane przez autoodtwarzanie",
+    "filter": "Filtr: {filter}",
+    "filter_none": "Bez filtra",
+    "filter_placeholder": "Filtr dźwięku",
+    "left_empty": "Opuściłem kanał głosowy, bo nikt nie słuchał.",
+    "no_related": "Autoodtwarzanie nie znalazło podobnej piosenki.",
+    "previous": "Poprzednia",
+    "back": "Wstecz",
+    "next": "Dalej",
+    "page": "Strona {page}/{pages}",
+    "already_paused": "Muzyka jest już wstrzymana.",
+    "not_paused": "Muzyka nie jest wstrzymana.",
+    "jumped": "Przeskoczono do **{title}**.",
+    "seeked": "Przewinięto do {time}.",
+    "seek_invalid": "Podaj czas, np. 1:30 lub 90, mieszczący się w długości piosenki.",
+    "seek_live": "Nie możesz przewijać transmisji na żywo.",
+    "removed": "Usunięto **{title}** z kolejki.",
+    "moved": "Przeniesiono **{title}** na pozycję {position}.",
+    "invalid_position": "Na pozycji {position} nie ma piosenki.",
+    "invite": "Zaproś",
+    "fallback_soundcloud": "YouTube nie zadziałał dla tej piosenki, więc jest odtwarzana z SoundCloud."
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "language": {
+    "name": "Deutsch",
+    "code": "de"
+  },
+  "commands": {
+    "language": {
+      "title": "Spracheinstellungen",
+      "current": "Aktuelle Sprache",
+      "select": "Wählen Sie die gewünschte Sprache aus den untenstehenden Schaltflächen:",
+      "changed_desc": "Serversprache wurde auf **{language}** gesetzt!",
+      "permission_required_button": "Du musst die Berechtigung **Server verwalten** besitzen, um diesen Button zu verwenden!"
+    },
+    "help": {
+      "title": "Musik Bot Hilfe",
+      "main_description": "**Discords fortschrittlichster Musikbot!** Sie können die folgenden Befehle und Funktionen verwenden.",
+      "commands_title": "Befehle",
+      "stats_servers": "**Server:** {count}",
+      "stats_active": "**Aktive Musik:** {count} Server",
+      "stats_uptime": "**Betriebszeit:** {time}",
+      "button_website": "Website",
+      "button_support": "Support"
+    },
+    "search": {
+      "no_results": "Keine Suchergebnisse gefunden!",
+      "title": "Suchergebnisse für \"{query}\"",
+      "select_description": "Wählen Sie den Song aus, den Sie abspielen möchten:"
+    },
+    "nowplaying": {
+      "no_track": "Derzeit wird keine Musik abgespielt!",
+      "title": "Wird Gerade Abgespielt",
+      "requested_by": "Angefordert von",
+      "next_song": "Nächster Song",
+      "status_paused": "Pausiert",
+      "volume": "Lautstärke: {volume}%",
+      "footer_more_songs": "Es sind noch {count} Songs in der Warteschlange",
+      "footer_no_songs": "Keine weiteren Songs in der Warteschlange"
+    },
+    "play": {
+      "description": "Musik abspielen - unterstützt YouTube, Spotify, SoundCloud oder Direktlink",
+      "query_description": "Songname, Künstler, YouTube/Spotify/SoundCloud-URL oder Direktlink",
+      "voice_channel_required": "Sie müssen sich in einem Sprachkanal befinden!",
+      "no_permissions": "Ich habe keine Berechtigung, in diesem Sprachkanal zu sprechen!",
+      "same_channel_required": "Sie müssen sich im selben Sprachkanal wie der Bot befinden!",
+      "playlist_success": "Playlist mit **{count} Songs** zur Warteschlange hinzugefügt!",
+      "track_started": "**{title}** wird jetzt abgespielt!",
+      "track_queued": "**{title}** zur Warteschlange hinzugefügt! (Position {position})"
+    }
+  },
+  "youtube": {
+    "no_valid_tracks": "Keine gültigen Tracks in der Playlist gefunden"
+  },
+  "musicplayer": {
+    "no_results_found": "Keine Ergebnisse gefunden!",
+    "failed_connect_voice": "Verbindung zum Sprachkanal fehlgeschlagen!",
+    "track_could_not_play": "Track konnte nicht abgespielt werden!",
+    "queue_completed": "Warteschlange Abgeschlossen",
+    "queue_completed_desc": "Alle Tracks wurden abgespielt! Verwenden Sie den Befehl `/play`, um einen neuen Track hinzuzufügen."
+  },
+  "modalhandler": {
+    "invalid_volume": "Die Lautstärke muss eine Zahl zwischen 0-100 sein!",
+    "volume_changed_desc": "Lautstärke wurde auf **{volume}%** gesetzt!"
+  },
+  "buttonhandler": {
+    "processing_error": "Bei der Verarbeitung ist ein Fehler aufgetreten!",
+    "music_paused": "Musik Pausiert",
+    "music_resumed": "Musik Fortgesetzt",
+    "song_skipped_title": "Song Übersprungen",
+    "no_previous_song": "Kein vorheriger Song!",
+    "moved_to_previous": "Zum vorherigen Song gewechselt!",
+    "music_stopped_title": "Musik Gestoppt",
+    "songs_cleared": "{count} Songs aus der Warteschlange entfernt",
+    "no_songs_in_queue": "Keine Songs in der Warteschlange!",
+    "no_songs_to_skip": "Keine Songs zum Überspringen! Es sind keine Songs in der Warteschlange.",
+    "now_playing": "Wird Gerade Abgespielt",
+    "upcoming_songs": "Kommende Songs ({count})",
+    "total_songs": "Gesamt {count} Songs",
+    "songs_shuffled": "{count} Songs gemischt!",
+    "minimum_songs_shuffle": "Es müssen mindestens 2 Songs in der Warteschlange sein, um zu mischen!",
+    "set_volume_title": "Lautstärke Einstellen",
+    "volume_label": "Lautstärke (0-100)",
+    "search_expired": "Suchergebnisse nicht gefunden oder abgelaufen! Bitte suchen Sie erneut.",
+    "invalid_selection": "Ungültige Auswahl!",
+    "loop_mode_off": "Schleifenmodus ist jetzt **deaktiviert**",
+    "loop_mode_track": "Schleifenmodus auf **Titel wiederholen** gesetzt. Der aktuelle Titel wird kontinuierlich abgespielt.",
+    "loop_mode_queue": "Schleifenmodus auf **Warteschlange wiederholen** gesetzt. Die Warteschlange wird neu gestartet, wenn sie beendet ist.",
+    "no_lyrics_found": "Keine Songtexte für diesen Song gefunden.",
+    "lyrics_unavailable": "Songtexte sind nicht verfügbar.",
+    "lyrics_title": "Songtext",
+    "lyrics_error": "Fehler beim Laden der Songtexte. Bitte versuchen Sie es später erneut."
+  },
+  "musicmanager": {
+    "playback_ended": "Musik Beendet"
+  },
+  "buttons": {
+    "pause": "Pause",
+    "resume": "Fortsetzen",
+    "skip": "Überspringen",
+    "stop": "Stopp",
+    "queue": "Warteschlange",
+    "shuffle": "Mischen",
+    "volume": "Lautstärke",
+    "loop_off": "Schleife: Aus",
+    "loop_track": "Schleife: Titel",
+    "loop_queue": "Schleife: Warteschlange",
+    "autoplay_off": "Autoplay: Aus",
+    "autoplay_on": "Autoplay: An",
+    "lyrics": "Songtext"
+  },
+  "errors": {
+    "youtube_bot_detection": "**YouTube hat diese Anfrage blockiert (Bot-Erkennung)**\nYouTube lehnt Anfragen von der IP-Adresse dieses Servers ab.\n\n**Lösung:** Füge `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (oder firefox/edge) oder `YOUTUBE_PO_TOKEN` in die `.env`-Datei ein. Siehe `README.md` für Schritt-für-Schritt-Anleitung.",
+    "youtube_age_restricted": "**Altersbeschränktes Video**\nDieses Video erfordert einen eingeloggten YouTube-Account.\n\n**Lösung:** Setze `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` in `.env`, damit der Bot deine Browser-YouTube-Sitzung nutzen kann.",
+    "youtube_unavailable": "**Video nicht verfügbar**\nDieses Video ist privat, gelöscht oder in dieser Region nicht verfügbar. Versuche einen anderen Link oder Song.",
+    "youtube_geo_blocked": "**Geoblockierter Inhalt**\nDieses Video ist in der Region, wo der Bot gehostet wird, eingeschränkt.\n\n**Lösung:** Probiere einen anderen Link aus.",
+    "rate_limited": "**Zu viele Anfragen (Rate-Limit)**\nYouTube oder eine andere Plattform blockiert Anfragen vorübergehend.\n\n**Lösung:** Warte ein paar Minuten und versuche es erneut. Falls das häufig passiert, füge `COOKIES_FILE` / `COOKIES_FROM_BROWSER` in `.env` hinzu.",
+    "network_error": "**Netzwerkfehler**\nDer Bot konnte sich nicht mit der Musikplattform verbinden. Dies ist meist ein vorübergehendes Problem.\n\n**Lösung:** Warte kurz und versuche es erneut.",
+    "stream_failed": "**Audio-Stream fehlgeschlagen**\nDer Bot hat den Song gefunden, konnte den Audio-Stream jedoch nicht starten.\n\n**Lösung:** Versuche es erneut oder probiere eine andere Version des Songs.",
+    "voice_no_permission": "**Fehlende Sprachkanal-Berechtigungen**\nDer Bot hat keine Berechtigung, deinem Sprachkanal beizutreten oder darin zu sprechen.\n\n**Lösung:** Sprachkanal-Einstellungen → Berechtigungen → gib dem Bot **Verbinden** und **Sprechen**.",
+    "unknown": "**Ein unerwarteter Fehler ist aufgetreten**\nBei der Verarbeitung deiner Anfrage ist etwas schiefgelaufen.\n\n**Lösung:** Versuche es in Kürze erneut. Falls das Problem anhält, prüfe die Bot-Konsole für das vollständige Fehlerprotokoll."
+  },
+  "ui": {
+    "voice_full": "Dieser Sprachkanal ist voll.",
+    "live": "Live",
+    "playlist_truncated": "Nur die ersten {max} Songs wurden hinzugefügt.",
+    "unsupported": "Dieser Link wird nicht unterstützt.",
+    "queue_full": "Die Warteschlange ist voll ({max} Songs).",
+    "autoplay_added": "Von Autoplay hinzugefügt",
+    "filter": "Filter: {filter}",
+    "filter_none": "Kein Filter",
+    "filter_placeholder": "Audiofilter",
+    "left_empty": "Ich habe den Sprachkanal verlassen, weil niemand zugehört hat.",
+    "no_related": "Autoplay konnte keinen ähnlichen Song finden.",
+    "previous": "Vorheriger",
+    "back": "Zurück",
+    "next": "Weiter",
+    "page": "Seite {page}/{pages}",
+    "already_paused": "Die Musik ist bereits pausiert.",
+    "not_paused": "Die Musik ist nicht pausiert.",
+    "jumped": "Zu **{title}** gesprungen.",
+    "seeked": "Zu {time} gesprungen.",
+    "seek_invalid": "Geben Sie eine Zeit wie 1:30 oder 90 innerhalb der Songlänge an.",
+    "seek_live": "In einem Livestream kann nicht gespult werden.",
+    "removed": "**{title}** wurde aus der Warteschlange entfernt.",
+    "moved": "**{title}** wurde auf Position {position} verschoben.",
+    "invalid_position": "Auf Position {position} gibt es keinen Song.",
+    "invite": "Einladen",
+    "fallback_soundcloud": "YouTube hat für diesen Song nicht funktioniert, daher wird er von SoundCloud abgespielt."
+  }
+}

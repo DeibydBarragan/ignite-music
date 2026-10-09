@@ -1,0 +1,149 @@
+{
+  "language": {
+    "name": "Bahasa Indonesia",
+    "code": "id"
+  },
+  "commands": {
+    "language": {
+      "title": "Pengaturan Bahasa",
+      "current": "Bahasa saat ini",
+      "select": "Pilih bahasa yang diinginkan dari tombol di bawah ini:",
+      "changed_desc": "Bahasa server telah diatur ke **{language}**!",
+      "permission_required_button": "Kamu harus memiliki izin **Kelola Server** untuk menggunakan tombol ini!"
+    },
+    "help": {
+      "title": "Bantuan Bot Musik",
+      "main_description": "**Bot musik paling canggih di Discord!** Anda dapat menggunakan perintah dan fitur berikut.",
+      "commands_title": "Perintah",
+      "stats_servers": "**Server:** {count}",
+      "stats_active": "**Musik Aktif:** {count} server",
+      "stats_uptime": "**Waktu Aktif:** {time}",
+      "button_website": "Website",
+      "button_support": "Dukungan"
+    },
+    "search": {
+      "no_results": "Tidak ada hasil pencarian yang ditemukan!",
+      "title": "Hasil pencarian untuk \"{query}\"",
+      "select_description": "Pilih lagu yang ingin Anda putar:"
+    },
+    "nowplaying": {
+      "no_track": "Tidak ada musik yang sedang diputar saat ini!",
+      "title": "Sedang Diputar",
+      "requested_by": "Diminta oleh",
+      "next_song": "Lagu Berikutnya",
+      "status_paused": "Dijeda",
+      "volume": "Volume: {volume}%",
+      "footer_more_songs": "Ada {count} lagu lagi di antrian",
+      "footer_no_songs": "Tidak ada lagu lagi di antrian"
+    },
+    "play": {
+      "description": "Putar musik - mendukung YouTube, Spotify, SoundCloud atau tautan langsung",
+      "query_description": "Nama lagu, artis, URL YouTube/Spotify/SoundCloud atau tautan langsung",
+      "voice_channel_required": "Anda harus berada di channel suara!",
+      "no_permissions": "Saya tidak memiliki izin untuk berbicara di channel suara ini!",
+      "same_channel_required": "Anda harus berada di channel suara yang sama dengan bot!",
+      "playlist_success": "Playlist dengan **{count} lagu** ditambahkan ke antrian!",
+      "track_started": "Mulai memutar **{title}**!",
+      "track_queued": "**{title}** ditambahkan ke antrian! (di posisi {position})"
+    }
+  },
+  "youtube": {
+    "no_valid_tracks": "Tidak ada trek yang valid ditemukan dalam playlist"
+  },
+  "musicplayer": {
+    "no_results_found": "Tidak ada hasil yang ditemukan!",
+    "failed_connect_voice": "Gagal terhubung ke channel suara!",
+    "track_could_not_play": "Trek tidak dapat diputar!",
+    "queue_completed": "Antrian Selesai",
+    "queue_completed_desc": "Semua trek telah diputar! Gunakan perintah `/play` untuk menambahkan trek baru."
+  },
+  "modalhandler": {
+    "invalid_volume": "Volume harus berupa angka antara 0-100!",
+    "volume_changed_desc": "Volume telah diatur ke **{volume}%**!"
+  },
+  "buttonhandler": {
+    "processing_error": "Terjadi kesalahan saat pemrosesan!",
+    "music_paused": "Musik Dijeda",
+    "music_resumed": "Musik Dilanjutkan",
+    "song_skipped_title": "Lagu Dilewati",
+    "no_previous_song": "Tidak ada lagu sebelumnya!",
+    "moved_to_previous": "Pindah ke lagu sebelumnya!",
+    "music_stopped_title": "Musik Dihentikan",
+    "songs_cleared": "Menghapus {count} lagu dari antrian",
+    "no_songs_in_queue": "Tidak ada lagu di antrian!",
+    "no_songs_to_skip": "Tidak ada lagu untuk dilewati! Tidak ada lagu di antrian.",
+    "now_playing": "Sedang Diputar",
+    "upcoming_songs": "Lagu yang Akan Datang ({count})",
+    "total_songs": "Total {count} lagu",
+    "songs_shuffled": "{count} lagu diacak!",
+    "minimum_songs_shuffle": "Harus ada setidaknya 2 lagu di antrian untuk mengacak!",
+    "set_volume_title": "Atur Volume",
+    "volume_label": "Volume (0-100)",
+    "search_expired": "Hasil pencarian tidak ditemukan atau kedaluwarsa! Silakan cari lagi.",
+    "invalid_selection": "Pilihan tidak valid!",
+    "loop_mode_off": "Mode ulangi sekarang **dimatikan**",
+    "loop_mode_track": "Mode ulangi diatur ke **ulangi lagu**. Lagu saat ini akan diputar terus menerus.",
+    "loop_mode_queue": "Mode ulangi diatur ke **ulangi antrian**. Antrian akan dimulai ulang saat selesai.",
+    "no_lyrics_found": "Lirik tidak ditemukan untuk lagu ini.",
+    "lyrics_unavailable": "Lirik tidak tersedia.",
+    "lyrics_title": "Lirik Lagu",
+    "lyrics_error": "Gagal memuat lirik. Silakan coba lagi nanti."
+  },
+  "musicmanager": {
+    "playback_ended": "Musik Berakhir"
+  },
+  "buttons": {
+    "pause": "Jeda",
+    "resume": "Lanjutkan",
+    "skip": "Lewati",
+    "stop": "Berhenti",
+    "queue": "Antrian",
+    "shuffle": "Acak",
+    "volume": "Volume",
+    "loop_off": "Ulangi: Mati",
+    "loop_track": "Ulangi: Lagu",
+    "loop_queue": "Ulangi: Antrian",
+    "autoplay_off": "Auto: Mati",
+    "autoplay_on": "Auto: Aktif",
+    "lyrics": "Lirik"
+  },
+  "errors": {
+    "youtube_bot_detection": "**YouTube memblokir permintaan ini (deteksi bot)**\nYouTube menolak permintaan dari alamat IP server ini.\n\n**Solusi:** Tambahkan `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (atau firefox/edge) atau `YOUTUBE_PO_TOKEN` di file `.env`. Lihat `README.md` untuk panduan langkah demi langkah.",
+    "youtube_age_restricted": "**Video dibatasi usia**\nVideo ini memerlukan akun YouTube yang sudah masuk.\n\n**Solusi:** Atur `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` di `.env` agar bot dapat menggunakan sesi YouTube browser Anda.",
+    "youtube_unavailable": "**Video tidak tersedia**\nVideo ini bersifat privat, telah dihapus, atau tidak tersedia di wilayah ini. Coba link atau lagu lain.",
+    "youtube_geo_blocked": "**Konten diblokir secara geografis**\nVideo ini dibatasi di wilayah tempat bot ini di-hosting.\n\n**Solusi:** Coba link yang berbeda.",
+    "rate_limited": "**Terlalu banyak permintaan (rate limit)**\nYouTube atau platform lain sementara memblokir permintaan.\n\n**Solusi:** Tunggu beberapa menit dan coba lagi. Jika sering terjadi, tambahkan `COOKIES_FILE` / `COOKIES_FROM_BROWSER` di `.env`.",
+    "network_error": "**Kesalahan jaringan**\nBot tidak dapat terhubung ke platform musik. Ini biasanya masalah sementara.\n\n**Solusi:** Tunggu sebentar dan coba lagi.",
+    "stream_failed": "**Stream audio gagal**\nBot menemukan lagu tetapi tidak dapat memulai stream audio.\n\n**Solusi:** Coba lagi atau coba versi lain dari lagu tersebut.",
+    "voice_no_permission": "**Izin saluran suara tidak ada**\nBot tidak memiliki izin untuk bergabung atau berbicara di saluran suara Anda.\n\n**Solusi:** Pengaturan saluran suara → Izin → berikan bot izin **Sambungkan** dan **Bicara**.",
+    "unknown": "**Terjadi kesalahan tak terduga**\nSesuatu yang salah terjadi saat memproses permintaan Anda.\n\n**Solusi:** Coba lagi sebentar lagi. Jika masalah berlanjut, periksa log konsol bot."
+  },
+  "ui": {
+    "voice_full": "Channel suara tersebut penuh.",
+    "live": "Langsung",
+    "playlist_truncated": "Hanya {max} lagu pertama yang ditambahkan.",
+    "unsupported": "Tautan tersebut tidak didukung.",
+    "queue_full": "Antrian penuh ({max} lagu).",
+    "autoplay_added": "Ditambahkan oleh putar otomatis",
+    "filter": "Filter: {filter}",
+    "filter_none": "Tanpa filter",
+    "filter_placeholder": "Filter audio",
+    "left_empty": "Saya keluar dari channel suara karena tidak ada yang mendengarkan.",
+    "no_related": "Putar otomatis tidak menemukan lagu yang mirip.",
+    "previous": "Sebelumnya",
+    "back": "Kembali",
+    "next": "Berikutnya",
+    "page": "Halaman {page}/{pages}",
+    "already_paused": "Musik sudah dijeda.",
+    "not_paused": "Musik tidak sedang dijeda.",
+    "jumped": "Melompat ke **{title}**.",
+    "seeked": "Melompat ke {time}.",
+    "seek_invalid": "Gunakan waktu seperti 1:30 atau 90 yang masih dalam durasi lagu.",
+    "seek_live": "Anda tidak dapat memajukan atau memundurkan siaran langsung.",
+    "removed": "**{title}** dihapus dari antrian.",
+    "moved": "**{title}** dipindahkan ke posisi {position}.",
+    "invalid_position": "Tidak ada lagu di posisi {position}.",
+    "invite": "Undang",
+    "fallback_soundcloud": "YouTube tidak berfungsi untuk lagu ini, jadi lagu diputar dari SoundCloud."
+  }
+}

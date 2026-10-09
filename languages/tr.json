@@ -1,0 +1,149 @@
+{
+  "language": {
+    "name": "Türkçe",
+    "code": "tr"
+  },
+  "commands": {
+    "language": {
+      "title": "Dil Ayarları",
+      "current": "Mevcut dil",
+      "select": "Aşağıdaki butonlardan istediğiniz dili seçin:",
+      "changed_desc": "Sunucu dili **{language}** olarak ayarlandı!",
+      "permission_required_button": "Bu butonu kullanmak için **Sunucuyu Yönet** yetkisine sahip olmalısınız!"
+    },
+    "help": {
+      "title": "Müzik Bot Yardım",
+      "main_description": "**Discord'un en gelişmiş müzik botu!** Aşağıdaki komutları ve özellikleri kullanabilirsiniz.",
+      "commands_title": "Komutlar",
+      "stats_servers": "**Sunucular:** {count}",
+      "stats_active": "**Aktif Müzik:** {count} sunucu",
+      "stats_uptime": "**Çalışma Süresi:** {time}",
+      "button_website": "Website",
+      "button_support": "Destek"
+    },
+    "search": {
+      "no_results": "Arama sonucu bulunamadı!",
+      "title": "\"{query}\" için arama sonuçları",
+      "select_description": "Çalmak istediğiniz şarkıyı seçin:"
+    },
+    "nowplaying": {
+      "no_track": "Şu anda çalan bir müzik yok!",
+      "title": "Şimdi Çalıyor",
+      "requested_by": "İsteyen",
+      "next_song": "Sonraki Şarkı",
+      "status_paused": "Duraklatıldı",
+      "volume": "Ses: {volume}%",
+      "footer_more_songs": "Sırada {count} şarkı daha var",
+      "footer_no_songs": "Sırada başka şarkı yok"
+    },
+    "play": {
+      "description": "Müzik çalar - YouTube, Spotify, SoundCloud veya direkt link destekler",
+      "query_description": "Şarkı adı, sanatçı, YouTube/Spotify/SoundCloud URL'i veya direkt link",
+      "voice_channel_required": "Bir ses kanalında olmalısın!",
+      "no_permissions": "Bu ses kanalında konuşma yetkim yok!",
+      "same_channel_required": "Botla aynı ses kanalında olmalısın!",
+      "playlist_success": "**{count} şarkılık playlist** sıraya eklendi!",
+      "track_started": "**{title}** çalmaya başladı!",
+      "track_queued": "**{title}** sıraya eklendi! ({position}. sırada)"
+    }
+  },
+  "youtube": {
+    "no_valid_tracks": "Çalma listesinde geçerli parça bulunamadı"
+  },
+  "musicplayer": {
+    "no_results_found": "Sonuç bulunamadı!",
+    "failed_connect_voice": "Ses kanalına bağlanma başarısız!",
+    "track_could_not_play": "Parça çalınamadı!",
+    "queue_completed": "Sıra Tamamlandı",
+    "queue_completed_desc": "Tüm parçalar çalındı! Yeni parça eklemek için `/play` komutunu kullanın."
+  },
+  "modalhandler": {
+    "invalid_volume": "Ses seviyesi 0-100 arasında bir sayı olmalı!",
+    "volume_changed_desc": "Ses seviyesi **{volume}%** olarak ayarlandı!"
+  },
+  "buttonhandler": {
+    "processing_error": "İşlem gerçekleştirilirken bir hata oluştu!",
+    "music_paused": "Müzik Duraklatıldı",
+    "music_resumed": "Müzik Devam Ettirildi",
+    "song_skipped_title": "Şarkı Atlandı",
+    "no_previous_song": "Önceki şarkı yok!",
+    "moved_to_previous": "Önceki şarkıya geçildi!",
+    "music_stopped_title": "Müzik Durduruldu",
+    "songs_cleared": "Sıradan {count} şarkı temizlendi",
+    "no_songs_in_queue": "Sırada şarkı yok!",
+    "no_songs_to_skip": "Atlanacak şarkı yok! Sırada şarkı bulunmuyor.",
+    "now_playing": "Şimdi Çalıyor",
+    "upcoming_songs": "Gelecek Şarkılar ({count})",
+    "total_songs": "Toplam {count} şarkı",
+    "songs_shuffled": "{count} şarkı karıştırıldı!",
+    "minimum_songs_shuffle": "Karıştırmak için sırada en az 2 şarkı olmalı!",
+    "set_volume_title": "Ses Seviyesini Ayarla",
+    "volume_label": "Ses Seviyesi (0-100)",
+    "search_expired": "Arama sonuçları bulunamadı veya süresi doldu! Lütfen tekrar arama yapın.",
+    "invalid_selection": "Geçersiz seçim!",
+    "loop_mode_off": "Döngü modu **kapatıldı**",
+    "loop_mode_track": "Döngü modu **şarkı tekrarı** olarak ayarlandı. Mevcut şarkı sürekli tekrarlanacak.",
+    "loop_mode_queue": "Döngü modu **sıra tekrarı** olarak ayarlandı. Sıra bitince başa dönülecek.",
+    "no_lyrics_found": "Bu şarkı için şarkı sözü bulunamadı.",
+    "lyrics_unavailable": "Şarkı sözleri mevcut değil.",
+    "lyrics_title": "Şarkı Sözleri",
+    "lyrics_error": "Şarkı sözleri yüklenemedi. Lütfen daha sonra tekrar deneyin."
+  },
+  "musicmanager": {
+    "playback_ended": "Müzik Bitti"
+  },
+  "buttons": {
+    "pause": "Duraklat",
+    "resume": "Devam",
+    "skip": "Atla",
+    "stop": "Durdur",
+    "queue": "Sıra",
+    "shuffle": "Karıştır",
+    "volume": "Ses",
+    "loop_off": "Döngü: Kapalı",
+    "loop_track": "Döngü: Şarkı",
+    "loop_queue": "Döngü: Sıra",
+    "autoplay_off": "Otomatik Çalma: Kapalı",
+    "autoplay_on": "Otomatik Çalma: Açık",
+    "lyrics": "Şarkı Sözleri"
+  },
+  "errors": {
+    "youtube_bot_detection": "**YouTube bu isteği engelledi (bot tespiti)**\nYouTube, bu sunucunun IP adresinden gelen istekleri reddediyor.\n\n**Çözüm (bot sahibi):** YouTube çerezlerini `cookies.txt` dosyasına aktarın ve `.env` dosyasına `COOKIES_FILE=./cookies.txt` ekleyin; alternatif olarak `YOUTUBE_PO_TOKEN` veya `PROXY_URL` kullanın. Adım adım rehber: README.md, \"YouTube: Sign in to confirm you're not a bot\" bölümü.",
+    "youtube_age_restricted": "**Yaşa kısıtlı video**\nBu video için YouTube hesabıyla giriş yapılmış olması gerekiyor.\n\n**Çözüm (bot sahibi):** `.env` dosyasına bir YouTube hesabının çerezleriyle `COOKIES_FILE=./cookies.txt` ekleyin. Rehber: README.md.",
+    "youtube_unavailable": "**Video kullanılamıyor**\nBu video gizli, silinmiş veya bu bölgede kullanılamıyor. Farklı bir şarkı veya link deneyin.",
+    "youtube_geo_blocked": "**Bölge kısıtlaması**\nBu video, botun barındırıldığı bölgede erişime kısıtlı.\n\n**Çözüm:** Farklı bir link deneyin.",
+    "rate_limited": "**Çok fazla istek (rate limit)**\nYouTube veya başka bir platform bu sunucudan gelen istekleri geçici olarak engelliyor.\n\n**Çözüm:** Birkaç dakika bekleyip tekrar deneyin. Sık yaşanıyorsa bot sahibi `.env` dosyasına `COOKIES_FILE` veya `PROXY_URL` eklemeli (README.md).",
+    "network_error": "**Ağ hatası**\nBot, müzik platformuna bağlanamadı. Bu genellikle geçici bir sorundur.\n\n**Çözüm:** Bir süre bekleyip tekrar deneyin. Sorun devam ederse sunucunun internet bağlantısını kontrol edin.",
+    "stream_failed": "**Ses akışı başarısız**\nBot şarkı bilgisini buldu ancak ses akışını başlatamadı.\n\n**Çözüm:** Tekrar deneyin. Sorun devam ederse şarkının farklı bir versiyonunu deneyin.",
+    "voice_no_permission": "**Ses kanalı izni eksik**\nBotun ses kanalınıza katılma veya konuşma izni yok.\n\n**Çözüm:** Ses kanalı ayarları → İzinler → Bota **Bağlan** ve **Konuş** izinleri verin.",
+    "unknown": "**Beklenmeyen bir hata oluştu**\nİsteğiniz işlenirken bir şeyler ters gitti.\n\n**Çözüm:** Bir an sonra tekrar deneyin. Sorun devam ederse bot konsolundaki tam hata günlüğünü kontrol edin."
+  },
+  "ui": {
+    "voice_full": "Bu ses kanalı dolu.",
+    "live": "Canlı",
+    "playlist_truncated": "Sadece ilk {max} şarkı eklendi.",
+    "unsupported": "Bu bağlantı desteklenmiyor.",
+    "queue_full": "Kuyruk dolu ({max} şarkı).",
+    "autoplay_added": "Otomatik oynatma ekledi",
+    "filter": "Filtre: {filter}",
+    "filter_none": "Filtre yok",
+    "filter_placeholder": "Ses filtresi",
+    "left_empty": "Kimse dinlemediği için ses kanalından ayrıldım.",
+    "no_related": "Otomatik oynatma benzer bir şarkı bulamadı.",
+    "previous": "Önceki",
+    "back": "Geri",
+    "next": "İleri",
+    "page": "Sayfa {page}/{pages}",
+    "already_paused": "Müzik zaten duraklatılmış.",
+    "not_paused": "Müzik duraklatılmamış.",
+    "jumped": "**{title}** şarkısına geçildi.",
+    "seeked": "{time} konumuna atlandı.",
+    "seek_invalid": "Şarkı süresi içinde 1:30 veya 90 gibi bir zaman girin.",
+    "seek_live": "Canlı yayında ileri/geri sarılamaz.",
+    "removed": "**{title}** kuyruktan kaldırıldı.",
+    "moved": "**{title}** {position}. sıraya taşındı.",
+    "invalid_position": "{position}. sırada şarkı yok.",
+    "invite": "Davet Et",
+    "fallback_soundcloud": "YouTube bu şarkı için çalışmadı, bu yüzden SoundCloud üzerinden çalınıyor."
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "language": {
+    "name": "English",
+    "code": "en"
+  },
+  "commands": {
+    "language": {
+      "title": "Language Settings",
+      "current": "Current language",
+      "select": "Select your desired language from the buttons below:",
+      "changed_desc": "Server language has been set to **{language}**!",
+      "permission_required_button": "You must have the **Manage Server** permission to use this button!"
+    },
+    "help": {
+      "title": "Music Bot Help",
+      "main_description": "**Discord's most advanced music bot!** You can use the following commands and features.",
+      "commands_title": "Commands",
+      "stats_servers": "**Servers:** {count}",
+      "stats_active": "**Active Music:** {count} servers",
+      "stats_uptime": "**Uptime:** {time}",
+      "button_website": "Website",
+      "button_support": "Support"
+    },
+    "search": {
+      "no_results": "No search results found!",
+      "title": "Search results for \"{query}\"",
+      "select_description": "Select the song you want to play:"
+    },
+    "nowplaying": {
+      "no_track": "No music is currently playing!",
+      "title": "Now Playing",
+      "requested_by": "Requested by",
+      "next_song": "Next Song",
+      "status_paused": "Paused",
+      "volume": "Volume: {volume}%",
+      "footer_more_songs": "There are {count} more songs in the queue",
+      "footer_no_songs": "No more songs in the queue"
+    },
+    "play": {
+      "description": "Play music - supports YouTube, Spotify, SoundCloud or direct link",
+      "query_description": "Song name, artist, YouTube/Spotify/SoundCloud URL or direct link",
+      "voice_channel_required": "You must be in a voice channel!",
+      "no_permissions": "I don't have permission to speak in this voice channel!",
+      "same_channel_required": "You must be in the same voice channel as the bot!",
+      "playlist_success": "Playlist with **{count} songs** added to the queue!",
+      "track_started": "Started playing **{title}**!",
+      "track_queued": "**{title}** added to the queue! (at position {position})"
+    }
+  },
+  "youtube": {
+    "no_valid_tracks": "No valid tracks found in the playlist"
+  },
+  "musicplayer": {
+    "no_results_found": "No results found!",
+    "failed_connect_voice": "Failed to connect to voice channel!",
+    "track_could_not_play": "Track could not be played!",
+    "queue_completed": "Queue Completed",
+    "queue_completed_desc": "All tracks have been played! Use the `/play` command to add a new track."
+  },
+  "modalhandler": {
+    "invalid_volume": "Volume must be a number between 0-100!",
+    "volume_changed_desc": "Volume has been set to **{volume}%**!"
+  },
+  "buttonhandler": {
+    "processing_error": "An error occurred during processing!",
+    "music_paused": "Music Paused",
+    "music_resumed": "Music Resumed",
+    "song_skipped_title": "Song Skipped",
+    "no_previous_song": "No previous song!",
+    "moved_to_previous": "Moved to previous song!",
+    "music_stopped_title": "Music Stopped",
+    "songs_cleared": "Cleared {count} songs from the queue",
+    "no_songs_in_queue": "No songs in the queue!",
+    "no_songs_to_skip": "No songs to skip! There are no songs in the queue.",
+    "now_playing": "Now Playing",
+    "upcoming_songs": "Upcoming Songs ({count})",
+    "total_songs": "Total {count} songs",
+    "songs_shuffled": "{count} songs shuffled!",
+    "minimum_songs_shuffle": "There must be at least 2 songs in the queue to shuffle!",
+    "set_volume_title": "Set Volume",
+    "volume_label": "Volume (0-100)",
+    "search_expired": "Search results not found or expired! Please search again.",
+    "invalid_selection": "Invalid selection!",
+    "loop_mode_off": "Loop mode is now **disabled**",
+    "loop_mode_track": "Loop mode set to **track repeat**. The current song will play continuously.",
+    "loop_mode_queue": "Loop mode set to **queue repeat**. The queue will restart when finished.",
+    "no_lyrics_found": "No lyrics found for this song.",
+    "lyrics_unavailable": "Lyrics are unavailable for this song.",
+    "lyrics_title": "Song Lyrics",
+    "lyrics_error": "Failed to load lyrics. Please try again later."
+  },
+  "musicmanager": {
+    "playback_ended": "Music Ended"
+  },
+  "buttons": {
+    "pause": "Pause",
+    "resume": "Resume",
+    "skip": "Skip",
+    "stop": "Stop",
+    "queue": "Queue",
+    "shuffle": "Shuffle",
+    "volume": "Volume",
+    "loop_off": "Loop: Off",
+    "loop_track": "Loop: Track",
+    "loop_queue": "Loop: Queue",
+    "autoplay_off": "Autoplay: Off",
+    "autoplay_on": "Autoplay: On",
+    "lyrics": "Lyrics"
+  },
+  "errors": {
+    "youtube_bot_detection": "**YouTube blocked this request (bot detection)**\nYouTube is rejecting requests from this server's IP address.\n\n**Fix (bot owner):** export YouTube cookies to a `cookies.txt` file and set `COOKIES_FILE=./cookies.txt` in `.env`, or set `YOUTUBE_PO_TOKEN` / `PROXY_URL`. Step by step guide: README.md, section \"YouTube: Sign in to confirm you're not a bot\".",
+    "youtube_age_restricted": "**Age-restricted video**\nThis video requires a logged-in YouTube account.\n\n**Fix (bot owner):** set `COOKIES_FILE=./cookies.txt` in `.env` with cookies from a YouTube account. Guide: README.md.",
+    "youtube_unavailable": "**Video unavailable**\nThis video is private, deleted, or not available in this region. Try a different song or link.",
+    "youtube_geo_blocked": "**Geo-blocked content**\nThis video is restricted in the region where this bot is hosted.\n\n**Fix:** Try a different link, or use a VPN/proxy on the server.",
+    "rate_limited": "**Too many requests (rate limited)**\nYouTube or another platform is temporarily blocking requests from this server.\n\n**Fix:** wait a few minutes and try again. If it happens often, the bot owner should set `COOKIES_FILE` or `PROXY_URL` in `.env` (see README.md).",
+    "network_error": "**Network error**\nThe bot could not connect to the music platform. This is usually a temporary issue.\n\n**Fix:** Wait a moment and try again. If the problem persists, check the server's internet connection.",
+    "stream_failed": "**Audio stream failed**\nThe bot found the track but could not start the audio stream.\n\n**Fix:** Try the song again. If it keeps failing, try a different version of the song.",
+    "voice_no_permission": "**Missing voice channel permissions**\nThe bot doesn't have permission to join or speak in your voice channel.\n\n**Fix:** Go to your voice channel settings → Permissions → give the bot **Connect** and **Speak** permissions.",
+    "drm_protected": "**DRM-protected track**\nThis track has DRM protection (SoundCloud Go+ or similar) and cannot be streamed without a paid subscription. Try searching for an alternative version or remix.",
+    "unknown": "**An unexpected error occurred**\nSomething went wrong while processing your request.\n\n**Fix:** Try again in a moment. If the issue continues, check the bot console for the full error log."
+  },
+  "ui": {
+    "voice_full": "That voice channel is full.",
+    "live": "Live",
+    "playlist_truncated": "Only the first {max} songs were added.",
+    "unsupported": "That link is not supported.",
+    "queue_full": "The queue is full ({max} songs).",
+    "autoplay_added": "Added by autoplay",
+    "filter": "Filter: {filter}",
+    "filter_none": "No filter",
+    "filter_placeholder": "Audio filter",
+    "left_empty": "Left the voice channel because nobody was listening.",
+    "no_related": "Autoplay could not find a related song.",
+    "previous": "Previous",
+    "back": "Back",
+    "next": "Next",
+    "page": "Page {page}/{pages}",
+    "already_paused": "The music is already paused.",
+    "not_paused": "The music is not paused.",
+    "jumped": "Jumped to **{title}**.",
+    "seeked": "Jumped to {time}.",
+    "seek_invalid": "Use a time like 1:30 or 90 that is within the song length.",
+    "seek_live": "You cannot seek in a live stream.",
+    "removed": "Removed **{title}** from the queue.",
+    "moved": "Moved **{title}** to position {position}.",
+    "invalid_position": "There is no song at position {position}.",
+    "invite": "Invite",
+    "fallback_soundcloud": "YouTube did not work for this song, so it is playing from SoundCloud."
+  }
+}

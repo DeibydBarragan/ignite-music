@@ -1,0 +1,149 @@
+{
+  "language": {
+    "name": "Svenska",
+    "code": "sv"
+  },
+  "commands": {
+    "language": {
+      "title": "Språkinställningar",
+      "current": "Nuvarande språk",
+      "select": "Välj önskat språk från knapparna nedan:",
+      "changed_desc": "Serverspråket har ställts in till **{language}**!",
+      "permission_required_button": "Du måste ha behörigheten **Hantera server** för att använda den här knappen!"
+    },
+    "help": {
+      "title": "Musikbot Hjälp",
+      "main_description": "**Discords mest avancerade musikbot!** Du kan använda följande kommandon och funktioner.",
+      "commands_title": "Kommandon",
+      "stats_servers": "**Servrar:** {count}",
+      "stats_active": "**Aktiv Musik:** {count} servrar",
+      "stats_uptime": "**Drifttid:** {time}",
+      "button_website": "Webbplats",
+      "button_support": "Support"
+    },
+    "search": {
+      "no_results": "Inga sökresultat hittades!",
+      "title": "Sökresultat för \"{query}\"",
+      "select_description": "Välj låten du vill spela:"
+    },
+    "nowplaying": {
+      "no_track": "Ingen musik spelas för närvarande!",
+      "title": "Spelar Nu",
+      "requested_by": "Begärd av",
+      "next_song": "Nästa Låt",
+      "status_paused": "Pausad",
+      "volume": "Volym: {volume}%",
+      "footer_more_songs": "Det finns {count} fler låtar i kön",
+      "footer_no_songs": "Det finns inga fler låtar i kön"
+    },
+    "play": {
+      "description": "Spela musik - stöder YouTube, Spotify, SoundCloud eller direktlänk",
+      "query_description": "Låtnamn, artist, YouTube/Spotify/SoundCloud URL eller direktlänk",
+      "voice_channel_required": "Du måste vara i en röstkanal!",
+      "no_permissions": "Jag har inte behörighet att tala i denna röstkanal!",
+      "same_channel_required": "Du måste vara i samma röstkanal som boten!",
+      "playlist_success": "Spellista med **{count} låtar** lades till i kön!",
+      "track_started": "Började spela **{title}**!",
+      "track_queued": "**{title}** lades till i kön! (på position {position})"
+    }
+  },
+  "youtube": {
+    "no_valid_tracks": "Inga giltiga spår hittades i spellistan"
+  },
+  "musicplayer": {
+    "no_results_found": "Inga resultat hittades!",
+    "failed_connect_voice": "Misslyckades att ansluta till röstkanal!",
+    "track_could_not_play": "Spåret kunde inte spelas!",
+    "queue_completed": "Kö Slutförd",
+    "queue_completed_desc": "Alla spår har spelats! Använd `/play`-kommandot för att lägga till ett nytt spår."
+  },
+  "modalhandler": {
+    "invalid_volume": "Volymen måste vara ett tal mellan 0-100!",
+    "volume_changed_desc": "Volymen har ställts in till **{volume}%**!"
+  },
+  "buttonhandler": {
+    "processing_error": "Ett fel uppstod under behandling!",
+    "music_paused": "Musik Pausad",
+    "music_resumed": "Musik Återupptagen",
+    "song_skipped_title": "Låt Överhoppad",
+    "no_previous_song": "Ingen föregående låt!",
+    "moved_to_previous": "Flyttade till föregående låt!",
+    "music_stopped_title": "Musik Stoppad",
+    "songs_cleared": "Rensade {count} låtar från kön",
+    "no_songs_in_queue": "Inga låtar i kön!",
+    "no_songs_to_skip": "Inga låtar att hoppa över! Det finns inga låtar i kön.",
+    "now_playing": "Spelar Nu",
+    "upcoming_songs": "Kommande Låtar ({count})",
+    "total_songs": "Totalt {count} låtar",
+    "songs_shuffled": "{count} låtar blandade!",
+    "minimum_songs_shuffle": "Det måste finnas minst 2 låtar i kön för att blanda!",
+    "set_volume_title": "Ställ In Volym",
+    "volume_label": "Volym (0-100)",
+    "search_expired": "Sökresultat hittades inte eller har gått ut! Vänligen sök igen.",
+    "invalid_selection": "Ogiltigt val!",
+    "loop_mode_off": "Upprepningsläge är nu **avstängt**",
+    "loop_mode_track": "Upprepningsläge inställt på **upprepa spår**. Nuvarande spår kommer att spelas kontinuerligt.",
+    "loop_mode_queue": "Upprepningsläge inställt på **upprepa kö**. Kön kommer att starta om när den är klar.",
+    "no_lyrics_found": "Ingen sångtexter hittades för denna låt.",
+    "lyrics_unavailable": "Sångtexter är inte tillgängliga.",
+    "lyrics_title": "Sångtext",
+    "lyrics_error": "Det gick inte att läsa in sångtexter. Försök igen senare."
+  },
+  "musicmanager": {
+    "playback_ended": "Musik Avslutad"
+  },
+  "buttons": {
+    "pause": "Pausa",
+    "resume": "Återuppta",
+    "skip": "Hoppa över",
+    "stop": "Stoppa",
+    "queue": "Kö",
+    "shuffle": "Blanda",
+    "volume": "Volym",
+    "loop_off": "Upprepa: Av",
+    "loop_track": "Upprepa: Spår",
+    "loop_queue": "Upprepa: Kö",
+    "autoplay_off": "Auto: Av",
+    "autoplay_on": "Auto: På",
+    "lyrics": "Text"
+  },
+  "errors": {
+    "youtube_bot_detection": "**YouTube blockerade denna begäran (botdetektering)**\nYouTube avvisar begäranden från den här serverns IP-adress.\n\n**Lösning:** Lägg till `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (eller firefox/edge) eller `YOUTUBE_PO_TOKEN` i `.env`-filen. Se `README.md` för steg-för-steg-instruktioner.",
+    "youtube_age_restricted": "**Åldersbegränsat video**\nDetta video kräver ett inloggat YouTube-konto.\n\n**Lösning:** Ange `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` i `.env` så att boten kan använda din webbläsares YouTube-session.",
+    "youtube_unavailable": "**Video ej tillgängligt**\nDetta video är privat, raderat eller inte tillgängligt i denna region. Försök med en annan länk eller låt.",
+    "youtube_geo_blocked": "**Geoblockerat innehåll**\nDetta video är begränsat i regionen där denna bot är värd.\n\n**Lösning:** Prova en annan länk.",
+    "rate_limited": "**För många begäranden (hastighetsbegränsning)**\nYouTube eller en annan plattform blockerar tillfälligt begäranden.\n\n**Lösning:** Vänta några minuter och försök igen. Om det händer ofta, lägg till `COOKIES_FILE` / `COOKIES_FROM_BROWSER` i `.env`.",
+    "network_error": "**Nätverksfel**\nBoten kunde inte ansluta till musikplattformen. Det är vanligtvis ett tillfälligt problem.\n\n**Lösning:** Vänta ett ögonblick och försök igen.",
+    "stream_failed": "**Ljudströmmen misslyckades**\nBoten hittade spåret men kunde inte starta ljudströmmen.\n\n**Lösning:** Försök igen eller prova en annan version av låten.",
+    "voice_no_permission": "**Saknade röstkanalbehörigheter**\nBoten har inte behörighet att gå med i eller tala i din röstkanal.\n\n**Lösning:** Röstkanalinställningar → Behörigheter → ge boten behörigheterna **Anslut** och **Tala**.",
+    "unknown": "**Ett oväntat fel inträffade**\nNågot gick fel vid behandlingen av din begäran.\n\n**Lösning:** Försök igen om ett ögonblick. Kontrollera botens konsollogg om problemet kvarstår."
+  },
+  "ui": {
+    "voice_full": "Den röstkanalen är full.",
+    "live": "Live",
+    "playlist_truncated": "Bara de första {max} låtarna lades till.",
+    "unsupported": "Den länken stöds inte.",
+    "queue_full": "Kön är full ({max} låtar).",
+    "autoplay_added": "Tillagd av autouppspelning",
+    "filter": "Filter: {filter}",
+    "filter_none": "Inget filter",
+    "filter_placeholder": "Ljudfilter",
+    "left_empty": "Lämnade röstkanalen eftersom ingen lyssnade.",
+    "no_related": "Autouppspelningen hittade ingen liknande låt.",
+    "previous": "Föregående",
+    "back": "Tillbaka",
+    "next": "Nästa",
+    "page": "Sida {page}/{pages}",
+    "already_paused": "Musiken är redan pausad.",
+    "not_paused": "Musiken är inte pausad.",
+    "jumped": "Hoppade till **{title}**.",
+    "seeked": "Hoppade till {time}.",
+    "seek_invalid": "Ange en tid som 1:30 eller 90 inom låtens längd.",
+    "seek_live": "Du kan inte spola i en livesändning.",
+    "removed": "**{title}** togs bort från kön.",
+    "moved": "**{title}** flyttades till plats {position}.",
+    "invalid_position": "Det finns ingen låt på plats {position}.",
+    "invite": "Bjud in",
+    "fallback_soundcloud": "YouTube fungerade inte för den här låten, så den spelas från SoundCloud."
+  }
+}

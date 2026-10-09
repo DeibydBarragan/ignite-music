@@ -1,0 +1,149 @@
+{
+  "language": {
+    "name": "简体中文",
+    "code": "zh_CN"
+  },
+  "commands": {
+    "language": {
+      "title": "语言设置",
+      "current": "当前语言",
+      "select": "请从下方按钮选择您想要的语言：",
+      "changed_desc": "服务器语言已设置为 **{language}**！",
+      "permission_required_button": "你必须拥有 **管理服务器** 权限才能使用此按钮！"
+    },
+    "help": {
+      "title": "音乐机器人帮助",
+      "main_description": "**Discord 最先进的音乐机器人！** 您可以使用以下命令和功能。",
+      "commands_title": "命令",
+      "stats_servers": "**服务器：** {count}",
+      "stats_active": "**活跃音乐：** {count} 个服务器",
+      "stats_uptime": "**运行时间：** {time}",
+      "button_website": "网站",
+      "button_support": "支持"
+    },
+    "search": {
+      "no_results": "找不到搜索结果！",
+      "title": "「{query}」的搜索结果",
+      "select_description": "选择您想要播放的歌曲："
+    },
+    "nowplaying": {
+      "no_track": "当前没有音乐正在播放！",
+      "title": "正在播放",
+      "requested_by": "请求者",
+      "next_song": "下一首歌曲",
+      "status_paused": "已暂停",
+      "volume": "音量：{volume}%",
+      "footer_more_songs": "队列中还有 {count} 首歌曲",
+      "footer_no_songs": "队列中没有更多歌曲"
+    },
+    "play": {
+      "description": "播放音乐 - 支持 YouTube、Spotify、SoundCloud 或直接链接",
+      "query_description": "歌曲名称、艺术家、YouTube/Spotify/SoundCloud 网址或直接链接",
+      "voice_channel_required": "您必须在语音频道中！",
+      "no_permissions": "我没有在此语音频道中说话的权限！",
+      "same_channel_required": "您必须与机器人在同一个语音频道中！",
+      "playlist_success": "包含 **{count} 首歌曲** 的播放列表已添加到队列！",
+      "track_started": "开始播放 **{title}**！",
+      "track_queued": "**{title}** 已添加到队列！（位于第 {position} 位）"
+    }
+  },
+  "youtube": {
+    "no_valid_tracks": "在播放列表中找不到有效的曲目"
+  },
+  "musicplayer": {
+    "no_results_found": "找不到结果！",
+    "failed_connect_voice": "连接语音频道失败！",
+    "track_could_not_play": "无法播放曲目！",
+    "queue_completed": "队列已完成",
+    "queue_completed_desc": "所有曲目都已播放！使用 `/play` 命令添加新曲目。"
+  },
+  "modalhandler": {
+    "invalid_volume": "音量必须是 0-100 之间的数字！",
+    "volume_changed_desc": "音量已设置为 **{volume}%**！"
+  },
+  "buttonhandler": {
+    "processing_error": "处理时发生错误！",
+    "music_paused": "音乐已暂停",
+    "music_resumed": "音乐已继续",
+    "song_skipped_title": "歌曲已跳过",
+    "no_previous_song": "没有上一首歌曲！",
+    "moved_to_previous": "已移至上一首歌曲！",
+    "music_stopped_title": "音乐已停止",
+    "songs_cleared": "从队列中清除了 {count} 首歌曲",
+    "no_songs_in_queue": "队列中没有歌曲！",
+    "no_songs_to_skip": "没有歌曲可跳过！队列中没有歌曲。",
+    "now_playing": "正在播放",
+    "upcoming_songs": "即将播放的歌曲 ({count})",
+    "total_songs": "总共 {count} 首歌曲",
+    "songs_shuffled": "{count} 首歌曲已随机播放！",
+    "minimum_songs_shuffle": "队列中必须至少有 2 首歌曲才能随机播放！",
+    "set_volume_title": "设置音量",
+    "volume_label": "音量 (0-100)",
+    "search_expired": "找不到搜索结果或已过期！请重新搜索。",
+    "invalid_selection": "无效的选择！",
+    "loop_mode_off": "循环模式现已**关闭**",
+    "loop_mode_track": "循环模式设置为**单曲循环**。当前歌曲将持续播放。",
+    "loop_mode_queue": "循环模式设置为**队列循环**。队列结束后将重新开始。",
+    "no_lyrics_found": "未找到此歌曲的歌词。",
+    "lyrics_unavailable": "歌词不可用。",
+    "lyrics_title": "歌词",
+    "lyrics_error": "加载歌词失败。请稍后重试。"
+  },
+  "musicmanager": {
+    "playback_ended": "音乐已结束"
+  },
+  "buttons": {
+    "pause": "暂停",
+    "resume": "继续",
+    "skip": "跳过",
+    "stop": "停止",
+    "queue": "队列",
+    "shuffle": "随机播放",
+    "volume": "音量",
+    "loop_off": "循环: 关闭",
+    "loop_track": "循环: 单曲",
+    "loop_queue": "循环: 队列",
+    "autoplay_off": "自动播放: 关闭",
+    "autoplay_on": "自动播放: 开启",
+    "lyrics": "歌词"
+  },
+  "errors": {
+    "youtube_bot_detection": "**YouTube 屏蔽了此请求（机器人检测）**\nYouTube 正在拒绝来自此服务器 IP 地址的请求。\n\n**解决方案：** 在 `.env` 文件中添加 `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome`（或 firefox/edge）或 `YOUTUBE_PO_TOKEN`。详细步骤请参阅 `README.md`。",
+    "youtube_age_restricted": "**年龄限制视频**\n此视频需要登录 YouTube 账号才能访问。\n\n**解决方案：** 在 `.env` 中设置 `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome`，让机器人使用你浏览器的 YouTube 会话。",
+    "youtube_unavailable": "**视频不可用**\n此视频为私密视频、已被删除或在此地区无法使用。请尝试其他链接或歌曲。",
+    "youtube_geo_blocked": "**地区限制内容**\n此视频在机器人所在地区受到限制。\n\n**解决方案：** 请尝试其他链接。",
+    "rate_limited": "**请求过多（速率限制）**\nYouTube 或其他平台正在临时屏蔽请求。\n\n**解决方案：** 等待几分钟后重试。如果经常发生，请在 `.env` 中添加 `COOKIES_FILE` / `COOKIES_FROM_BROWSER`。",
+    "network_error": "**网络错误**\n机器人无法连接到音乐平台。这通常是临时问题。\n\n**解决方案：** 稍等片刻后重试。",
+    "stream_failed": "**音频流失败**\n机器人找到了曲目，但无法启动音频流。\n\n**解决方案：** 重试，或尝试歌曲的不同版本。",
+    "voice_no_permission": "**缺少语音频道权限**\n机器人没有权限加入或在你的语音频道中说话。\n\n**解决方案：** 语音频道设置 → 权限 → 授予机器人**连接**和**说话**权限。",
+    "unknown": "**发生意外错误**\n处理你的请求时出现了问题。\n\n**解决方案：** 稍后重试。如果问题持续存在，请检查机器人控制台日志。"
+  },
+  "ui": {
+    "voice_full": "该语音频道已满。",
+    "live": "直播",
+    "playlist_truncated": "仅添加了前 {max} 首歌曲。",
+    "unsupported": "不支持该链接。",
+    "queue_full": "队列已满（{max} 首歌曲）。",
+    "autoplay_added": "由自动播放添加",
+    "filter": "音效：{filter}",
+    "filter_none": "无音效",
+    "filter_placeholder": "音频音效",
+    "left_empty": "由于没有人在收听，已离开语音频道。",
+    "no_related": "自动播放未找到相似的歌曲。",
+    "previous": "上一首",
+    "back": "上一页",
+    "next": "下一页",
+    "page": "第 {page}/{pages} 页",
+    "already_paused": "音乐已经暂停。",
+    "not_paused": "音乐没有暂停。",
+    "jumped": "已跳转到 **{title}**。",
+    "seeked": "已跳转到 {time}。",
+    "seek_invalid": "请输入歌曲时长范围内的时间，例如 1:30 或 90。",
+    "seek_live": "直播无法快进或快退。",
+    "removed": "已将 **{title}** 从队列中移除。",
+    "moved": "已将 **{title}** 移动到第 {position} 位。",
+    "invalid_position": "第 {position} 位没有歌曲。",
+    "invite": "邀请",
+    "fallback_soundcloud": "此歌曲无法通过 YouTube 播放，已改为从 SoundCloud 播放。"
+  }
+}

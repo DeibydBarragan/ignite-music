@@ -1,0 +1,149 @@
+{
+  "language": {
+    "name": "Norsk",
+    "code": "no"
+  },
+  "commands": {
+    "language": {
+      "title": "Språkinnstillinger",
+      "current": "Gjeldende språk",
+      "select": "Velg ønsket språk fra knappene nedenfor:",
+      "changed_desc": "Serverspråket er satt til **{language}**!",
+      "permission_required_button": "Du må ha tillatelsen **Administrer server** for å bruke denne knappen!"
+    },
+    "help": {
+      "title": "Musikkbot Hjelp",
+      "main_description": "**Discords mest avanserte musikkbot!** Du kan bruke følgende kommandoer og funksjoner.",
+      "commands_title": "Kommandoer",
+      "stats_servers": "**Servere:** {count}",
+      "stats_active": "**Aktiv Musikk:** {count} servere",
+      "stats_uptime": "**Oppetid:** {time}",
+      "button_website": "Nettside",
+      "button_support": "Støtte"
+    },
+    "search": {
+      "no_results": "Ingen søkeresultater funnet!",
+      "title": "Søkeresultater for \"{query}\"",
+      "select_description": "Velg sangen du vil spille:"
+    },
+    "nowplaying": {
+      "no_track": "Ingen musikk spilles for øyeblikket!",
+      "title": "Spiller Nå",
+      "requested_by": "Forespurt av",
+      "next_song": "Neste Sang",
+      "status_paused": "Pauset",
+      "volume": "Volum: {volume}%",
+      "footer_more_songs": "Det er {count} flere sanger i køen",
+      "footer_no_songs": "Det er ingen flere sanger i køen"
+    },
+    "play": {
+      "description": "Spill musikk - støtter YouTube, Spotify, SoundCloud eller direkte lenke",
+      "query_description": "Sangnavn, artist, YouTube/Spotify/SoundCloud URL eller direkte lenke",
+      "voice_channel_required": "Du må være i en talekanal!",
+      "no_permissions": "Jeg har ikke tillatelse til å snakke i denne talekanalen!",
+      "same_channel_required": "Du må være i samme talekanal som boten!",
+      "playlist_success": "Spilleliste med **{count} sanger** lagt til i køen!",
+      "track_started": "Begynte å spille **{title}**!",
+      "track_queued": "**{title}** lagt til i køen! (på posisjon {position})"
+    }
+  },
+  "youtube": {
+    "no_valid_tracks": "Ingen gyldige spor funnet i spillelisten"
+  },
+  "musicplayer": {
+    "no_results_found": "Ingen resultater funnet!",
+    "failed_connect_voice": "Klarte ikke å koble til talekanal!",
+    "track_could_not_play": "Sporet kunne ikke spilles!",
+    "queue_completed": "Kø Fullført",
+    "queue_completed_desc": "Alle spor har blitt spilt! Bruk `/play`-kommandoen for å legge til et nytt spor."
+  },
+  "modalhandler": {
+    "invalid_volume": "Volumet må være et tall mellom 0-100!",
+    "volume_changed_desc": "Volumet er satt til **{volume}%**!"
+  },
+  "buttonhandler": {
+    "processing_error": "En feil oppstod under behandling!",
+    "music_paused": "Musikk Pauset",
+    "music_resumed": "Musikk Gjenopptatt",
+    "song_skipped_title": "Sang Hoppet Over",
+    "no_previous_song": "Ingen forrige sang!",
+    "moved_to_previous": "Flyttet til forrige sang!",
+    "music_stopped_title": "Musikk Stoppet",
+    "songs_cleared": "Tømt {count} sanger fra køen",
+    "no_songs_in_queue": "Ingen sanger i køen!",
+    "no_songs_to_skip": "Ingen sanger å hoppe over! Det er ingen sanger i køen.",
+    "now_playing": "Spiller Nå",
+    "upcoming_songs": "Kommende Sanger ({count})",
+    "total_songs": "Totalt {count} sanger",
+    "songs_shuffled": "{count} sanger blandet!",
+    "minimum_songs_shuffle": "Det må være minst 2 sanger i køen for å blande!",
+    "set_volume_title": "Sett Volum",
+    "volume_label": "Volum (0-100)",
+    "search_expired": "Søkeresultater ikke funnet eller utløpt! Vennligst søk igjen.",
+    "invalid_selection": "Ugyldig valg!",
+    "loop_mode_off": "Gjentagelsesmodus er nå **av**",
+    "loop_mode_track": "Gjentagelsesmodus satt til **gjenta spør**. Nåværende spør vil spille kontinuerlig.",
+    "loop_mode_queue": "Gjentagelsesmodus satt til **gjenta kø**. Køen vil starte på nytt når den er ferdig.",
+    "no_lyrics_found": "Ingen sangtekster funnet for denne sangen.",
+    "lyrics_unavailable": "Sangtekster er ikke tilgjengelige.",
+    "lyrics_title": "Sangtekst",
+    "lyrics_error": "Kunne ikke laste sangtekster. Prøv igjen senere."
+  },
+  "musicmanager": {
+    "playback_ended": "Musikk Avsluttet"
+  },
+  "buttons": {
+    "pause": "Pause",
+    "resume": "Fortsett",
+    "skip": "Hopp over",
+    "stop": "Stopp",
+    "queue": "Kø",
+    "shuffle": "Bland",
+    "volume": "Volum",
+    "loop_off": "Gjenta: Av",
+    "loop_track": "Gjenta: Spør",
+    "loop_queue": "Gjenta: Kø",
+    "autoplay_off": "Auto: Av",
+    "autoplay_on": "Auto: På",
+    "lyrics": "Tekst"
+  },
+  "errors": {
+    "youtube_bot_detection": "**YouTube blokkerte denne forespørselen (bot-deteksjon)**\nYouTube avviser forespørsler fra denne serverens IP-adresse.\n\n**Løsning:** Legg til `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (eller firefox/edge) eller `YOUTUBE_PO_TOKEN` i `.env`-filen. Se `README.md` for trinn-for-trinn-anvisninger.",
+    "youtube_age_restricted": "**Aldersbegrenset video**\nDenne videoen krever en innlogget YouTube-konto.\n\n**Løsning:** Sett `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` i `.env` slik at boten kan bruke nettleserens YouTube-økt.",
+    "youtube_unavailable": "**Video ikke tilgjengelig**\nDenne videoen er privat, slettet eller ikke tilgjengelig i dette området. Prøv en annen lenke eller sang.",
+    "youtube_geo_blocked": "**Geografisk blokkert innhold**\nDenne videoen er begrenset i regionen der denne boten er vert.\n\n**Løsning:** Prøv en annen lenke.",
+    "rate_limited": "**For mange forespørsler (hastighetsbegrensning)**\nYouTube eller et annet plattform blokkerer forespørsler midlertidig.\n\n**Løsning:** Vent noen minutter og prøv igjen. Hvis dette skjer ofte, legg til `COOKIES_FILE` / `COOKIES_FROM_BROWSER` i `.env`.",
+    "network_error": "**Nettverksfeil**\nBoten kunne ikke koble til musikkplattformen. Dette er vanligvis et midlertidig problem.\n\n**Løsning:** Vent litt og prøv igjen.",
+    "stream_failed": "**Lydstrøm mislyktes**\nBoten fant sangen, men kunne ikke starte lydstrømmen.\n\n**Løsning:** Prøv igjen eller prøv en annen versjon av sangen.",
+    "voice_no_permission": "**Manglende talekanaltillatelser**\nBoten har ikke tillatelse til å bli med eller snakke i talekanalen din.\n\n**Løsning:** Talekanal-innstillinger → Tillatelser → gi boten tillatelsene **Koble til** og **Tal**.",
+    "unknown": "**En uventet feil oppstod**\nNoe gikk galt under behandlingen av forespørselen din.\n\n**Løsning:** Prøv igjen om litt. Sjekk botens konsolllogg hvis problemet vedvarer."
+  },
+  "ui": {
+    "voice_full": "Den talekanalen er full.",
+    "live": "Direkte",
+    "playlist_truncated": "Bare de første {max} sangene ble lagt til.",
+    "unsupported": "Den lenken støttes ikke.",
+    "queue_full": "Køen er full ({max} sanger).",
+    "autoplay_added": "Lagt til av autoavspilling",
+    "filter": "Filter: {filter}",
+    "filter_none": "Ingen filter",
+    "filter_placeholder": "Lydfilter",
+    "left_empty": "Forlot talekanalen fordi ingen hørte på.",
+    "no_related": "Autoavspilling fant ingen lignende sang.",
+    "previous": "Forrige",
+    "back": "Tilbake",
+    "next": "Neste",
+    "page": "Side {page}/{pages}",
+    "already_paused": "Musikken er allerede satt på pause.",
+    "not_paused": "Musikken er ikke satt på pause.",
+    "jumped": "Hoppet til **{title}**.",
+    "seeked": "Hoppet til {time}.",
+    "seek_invalid": "Bruk et tidspunkt som 1:30 eller 90 innenfor sangens lengde.",
+    "seek_live": "Du kan ikke spole i en direktesending.",
+    "removed": "**{title}** ble fjernet fra køen.",
+    "moved": "**{title}** ble flyttet til plass {position}.",
+    "invalid_position": "Det er ingen sang på plass {position}.",
+    "invite": "Inviter",
+    "fallback_soundcloud": "YouTube fungerte ikke for denne sangen, så den spilles fra SoundCloud."
+  }
+}

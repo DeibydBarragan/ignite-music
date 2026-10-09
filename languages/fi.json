@@ -1,0 +1,149 @@
+{
+  "language": {
+    "name": "Suomi",
+    "code": "fi"
+  },
+  "commands": {
+    "language": {
+      "title": "Kieliasetukset",
+      "current": "Nykyinen kieli",
+      "select": "Valitse haluamasi kieli alla olevista painikkeista:",
+      "changed_desc": "Palvelimen kieli on asetettu kieleen **{language}**!",
+      "permission_required_button": "Sinulla täytyy olla **Hallinnoi palvelinta** -oikeus käyttääksesi tätä painiketta!"
+    },
+    "help": {
+      "title": "Musiikkibotin Ohje",
+      "main_description": "**Discordin kehittynein musiikkibotti!** Voit käyttää seuraavia komentoja ja ominaisuuksia.",
+      "commands_title": "Komennot",
+      "stats_servers": "**Palvelimet:** {count}",
+      "stats_active": "**Aktiivinen musiikki:** {count} palvelinta",
+      "stats_uptime": "**Käyttöaika:** {time}",
+      "button_website": "Verkkosivusto",
+      "button_support": "Tuki"
+    },
+    "search": {
+      "no_results": "Hakutuloksia ei löytynyt!",
+      "title": "Hakutulokset haulle \"{query}\"",
+      "select_description": "Valitse kappale, jonka haluat soittaa:"
+    },
+    "nowplaying": {
+      "no_track": "Musiikkia ei tällä hetkellä soiteta!",
+      "title": "Nyt soi",
+      "requested_by": "Pyytäjä",
+      "next_song": "Seuraava kappale",
+      "status_paused": "Tauolla",
+      "volume": "Äänenvoimakkuus: {volume}%",
+      "footer_more_songs": "Jonossa on vielä {count} kappaletta",
+      "footer_no_songs": "Jonossa ei ole enää kappaleita"
+    },
+    "play": {
+      "description": "Soita musiikkia - tukee YouTubea, Spotifyta, SoundCloudia tai suoraa linkkiä",
+      "query_description": "Kappaleen nimi, artisti, YouTube/Spotify/SoundCloud-URL tai suora linkki",
+      "voice_channel_required": "Sinun täytyy olla äänikanavalla!",
+      "no_permissions": "Minulla ei ole lupaa puhua tällä äänikanavalla!",
+      "same_channel_required": "Sinun täytyy olla samalla äänikanavalla kuin botin!",
+      "playlist_success": "Soittolista **{count} kappaleella** lisätty jonoon!",
+      "track_started": "Aloitettiin **{title}** soittaminen!",
+      "track_queued": "**{title}** lisätty jonoon! (sijalla {position})"
+    }
+  },
+  "youtube": {
+    "no_valid_tracks": "Soittolistalta ei löytynyt kelvollisia kappaleita"
+  },
+  "musicplayer": {
+    "no_results_found": "Tuloksia ei löytynyt!",
+    "failed_connect_voice": "Äänikanavalle yhdistäminen epäonnistui!",
+    "track_could_not_play": "Kappaletta ei voitu soittaa!",
+    "queue_completed": "Jono valmis",
+    "queue_completed_desc": "Kaikki kappaleet on soitettu! Käytä komentoa `/play` lisätäksesi uuden kappaleen."
+  },
+  "modalhandler": {
+    "invalid_volume": "Äänenvoimakkuuden täytyy olla numero väliltä 0-100!",
+    "volume_changed_desc": "Äänenvoimakkuus on asetettu arvoon **{volume}%**!"
+  },
+  "buttonhandler": {
+    "processing_error": "Käsittelyn aikana tapahtui virhe!",
+    "music_paused": "Musiikki tauolla",
+    "music_resumed": "Musiikki jatkuu",
+    "song_skipped_title": "Kappale ohitettu",
+    "no_previous_song": "Ei edellistä kappaletta!",
+    "moved_to_previous": "Siirrytty edelliseen kappaleeseen!",
+    "music_stopped_title": "Musiikki pysäytetty",
+    "songs_cleared": "Jonosta poistettu {count} kappaletta",
+    "no_songs_in_queue": "Jonossa ei ole kappaleita!",
+    "no_songs_to_skip": "Ei ohitettavia kappaleita! Jonossa ei ole kappaleita.",
+    "now_playing": "Nyt soi",
+    "upcoming_songs": "Tulevat kappaleet ({count})",
+    "total_songs": "Yhteensä {count} kappaletta",
+    "songs_shuffled": "{count} kappaletta sekoitettu!",
+    "minimum_songs_shuffle": "Jonossa täytyy olla vähintään 2 kappaletta sekoitettavaksi!",
+    "set_volume_title": "Aseta äänenvoimakkuus",
+    "volume_label": "Äänenvoimakkuus (0-100)",
+    "search_expired": "Hakutuloksia ei löytynyt tai ne ovat vanhentuneet! Etsi uudelleen.",
+    "invalid_selection": "Virheellinen valinta!",
+    "loop_mode_off": "Toistotila on nyt **pois päältä**",
+    "loop_mode_track": "Toistotila asetettu **kappaleen toistoon**. Nykyinen kappale soitetaan jatkuvasti.",
+    "loop_mode_queue": "Toistotila asetettu **jonon toistoon**. Jono alkaa alusta kun se päättyy.",
+    "no_lyrics_found": "Kappaleen sanoituksia ei löytynyt.",
+    "lyrics_unavailable": "Sanoitukset eivät ole saatavilla.",
+    "lyrics_title": "Kappaleen sanat",
+    "lyrics_error": "Sanoitusten lataus epäonnistui. Yritä myöhemmin uudelleen."
+  },
+  "musicmanager": {
+    "playback_ended": "Musiikki päättyi"
+  },
+  "buttons": {
+    "pause": "Tauko",
+    "resume": "Jatka",
+    "skip": "Ohita",
+    "stop": "Pysäytä",
+    "queue": "Jono",
+    "shuffle": "Sekoita",
+    "volume": "Äänenvoimakkuus",
+    "loop_off": "Toisto: Pois",
+    "loop_track": "Toisto: Kappale",
+    "loop_queue": "Toisto: Jono",
+    "autoplay_off": "Auto: Pois",
+    "autoplay_on": "Auto: Päällä",
+    "lyrics": "Sanat"
+  },
+  "errors": {
+    "youtube_bot_detection": "**YouTube esti tämän pyynnön (bottitunnistus)**\nYouTube hylkää pyynnöt tämän palvelimen IP-osoitteesta.\n\n**Ratkaisu:** Lisää `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (tai firefox/edge) tai `YOUTUBE_PO_TOKEN` `.env`-tiedostoon. Katso `README.md` vaihe vaiheelta.",
+    "youtube_age_restricted": "**Ikärajoitettu video**\nTämä video vaatii kirjautumisen YouTube-tilille.\n\n**Ratkaisu:** Aseta `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` `.env`-tiedostoon, jotta botti voi käyttää selaimesi YouTube-istuntoa.",
+    "youtube_unavailable": "**Video ei saatavilla**\nTämä video on yksityinen, poistettu tai ei saatavilla tällä alueella. Kokeile toista linkkiä tai kappaletta.",
+    "youtube_geo_blocked": "**Maantieteellisesti estetty sisältö**\nTämä video on rajoitettu alueella, jossa botti toimii.\n\n**Ratkaisu:** Kokeile eri linkkiä.",
+    "rate_limited": "**Liian monta pyyntöä (nopeusrajoitus)**\nYouTube tai muu alusta estää pyyntöjä väliaikaisesti.\n\n**Ratkaisu:** Odota hetki ja yritä uudelleen. Jos tämä toistuu usein, lisää `COOKIES_FILE` / `COOKIES_FROM_BROWSER` `.env`-tiedostoon.",
+    "network_error": "**Verkkovirhe**\nBotti ei voinut muodostaa yhteyttä musiikkialustaan. Tämä on yleensä väliaikainen ongelma.\n\n**Ratkaisu:** Odota hetki ja yritä uudelleen.",
+    "stream_failed": "**Äänivirta epäonnistui**\nBotti löysi kappaleen, mutta ei voinut aloittaa äänen toistoa.\n\n**Ratkaisu:** Yritä uudelleen tai kokeile eri versiota kappaleesta.",
+    "voice_no_permission": "**Puuttuvat äänikanavan oikeudet**\nBotilla ei ole oikeutta liittyä tai puhua äänikanavallasi.\n\n**Ratkaisu:** Äänikanavan asetukset → Oikeudet → anna botille **Yhdistä** ja **Puhu**.",
+    "unknown": "**Odottamaton virhe tapahtui**\nPyyntöäsi käsiteltäessä tapahtui jotain odottamatonta.\n\n**Ratkaisu:** Yritä uudelleen hetken kuluttua. Jos ongelma jatkuu, tarkista botin konsolin virheloki."
+  },
+  "ui": {
+    "voice_full": "Tämä äänikanava on täynnä.",
+    "live": "Suora",
+    "playlist_truncated": "Vain ensimmäiset {max} kappaletta lisättiin.",
+    "unsupported": "Tätä linkkiä ei tueta.",
+    "queue_full": "Jono on täynnä ({max} kappaletta).",
+    "autoplay_added": "Automaattitoiston lisäämä",
+    "filter": "Suodatin: {filter}",
+    "filter_none": "Ei suodatinta",
+    "filter_placeholder": "Äänisuodatin",
+    "left_empty": "Poistuin äänikanavalta, koska kukaan ei kuunnellut.",
+    "no_related": "Automaattitoisto ei löytänyt samankaltaista kappaletta.",
+    "previous": "Edellinen",
+    "back": "Takaisin",
+    "next": "Seuraava",
+    "page": "Sivu {page}/{pages}",
+    "already_paused": "Musiikki on jo tauolla.",
+    "not_paused": "Musiikki ei ole tauolla.",
+    "jumped": "Siirryttiin kappaleeseen **{title}**.",
+    "seeked": "Siirryttiin kohtaan {time}.",
+    "seek_invalid": "Käytä aikaa kuten 1:30 tai 90, joka on kappaleen keston sisällä.",
+    "seek_live": "Suorassa lähetyksessä ei voi kelata.",
+    "removed": "**{title}** poistettiin jonosta.",
+    "moved": "**{title}** siirrettiin sijalle {position}.",
+    "invalid_position": "Sijalla {position} ei ole kappaletta.",
+    "invite": "Kutsu",
+    "fallback_soundcloud": "YouTube ei toiminut tälle kappaleelle, joten se toistetaan SoundCloudista."
+  }
+}

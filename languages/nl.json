@@ -1,0 +1,149 @@
+{
+  "language": {
+    "name": "Nederlands",
+    "code": "nl"
+  },
+  "commands": {
+    "language": {
+      "title": "Taalinstellingen",
+      "current": "Huidige taal",
+      "select": "Selecteer de gewenste taal uit de knoppen hieronder:",
+      "changed_desc": "Servertaal is ingesteld op **{language}**!",
+      "permission_required_button": "Je hebt de machtiging **Server beheren** nodig om deze knop te gebruiken!"
+    },
+    "help": {
+      "title": "Muziekbot Hulp",
+      "main_description": "**Discord's meest geavanceerde muziekbot!** Je kunt de volgende commando's en functies gebruiken.",
+      "commands_title": "Commando's",
+      "stats_servers": "**Servers:** {count}",
+      "stats_active": "**Actieve Muziek:** {count} servers",
+      "stats_uptime": "**Uptime:** {time}",
+      "button_website": "Website",
+      "button_support": "Ondersteuning"
+    },
+    "search": {
+      "no_results": "Geen zoekresultaten gevonden!",
+      "title": "Zoekresultaten voor \"{query}\"",
+      "select_description": "Selecteer het nummer dat je wilt afspelen:"
+    },
+    "nowplaying": {
+      "no_track": "Er wordt momenteel geen muziek afgespeeld!",
+      "title": "Nu Afspelend",
+      "requested_by": "Aangevraagd door",
+      "next_song": "Volgende Nummer",
+      "status_paused": "Gepauzeerd",
+      "volume": "Volume: {volume}%",
+      "footer_more_songs": "Er zijn nog {count} nummers in de wachtrij",
+      "footer_no_songs": "Er zijn geen nummers meer in de wachtrij"
+    },
+    "play": {
+      "description": "Speel muziek af - ondersteunt YouTube, Spotify, SoundCloud of directe link",
+      "query_description": "Nummernaam, artiest, YouTube/Spotify/SoundCloud URL of directe link",
+      "voice_channel_required": "Je moet in een spraakkanaal zijn!",
+      "no_permissions": "Ik heb geen toestemming om te spreken in dit spraakkanaal!",
+      "same_channel_required": "Je moet in hetzelfde spraakkanaal zijn als de bot!",
+      "playlist_success": "Afspeellijst met **{count} nummers** toegevoegd aan de wachtrij!",
+      "track_started": "Begonnen met afspelen van **{title}**!",
+      "track_queued": "**{title}** toegevoegd aan de wachtrij! (op positie {position})"
+    }
+  },
+  "youtube": {
+    "no_valid_tracks": "Geen geldige tracks gevonden in de afspeellijst"
+  },
+  "musicplayer": {
+    "no_results_found": "Geen resultaten gevonden!",
+    "failed_connect_voice": "Verbinding met spraakkanaal mislukt!",
+    "track_could_not_play": "Track kon niet worden afgespeeld!",
+    "queue_completed": "Wachtrij Voltooid",
+    "queue_completed_desc": "Alle tracks zijn afgespeeld! Gebruik het `/play` commando om een nieuwe track toe te voegen."
+  },
+  "modalhandler": {
+    "invalid_volume": "Volume moet een getal tussen 0-100 zijn!",
+    "volume_changed_desc": "Het volume is ingesteld op **{volume}%**!"
+  },
+  "buttonhandler": {
+    "processing_error": "Er is een fout opgetreden tijdens de verwerking!",
+    "music_paused": "Muziek Gepauzeerd",
+    "music_resumed": "Muziek Hervat",
+    "song_skipped_title": "Nummer Overgeslagen",
+    "no_previous_song": "Geen vorig nummer!",
+    "moved_to_previous": "Verplaatst naar vorig nummer!",
+    "music_stopped_title": "Muziek Gestopt",
+    "songs_cleared": "{count} nummers gewist uit de wachtrij",
+    "no_songs_in_queue": "Geen nummers in de wachtrij!",
+    "no_songs_to_skip": "Geen nummers om over te slaan! Er zijn geen nummers in de wachtrij.",
+    "now_playing": "Nu Afspelend",
+    "upcoming_songs": "Komende Nummers ({count})",
+    "total_songs": "Totaal {count} nummers",
+    "songs_shuffled": "{count} nummers geschud!",
+    "minimum_songs_shuffle": "Er moeten minimaal 2 nummers in de wachtrij staan om te schudden!",
+    "set_volume_title": "Volume Instellen",
+    "volume_label": "Volume (0-100)",
+    "search_expired": "Zoekresultaten niet gevonden of verlopen! Zoek opnieuw.",
+    "invalid_selection": "Ongeldige selectie!",
+    "loop_mode_off": "Herhaalmodus is nu **uitgeschakeld**",
+    "loop_mode_track": "Herhaalmodus ingesteld op **nummer herhalen**. Het huidige nummer wordt continu afgespeeld.",
+    "loop_mode_queue": "Herhaalmodus ingesteld op **wachtrij herhalen**. De wachtrij herstart wanneer deze klaar is.",
+    "no_lyrics_found": "Geen songteksten gevonden voor dit nummer.",
+    "lyrics_unavailable": "Songteksten zijn niet beschikbaar.",
+    "lyrics_title": "Songtekst",
+    "lyrics_error": "Songteksten konden niet worden geladen. Probeer het later opnieuw."
+  },
+  "musicmanager": {
+    "playback_ended": "Muziek Beëindigd"
+  },
+  "buttons": {
+    "pause": "Pauzeren",
+    "resume": "Hervatten",
+    "skip": "Overslaan",
+    "stop": "Stoppen",
+    "queue": "Wachtrij",
+    "shuffle": "Schudden",
+    "volume": "Volume",
+    "loop_off": "Herhalen: Uit",
+    "loop_track": "Herhalen: Track",
+    "loop_queue": "Herhalen: Wachtrij",
+    "autoplay_off": "Auto: Uit",
+    "autoplay_on": "Auto: Aan",
+    "lyrics": "Tekst"
+  },
+  "errors": {
+    "youtube_bot_detection": "**YouTube heeft dit verzoek geblokkeerd (botdetectie)**\nYouTube weigert verzoeken van het IP-adres van deze server.\n\n**Oplossing:** Voeg `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (of firefox/edge) of `YOUTUBE_PO_TOKEN` toe aan het `.env`-bestand. Zie `README.md` voor stapsgewijze instructies.",
+    "youtube_age_restricted": "**Leeftijdsbeperkt video**\nDeze video vereist een ingelogd YouTube-account.\n\n**Oplossing:** Stel `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` in `.env` in zodat de bot je YouTube-sessie in de browser kan gebruiken.",
+    "youtube_unavailable": "**Video niet beschikbaar**\nDeze video is privé, verwijderd of niet beschikbaar in deze regio. Probeer een andere link of nummer.",
+    "youtube_geo_blocked": "**Geografisch geblokkeerde inhoud**\nDeze video is beperkt in de regio waar deze bot wordt gehost.\n\n**Oplossing:** Probeer een andere link.",
+    "rate_limited": "**Te veel verzoeken (snelheidslimiet)**\nYouTube of een ander platform blokkeert tijdelijk verzoeken.\n\n**Oplossing:** Wacht een paar minuten en probeer het opnieuw. Als dit vaak voorkomt, voeg dan `COOKIES_FILE` / `COOKIES_FROM_BROWSER` toe aan `.env`.",
+    "network_error": "**Netwerkfout**\nDe bot kon geen verbinding maken met het muziekplatform. Dit is meestal een tijdelijk probleem.\n\n**Oplossing:** Wacht even en probeer het opnieuw.",
+    "stream_failed": "**Audiostream mislukt**\nDe bot vond het nummer maar kon de audiostream niet starten.\n\n**Oplossing:** Probeer het opnieuw of probeer een andere versie van het nummer.",
+    "voice_no_permission": "**Ontbrekende spraakmachtigingen**\nDe bot heeft geen toestemming om deel te nemen aan of te spreken in je spraakkanaal.\n\n**Oplossing:** Spraakkanaalinstellingen → Machtigingen → geef de bot de machtigingen **Verbinden** en **Spreken**.",
+    "unknown": "**Er is een onverwachte fout opgetreden**\nEr is iets misgegaan bij het verwerken van je verzoek.\n\n**Oplossing:** Probeer het over een moment opnieuw. Controleer het foutlogboek van de bot als het probleem aanhoudt."
+  },
+  "ui": {
+    "voice_full": "Dat spraakkanaal is vol.",
+    "live": "Live",
+    "playlist_truncated": "Alleen de eerste {max} nummers zijn toegevoegd.",
+    "unsupported": "Deze link wordt niet ondersteund.",
+    "queue_full": "De wachtrij is vol ({max} nummers).",
+    "autoplay_added": "Toegevoegd door automatisch afspelen",
+    "filter": "Filter: {filter}",
+    "filter_none": "Geen filter",
+    "filter_placeholder": "Audiofilter",
+    "left_empty": "Ik heb het spraakkanaal verlaten omdat niemand luisterde.",
+    "no_related": "Automatisch afspelen kon geen vergelijkbaar nummer vinden.",
+    "previous": "Vorige",
+    "back": "Terug",
+    "next": "Volgende",
+    "page": "Pagina {page}/{pages}",
+    "already_paused": "De muziek is al gepauzeerd.",
+    "not_paused": "De muziek is niet gepauzeerd.",
+    "jumped": "Gesprongen naar **{title}**.",
+    "seeked": "Gesprongen naar {time}.",
+    "seek_invalid": "Gebruik een tijd zoals 1:30 of 90 binnen de lengte van het nummer.",
+    "seek_live": "Je kunt niet spoelen in een livestream.",
+    "removed": "**{title}** is uit de wachtrij verwijderd.",
+    "moved": "**{title}** is verplaatst naar positie {position}.",
+    "invalid_position": "Er staat geen nummer op positie {position}.",
+    "invite": "Uitnodigen",
+    "fallback_soundcloud": "YouTube werkte niet voor dit nummer, dus het wordt afgespeeld via SoundCloud."
+  }
+}
