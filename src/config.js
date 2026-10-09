@@ -68,7 +68,6 @@ const config = {
         leaveOnEmptyMs: int('LEAVE_ON_EMPTY', 60, { min: 0 }) * 1000,
         leaveOnFinishMs: int('LEAVE_ON_FINISH', 120, { min: 0 }) * 1000,
         panelRefreshMs: int('PANEL_REFRESH', 20, { min: 0 }) * 1000,
-        defaultSearchPlatform: env('DEFAULT_SEARCH_PLATFORM', 'youtube').toLowerCase(),
     },
 
     spotify: {
@@ -88,8 +87,6 @@ const config = {
     },
 
     ffmpegPath: env('FFMPEG_PATH'),
-    // When YouTube fails (blocked, 403, removed video), play the same song from SoundCloud.
-    youtubeFallback: env('YOUTUBE_FALLBACK', 'soundcloud').toLowerCase() !== 'off',
     proxies: list('PROXY_URL'),
 
     sharding: {

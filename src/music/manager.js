@@ -6,7 +6,7 @@ const { SpotifyPlugin } = require('@distube/spotify');
 const { RESTJSONErrorCodes } = require('discord.js');
 const config = require('../config');
 const i18n = require('../core/i18n');
-const { YouTubePlugin, GenericPlugin, RelayedSoundCloudPlugin, RelayedDirectLinkPlugin } = require('./plugins');
+const { YouTubePlugin, GenericPlugin, RelayedDirectLinkPlugin } = require('./plugins');
 const { getRelay } = require('./relay');
 const { SessionStore } = require('./session');
 const { describeError, hostHint } = require('./errors');
@@ -45,18 +45,15 @@ class MusicManager {
         this.guilds = new Map();
 
         this.relay = getRelay();
-        this.soundcloud = new RelayedSoundCloudPlugin({ relay: this.relay });
-        this.youtube = new YouTubePlugin({ relay: this.relay, fallback: config.youtubeFallback ? this.soundcloud : null });
+        this.youtube = new YouTubePlugin({ relay: this.relay });
         this.spotify = new SpotifyPlugin(config.spotify.clientId && config.spotify.clientSecret
             ? { api: { clientId: config.spotify.clientId, clientSecret: config.spotify.clientSecret } }
             : {});
         this.direct = new RelayedDirectLinkPlugin({ relay: this.relay });
         this.generic = new GenericPlugin({ relay: this.relay });
 
-        const searchPlatform = config.bot.defaultSearchPlatform;
-        const plugins = searchPlatform === 'soundcloud'
-            ? [this.soundcloud, this.youtube, this.spotify, this.direct, this.generic]
-            : [this.youtube, this.spotify, this.soundcloud, this.direct, this.generic];
+        // Order matters: the first extractor handles text searches; the generic yt-dlp plugin must be last.
+        const plugins = [this.youtube, this.spotify, this.direct, this.generic];
 
         this.distube = new DisTube(client, {
             // Order matters: the first extractor handles text searches; the generic yt-dlp plugin must be last.
@@ -75,7 +72,6 @@ class MusicManager {
         this.sessions = new SessionStore({
             youtube: this.youtube,
             spotify: this.spotify,
-            soundcloud: this.soundcloud,
             direct: this.direct,
             generic: this.generic,
         });
@@ -147,6 +143,13 @@ class MusicManager {
     async play({ voiceChannel, textChannel, member, query, position = 0, onQueued = null, skip = false }) {
         const guildId = voiceChannel.guild.id;
         if (this.#remaining(guildId) <= 0) throw this.#queueFull();
+
+        if (String(query || '').toLowerCase().includes('soundcloud.com')) {
+            throw new DisTubeError(
+                'NOT_SUPPORTED_URL',
+                'SoundCloud is no longer supported. Use a YouTube or Spotify link, or search by name.'
+            );
+        }
 
         const requestedAt = Date.now();
         const metadata = { requesterId: member.id, guildId };
@@ -547,7 +550,7 @@ class MusicManager {
             if (song?.timing) {
                 const { requestedAt, resolvedAt } = song.timing;
                 delete song.timing;
-                const source = song.fallbackFrom ? 'soundcloud (youtube failed)' : song.source;
+                const source = song.source;
                 log.info(`Playing "${song.name}" from ${source}: found in ${((resolvedAt - requestedAt) / 1000).toFixed(1)}s, audio after ${((Date.now() - requestedAt) / 1000).toFixed(1)}s`);
             }
             const state = this.state(queue.id);

@@ -30,7 +30,6 @@ async function playFromInteraction(interaction, ctx, query, { next = false } = {
         } else {
             message = t('commands.play.track_queued', { title: resolved.name, position: outcome.position });
         }
-        if (!(resolved instanceof Playlist) && resolved.fallbackFrom) message += `\n-# ${t('ui.fallback_soundcloud')}`;
         await say(interaction, message);
     };
 
@@ -56,7 +55,7 @@ async function playFromInteraction(interaction, ctx, query, { next = false } = {
 
 module.exports = {
     category: 'playback',
-    data: command('play', 'Play a song or playlist from YouTube, Spotify, SoundCloud or a link')
+    data: command('play', 'Play a song or playlist from YouTube, Spotify or a link')
         .addStringOption((option) => option
             .setName('query')
             .setDescription('Song name or link')

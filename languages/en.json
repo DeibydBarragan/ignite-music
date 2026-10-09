@@ -37,8 +37,8 @@
       "footer_no_songs": "No more songs in the queue"
     },
     "play": {
-      "description": "Play music - supports YouTube, Spotify, SoundCloud or direct link",
-      "query_description": "Song name, artist, YouTube/Spotify/SoundCloud URL or direct link",
+      "description": "Play music - supports YouTube, Spotify or direct link",
+      "query_description": "Song name, artist, YouTube/Spotify URL or direct link",
       "voice_channel_required": "You must be in a voice channel!",
       "no_permissions": "I don't have permission to speak in this voice channel!",
       "same_channel_required": "You must be in the same voice channel as the bot!",

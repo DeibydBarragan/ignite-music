@@ -15,7 +15,7 @@ module.exports = {
     data: command('new-playlist', 'Importar una playlist por enlace y guardarla en tu colección')
         .addStringOption((option) => option
             .setName('url')
-            .setDescription('Enlace de Spotify, YouTube o SoundCloud')
+            .setDescription('Enlace de Spotify o YouTube')
             .setRequired(true)
             .setMaxLength(1000))
         .addStringOption((option) => option
@@ -29,7 +29,11 @@ module.exports = {
         const customName = (interaction.options.getString('nombre') || '').trim();
 
         if (!isHttpUrl(url)) {
-            return say(interaction, 'Pega un enlace válido de Spotify, YouTube o SoundCloud.');
+            return say(interaction, 'Pega un enlace válido de Spotify o YouTube.');
+        }
+
+        if (url.toLowerCase().includes('soundcloud.com')) {
+            return say(interaction, 'SoundCloud ya no está soportado. Usa un enlace de Spotify o YouTube.');
         }
 
         // 1. Resolver sin unirse a voz (dry-run)

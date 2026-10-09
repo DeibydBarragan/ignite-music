@@ -131,7 +131,6 @@ function playerPanel(t, state) {
         filter ? t('ui.filter', { filter: filterLabel(t, filter) }) : null,
     ].filter(Boolean);
     c.addTextDisplayComponents(text(`-# ${details.join(' · ')}`));
-    if (song.fallbackFrom) c.addTextDisplayComponents(text(`-# ${t('ui.fallback_soundcloud')}`));
 
     const next = upcoming[0];
     const queueLine = next
@@ -285,7 +284,7 @@ function playlistsView(t, { playlists, total, page = 0, filter = null }) {
     c.addTextDisplayComponents(text(title));
 
     if (!playlists.length) {
-        c.addTextDisplayComponents(text('-# Aún no tienes playlists guardadas.\nUsa `/new-playlist` con un enlace de Spotify, YouTube o SoundCloud para importar la primera.'));
+        c.addTextDisplayComponents(text('-# Aún no tienes playlists guardadas.\nUsa `/new-playlist` con un enlace de Spotify o YouTube para importar la primera.'));
     } else {
         const start = safePage * PLAYLISTS_PAGE_SIZE;
         const lines = playlists.slice(start, start + PLAYLISTS_PAGE_SIZE).map((pl, index) => {

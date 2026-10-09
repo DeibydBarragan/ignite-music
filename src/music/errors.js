@@ -10,7 +10,7 @@ const RULES = [
     [(code) => code === 'NON_NSFW', 'errors.youtube_age_restricted'],
     [(code) => code === 'NOT_SUPPORTED_URL' || code === 'NOT_SUPPORTED_SONG', 'ui.unsupported'],
     [(code) => code === 'EMPTY_PLAYLIST' || code === 'EMPTY_FILTERED_PLAYLIST', 'youtube.no_valid_tracks'],
-    [(code) => code === 'NO_RESULT' || code === 'SOUNDCLOUD_PLUGIN_NO_RESULT', 'musicplayer.no_results_found'],
+    [(code) => code === 'NO_RESULT', 'musicplayer.no_results_found'],
     [(code, text) => /sign in to confirm|not a bot|confirm you.re not/.test(text), 'errors.youtube_bot_detection'],
     [(code, text) => /age.?restrict|confirm your age|inappropriate for some users/.test(text), 'errors.youtube_age_restricted'],
     [(code, text) => /available in your country|geo.?restrict|blocked it in your country/.test(text), 'errors.youtube_geo_blocked'],
@@ -34,7 +34,7 @@ const NOT_FOUND = new Set(['musicplayer.no_results_found', 'errors.unknown']);
 
 /**
  * Translation key for an error. When a text search ended in "no results" only because YouTube
- * refused the request (and the SoundCloud fallback found nothing either), report YouTube's error.
+ * refused the request, report YouTube's error.
  */
 function describeError(error, { youtube, since = 0 } = {}) {
     const key = errorKey(error);

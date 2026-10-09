@@ -27,7 +27,7 @@ function formatSong(song) {
         url: song.url,
         category: 'hits',
         isLive: Boolean(song.isLive),
-        fallbackFrom: song.fallbackFrom || null,        requestedBy: song.user ? {
+        requestedBy: song.user ? {
             id: song.user.id,
             username: song.user.username,
             avatar: typeof song.user.displayAvatarURL === 'function' ? song.user.displayAvatarURL() : null,
@@ -295,7 +295,6 @@ function startApiServer(client) {
                 started: Boolean(outcome?.started),
                 position: outcome?.position || 0,
                 song: resolved ? formatSong(isPlaylist ? resolved.songs[0] : resolved) : null,
-                fallbackFrom: resolved && !isPlaylist ? resolved.fallbackFrom || null : null,
                 playlist: isPlaylist
                     ? { name: resolved.name || null, count: resolved.songs.length, truncated: Boolean(outcome?.truncated) }
                     : null,

@@ -1,6 +1,6 @@
 'use strict';
 
-const { Playlist } = require('distube');
+const { Playlist, DisTubeError } = require('distube');
 const config = require('../config');
 const { supabase } = require('../core/supabase');
 const log = require('../core/logger').createLogger('playlists');
@@ -8,11 +8,14 @@ const log = require('../core/logger').createLogger('playlists');
 const TABLE = 'user_playlists';
 const FALLBACK_COVER = 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&q=80';
 
+function isSoundCloudUrl(url) {
+    return String(url || '').toLowerCase().includes('soundcloud.com');
+}
+
 function detectSource(url) {
     const lower = String(url || '').toLowerCase();
     if (lower.includes('spotify.com')) return 'spotify';
     if (lower.includes('youtube.com') || lower.includes('youtu.be')) return 'youtube';
-    if (lower.includes('soundcloud.com')) return 'soundcloud';
     return 'spotify';
 }
 
@@ -56,6 +59,12 @@ function toFrontendTrack(song) {
 async function resolvePlaylist(manager, guild, url, { member = null, maxSize = null } = {}) {
     const clean = String(url || '').trim();
     if (!clean) throw new Error('EMPTY_URL');
+    if (isSoundCloudUrl(clean)) {
+        throw new DisTubeError(
+            'NOT_SUPPORTED_URL',
+            'SoundCloud is no longer supported. Use a YouTube or Spotify link.'
+        );
+    }
     const limit = Math.max(1, maxSize || config.bot.maxPlaylistSize || 200);
     const resolveAs = member || guild?.members?.me || null;
     let resolved;
@@ -167,6 +176,7 @@ module.exports = {
     TABLE,
     FALLBACK_COVER,
     detectSource,
+    isSoundCloudUrl,
     deriveName,
     toFrontendTrack,
     resolvePlaylist,

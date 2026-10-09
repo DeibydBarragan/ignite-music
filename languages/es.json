@@ -37,8 +37,8 @@
       "footer_no_songs": "No hay más canciones en la cola"
     },
     "play": {
-      "description": "Reproducir música - soporta YouTube, Spotify, SoundCloud o enlace directo",
-      "query_description": "Nombre de canción, artista, URL de YouTube/Spotify/SoundCloud o enlace directo",
+      "description": "Reproducir música - soporta YouTube, Spotify o enlace directo",
+      "query_description": "Nombre de canción, artista, URL de YouTube/Spotify o enlace directo",
       "voice_channel_required": "¡Debes estar en un canal de voz!",
       "no_permissions": "¡No tengo permiso para hablar en este canal de voz!",
       "same_channel_required": "¡Debes estar en el mismo canal de voz que el bot!",

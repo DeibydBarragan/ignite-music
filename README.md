@@ -2,7 +2,7 @@
 
 # Ignite Music
 
-A fast Discord music bot for YouTube, Spotify, SoundCloud and direct links — with a button player panel, sharding, queue resume, saved user playlists (Supabase), and a REST API for the Ignite web dashboard.
+A fast Discord music bot for YouTube, Spotify and direct links — with a button player panel, sharding, queue resume, saved user playlists (Supabase), and a REST API for the Ignite web dashboard.
 
 You only need **Node.js** and a **bot token**: everything else is installed and checked automatically.
 
@@ -34,11 +34,11 @@ You only need **Node.js** and a **bot token**: everything else is installed and 
 
 | | |
 | --- | --- |
-| **Sources** | YouTube (videos, Shorts, Music, playlists), Spotify (tracks, albums, playlists, artists), SoundCloud, direct audio links, and everything else yt-dlp supports |
+| **Sources** | YouTube (videos, Shorts, Music, playlists), Spotify (tracks, albums, playlists, artists), direct audio links, and everything else yt-dlp supports |
 | **Fast start** | Songs are streamed, never saved to disk. Lookup, voice join, and next-song preparation run in parallel |
-| **Reliable audio** | yt-dlp resolves audio the way YouTube expects and pipes it to ffmpeg through a local relay, avoiding 403s on direct links. Optional SoundCloud fallback when YouTube refuses a song |
+| **Reliable audio** | yt-dlp resolves audio the way YouTube expects and pipes it to ffmpeg through a local relay, avoiding 403s on direct links |
 | **Player panel** | Cover art, progress bar, queue preview, control buttons, and an audio filter menu (Discord Components V2) |
-| **Saved playlists** | `/new-playlist` imports a Spotify/YouTube/SoundCloud link and stores it per user in Supabase; `/playlists` lists and plays them back |
+| **Saved playlists** | `/new-playlist` imports a Spotify/YouTube link and stores it per user in Supabase; `/playlists` lists and plays them back |
 | **REST API** | Health, guilds, voice status, player state, queue management, playback controls, and playlist resolve — built for the Ignite web dashboard |
 | **Sharding** | Always on (auto shard count), crashed shards restart automatically |
 | **Resume after restart** | Queue and position are saved and restored |
@@ -140,7 +140,6 @@ Only `DISCORD_TOKEN` is required. See `.env.example` for the full commented list
 | `COOKIES_FILE` | | Path to a YouTube `cookies.txt` file (see below) |
 | `COOKIES_FROM_BROWSER` | | Read YouTube cookies from a local browser (`chrome`, `firefox`, `edge`, `safari`, …) |
 | `YOUTUBE_PO_TOKEN` | | YouTube PO token (advanced) |
-| `YOUTUBE_FALLBACK` | `soundcloud` | When YouTube fails for a song, play it from SoundCloud. `off` shows the error instead |
 | `YTDLP_EXTRACTOR_ARGS` | | Extra yt-dlp `--extractor-args` (advanced) |
 | `YTDLP_CONCURRENCY` | `4` | Simultaneous yt-dlp processes per shard |
 | `YTDLP_PATH` / `FFMPEG_PATH` | auto-downloaded | Use your own binaries |
@@ -236,7 +235,7 @@ Without these keys the music playback and REST API still work — only the saved
 | --- | --- |
 | `/play <song or link> [next]` | Play a song, playlist, or link. Suggestions appear while typing. `next` queues it right after the current song |
 | `/search <text>` | Pick a song from YouTube results |
-| `/new-playlist <url> [nombre]` | Import a Spotify/YouTube/SoundCloud link into your saved collection (ephemeral) |
+| `/new-playlist <url> [nombre]` | Import a Spotify/YouTube link into your saved collection (ephemeral) |
 | `/playlists [nombre] [reproducir] [page]` | List your saved playlists; `reproducir:<name or url>` plays one |
 | `/nowplaying` | Move the player panel to the bottom of the chat |
 | `/pause` `/resume` `/skip` `/previous` `/stop` | Playback |
@@ -327,8 +326,7 @@ The startup check reinstalls new packages by itself, so `npm install` is not nee
 | Commands do not show up in Discord | Wait a minute and press **Ctrl + R** in Discord. Check the bot was invited with `applications.commands`. If `GUILD_ID` is set, the bot must be in that server |
 | The bot joins but there is no sound | Give the bot **Speak** permission in that channel, make sure it is not server-muted, and check `/volume` |
 | "YouTube blocked this request (bot detection)" | See [YouTube section](#youtube-sign-in-to-confirm-youre-not-a-bot) |
-| A song is skipped with "Audio stream failed" | The console shows the real reason. `HTTP Error 403` / "Sign in to confirm" means YouTube is blocking this IP — use the cookies fix. Meanwhile songs fall back to SoundCloud (`YOUTUBE_FALLBACK`) |
-| Songs play from SoundCloud instead of YouTube | YouTube refused them; the console says why (usually IP blocking). Use the cookies fix |
+| A song is skipped with "Audio stream failed" | The console shows the real reason. `HTTP Error 403` / "Sign in to confirm" means YouTube is blocking this IP — use the cookies fix |
 | Saved playlists say the database is unavailable | Set `SUPABASE_URL` and `SUPABASE_KEY` and create the `user_playlists` table (see above) |
 | REST API returns 401 | Send `Authorization: Bearer <API_SECRET>` with the same secret as the bot's `.env` |
 | "Voice libraries do not load" | `node_modules` was copied from another machine. Delete `node_modules` and start again |

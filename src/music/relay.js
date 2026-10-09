@@ -74,7 +74,7 @@ class StreamRelay {
 
     /**
      * Register a stream. `info`: a full yt-dlp info dict (its chosen format is downloaded).
-     * `url`: any media URL yt-dlp can download (direct files, HLS, SoundCloud CDN links).
+     * `url`: any media URL yt-dlp can download (direct files, HLS, CDN links).
      * Returns the local URL to give to ffmpeg.
      */
     async register({ info = null, url = null, proxy = null }) {

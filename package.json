@@ -27,7 +27,6 @@
   "dependencies": {
     "@discordjs/voice": "^0.19.2",
     "@distube/direct-link": "^1.0.1",
-    "@distube/soundcloud": "^2.0.4",
     "@distube/spotify": "^2.0.2",
     "@supabase/supabase-js": "^2.117.3",
     "cors": "^2.8.6",
