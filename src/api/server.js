@@ -127,6 +127,7 @@ function startApiServer(client) {
                 volume: config.bot.defaultVolume,
                 repeatMode: 'off',
                 autoplay: false,
+                filter: null,
                 currentSong: null,
                 queue: [],
             });
@@ -148,6 +149,7 @@ function startApiServer(client) {
             volume: queue.volume,
             repeatMode,
             autoplay: Boolean(queue.autoplay),
+            filter: queue.filters.names[0] || null,
             voiceChannel: queue.voiceChannel ? { id: queue.voiceChannel.id, name: queue.voiceChannel.name } : null,
             currentSong,
             queue: upcoming,
@@ -287,6 +289,10 @@ function startApiServer(client) {
                 case 'autoplay':
                     result = actions.toggleAutoplay(queue, t);
                     break;
+                case 'filter': {
+                    result = actions.setFilter(queue, t, value);
+                    break;
+                }
                 case 'volume': {
                     result = actions.setVolume(queue, t, value);
                     break;
