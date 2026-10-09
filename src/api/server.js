@@ -112,6 +112,46 @@ function startApiServer(client) {
         });
     });
 
+    // ─── Voice Channels of a Guild (canales + gente conectada) ───
+    app.get('/api/guilds/:guildId/channels', async (req, res) => {
+        const { guildId } = req.params;
+
+        const guild = client.guilds.cache.get(guildId);
+        if (!guild) return res.status(404).json({ error: 'Guild not found' });
+
+        try {
+            await guild.channels.fetch().catch(() => null);
+        } catch {
+            // Seguir con la caché si el fetch falla
+        }
+
+        const botId = client.user?.id;
+        const channels = [...guild.channels.cache.filter((c) => c.isVoiceBased()).values()]
+            .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+            .map((c) => {
+                const humans = c.members.filter((m) => !m.user.bot);
+                return {
+                    id: c.id,
+                    name: c.name,
+                    bitrate: c.bitrate,
+                    userLimit: c.userLimit || 0,
+                    userCount: humans.size,
+                    botPresent: botId ? c.members.has(botId) : false,
+                    members: [...humans.values()].slice(0, 25).map((m) => ({
+                        id: m.id,
+                        username: m.user.username,
+                        avatar:
+                            typeof m.user.displayAvatarURL === 'function'
+                                ? m.user.displayAvatarURL()
+                                : null,
+                        bot: m.user.bot,
+                    })),
+                };
+            });
+
+        res.json({ guildId, total: channels.length, channels });
+    });
+
     // ─── Player State & Queue ─────────────────────────────────────────
     app.get('/api/guilds/:guildId/player', (req, res) => {
         const { guildId } = req.params;
