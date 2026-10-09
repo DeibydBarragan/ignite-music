@@ -27,7 +27,7 @@ function formatSong(song) {
         url: song.url,
         category: 'hits',
         isLive: Boolean(song.isLive),
-        requestedBy: song.user ? {
+        fallbackFrom: song.fallbackFrom || null,        requestedBy: song.user ? {
             id: song.user.id,
             username: song.user.username,
             avatar: typeof song.user.displayAvatarURL === 'function' ? song.user.displayAvatarURL() : null,
@@ -196,6 +196,22 @@ function startApiServer(client) {
         });
     });
 
+    // ─── Search suggestions (same source as /play autocomplete) ──
+    app.get('/api/search/suggest', async (req, res) => {
+        const q = String(req.query.q || '').trim();
+        if (q.length < 2 || q.length > 100 || /^https?:\/\//i.test(q)) {
+            return res.json({ query: q, suggestions: [] });
+        }
+        try {
+            const { suggestions } = require('../music/suggest');
+            const items = await suggestions(q);
+            return res.json({ query: q, suggestions: items });
+        } catch (error) {
+            log.warn(`API Suggest error: ${error.message}`);
+            return res.json({ query: q, suggestions: [] });
+        }
+    });
+
     // ─── Resolve playlist (no voice join, for web import preview) ─────
     app.get('/api/guilds/:guildId/playlist/resolve', async (req, res) => {
         const { guildId } = req.params;
@@ -279,6 +295,7 @@ function startApiServer(client) {
                 started: Boolean(outcome?.started),
                 position: outcome?.position || 0,
                 song: resolved ? formatSong(isPlaylist ? resolved.songs[0] : resolved) : null,
+                fallbackFrom: resolved && !isPlaylist ? resolved.fallbackFrom || null : null,
                 playlist: isPlaylist
                     ? { name: resolved.name || null, count: resolved.songs.length, truncated: Boolean(outcome?.truncated) }
                     : null,
