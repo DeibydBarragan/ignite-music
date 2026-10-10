@@ -6,6 +6,7 @@ const config = require('../config');
 const ytdlp = require('./ytdlp');
 const { getRelay } = require('./relay');
 const { TTLCache } = require('../core/cache');
+const { setTimeout: sleep } = require('node:timers/promises');
 const log = require('../core/logger').createLogger('extractor');
 
 const AUDIO_FORMAT = 'bestaudio[acodec=opus]/bestaudio/best';
@@ -17,6 +18,11 @@ const VIDEO_ID = /^[\w-]{11}$/;
 
 // Every song carries its guild id in metadata so proxy selection never depends on a cached member.
 const guildIdOf = (holder) => holder?.metadata?.guildId || holder?.member?.guild?.id || null;
+
+function isBotCheck(error) {
+    const text = `${error?.message || ''} ${error?.stderr || ''}`;
+    return /sign in to confirm|not a bot|confirm you.re not/i.test(text);
+}
 
 /**
  * Seconds until a googlevideo URL expires (minus a safety margin), capped to 4 hours.
@@ -198,8 +204,23 @@ class YouTubePlugin extends ExtractorPlugin {
         } catch (error) {
             this.lastSearchError = error;
             this.lastSearchErrorAt = Date.now();
-            log.warn(`YouTube search failed for "${query}": ${error.message}`);
-            throw error;
+            // Bot-checks on graylisted IPs are often rolling: a single delayed
+            // retry sometimes passes. Never more than one — hammering makes it worse.
+            if (isBotCheck(error)) {
+                log.warn(`YouTube search challenged for "${query}", retrying once in 8s`);
+                await sleep(8000);
+                try {
+                    info = await this.searchInfo(query, guildId);
+                } catch (retryError) {
+                    this.lastSearchError = retryError;
+                    this.lastSearchErrorAt = Date.now();
+                    log.warn(`YouTube search failed for "${query}": ${retryError.message}`);
+                    throw retryError;
+                }
+            } else {
+                log.warn(`YouTube search failed for "${query}": ${error.message}`);
+                throw error;
+            }
         }
         if (!info) return null;
         const song = new Song({ ...youtubeInfo(info), plugin: this }, options);
