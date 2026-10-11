@@ -4,7 +4,7 @@ const { fakeMember } = require('./helpers');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { Playlist, Song } = require('distube');
-const { YouTubePlugin, GenericPlugin, parseYouTubeUrl, youtubeInfo, splitYouTubeTitle, streamTtl } = require('../src/music/plugins');
+const { YouTubePlugin, GenericPlugin, parseYouTubeUrl, youtubeInfo, splitYouTubeTitle, isLyricTitle, isLyricSong, streamTtl } = require('../src/music/plugins');
 
 const VIDEO = 'dQw4w9WgXcQ';
 const streamUrl = (id) => `https://rr1.googlevideo.com/videoplayback?id=${id}&expire=${Math.floor(Date.now() / 1000) + 6 * 3600}`;
@@ -86,6 +86,18 @@ test('splitYouTubeTitle separates artist and song name', () => {
     const yt = youtubeInfo({ id: VIDEO, title: 'Shakira - BZRP Music Sessions #53', uploader: 'Shakira', duration: 200 });
     assert.equal(yt.name, 'BZRP Music Sessions #53');
     assert.equal(yt.uploader.name, 'Shakira');
+});
+
+test('lyric videos are flagged and cleaned', () => {
+    assert.equal(isLyricTitle('Xavi - La Diabla (Official Lyric Video)'), true);
+    assert.equal(isLyricTitle('La Diabla (Lyrics)'), true);
+    assert.equal(isLyricTitle('La Diabla (Official Video)'), false);
+    assert.equal(isLyricTitle('Xavi - La Diabla'), false);
+    const yt = youtubeInfo({ id: VIDEO, title: 'Xavi - Diablita (Official Lyric Video)', uploader: 'Xavi Official', duration: 200 });
+    assert.equal(yt.name, 'Diablita');
+    assert.equal(isLyricSong(yt.url), true);
+    const clean = youtubeInfo({ id: VIDEO, title: 'Xavi - Diablita (Official Video)', uploader: 'Xavi Official', duration: 200 });
+    assert.equal(isLyricSong(clean.url), false);
 });
 
 test('streamTtl follows the googlevideo expiry with a safety margin', () => {

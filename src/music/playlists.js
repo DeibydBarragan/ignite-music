@@ -2,6 +2,7 @@
 
 const { Playlist, DisTubeError } = require('distube');
 const config = require('../config');
+const { isLyricSong } = require('./plugins');
 const { supabase } = require('../core/supabase');
 const log = require('../core/logger').createLogger('playlists');
 
@@ -49,6 +50,7 @@ function toFrontendTrack(song) {
         url: song.url,
         category: 'hits',
         isLive: Boolean(song.isLive),
+        isLyric: isLyricSong(song.url),
     };
 }
 

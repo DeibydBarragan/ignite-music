@@ -5,6 +5,7 @@ const cors = require('cors');
 const { RepeatMode } = require('distube');
 const config = require('../config');
 const actions = require('../music/actions');
+const { isLyricSong } = require('../music/plugins');
 const i18n = require('../core/i18n');
 const logger = require('../core/logger');
 
@@ -27,6 +28,7 @@ function formatSong(song) {
         url: song.url,
         category: 'hits',
         isLive: Boolean(song.isLive),
+        isLyric: isLyricSong(song.url),
         requestedBy: song.user ? {
             id: song.user.id,
             username: song.user.username,

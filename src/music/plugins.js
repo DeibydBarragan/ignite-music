@@ -16,6 +16,23 @@ const YOUTUBE_HOSTS = new Set([
 ]);
 const VIDEO_ID = /^[\w-]{11}$/;
 
+// DisTube's Song drops unknown fields, so lyric flags travel in this sidecar
+// registry (keyed by song URL, 24h TTL) from youtubeInfo() to formatSong().
+const lyricUrls = new TTLCache({ ttlMs: 24 * 3600_000, maxSize: 5000 });
+
+function isLyricTitle(rawTitle) {
+    return /\blyrics?\b/i.test(String(rawTitle || ''));
+}
+
+function isLyricSong(url) {
+    if (!url) return false;
+    try {
+        return lyricUrls.get(String(url)) === true;
+    } catch {
+        return false;
+    }
+}
+
 // Every song carries its guild id in metadata so proxy selection never depends on a cached member.
 const guildIdOf = (holder) => holder?.metadata?.guildId || holder?.member?.guild?.id || null;
 
@@ -67,7 +84,7 @@ const watchUrl = (id) => `https://www.youtube.com/watch?v=${id}`;
 const thumbnailFor = (id) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
 
 // Sufijos que no aportan al título ("X - Y (Official Video)" -> "X - Y").
-const OFFICIAL_SUFFIX = /\s*[\(\[]\s*(official\s*(music\s*)?video|official\s*audio|video\s*oficial|audio\s*oficial|official\s*lyric\s*video|lyric\s*video|visualizer)\s*[\)\]]\s*/gi;
+const OFFICIAL_SUFFIX = /\s*[\(\[]\s*(official\s*(music\s*)?video|official\s*audio|video\s*oficial|audio\s*oficial|official\s*lyric\s*video|lyric\s*video|lyrics?|visualizer)\s*[\)\]]\s*/gi;
 
 function cleanTitleSuffix(title) {
     return String(title || '')
@@ -128,13 +145,16 @@ function youtubeInfo(info) {
     const id = info.id;
     const isLive = Boolean(info.is_live || info.live_status === 'is_live');
     const uploaderName = info.uploader || info.channel || undefined;
-    const { title, artist } = splitYouTubeTitle(info.title || info.fulltitle || id, uploaderName);
+    const rawName = info.title || info.fulltitle || id;
+    const { title, artist } = splitYouTubeTitle(rawName, uploaderName);
+    const url = VIDEO_ID.test(id || '') ? watchUrl(id) : info.webpage_url || info.url;
+    if (url) lyricUrls.set(String(url), isLyricTitle(rawName));
     return {
         source: 'youtube',
         playFromSource: true,
         id,
         name: title,
-        url: VIDEO_ID.test(id || '') ? watchUrl(id) : info.webpage_url || info.url,
+        url,
         isLive,
         duration: isLive ? 0 : Number(info.duration) || 0,
         thumbnail: VIDEO_ID.test(id || '') ? thumbnailFor(id) : info.thumbnail,
@@ -420,5 +440,5 @@ class RelayedDirectLinkPlugin extends DirectLinkPlugin {
 
 module.exports = {
     YouTubePlugin, GenericPlugin, RelayedDirectLinkPlugin,
-    parseYouTubeUrl, youtubeInfo, splitYouTubeTitle, streamTtl, relayStream, AUDIO_FORMAT,
+    parseYouTubeUrl, youtubeInfo, splitYouTubeTitle, isLyricTitle, isLyricSong, streamTtl, relayStream, AUDIO_FORMAT,
 };
