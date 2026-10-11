@@ -66,23 +66,80 @@ function parseYouTubeUrl(input) {
 const watchUrl = (id) => `https://www.youtube.com/watch?v=${id}`;
 const thumbnailFor = (id) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
 
+// Sufijos que no aportan al título ("X - Y (Official Video)" -> "X - Y").
+const OFFICIAL_SUFFIX = /\s*[\(\[]\s*(official\s*(music\s*)?video|official\s*audio|video\s*oficial|audio\s*oficial|official\s*lyric\s*video|lyric\s*video|visualizer)\s*[\)\]]\s*/gi;
+
+function cleanTitleSuffix(title) {
+    return String(title || '')
+        .replace(OFFICIAL_SUFFIX, ' ')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+}
+
+function normName(value) {
+    return String(value || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/vevo$/, '')
+        .replace(/[^a-z0-9 ]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+/**
+ * Divide "Artista - Tema" de YouTube en { title, artist }.
+ * Solo separa cuando la parte izquierda coincide con el canal que subió el
+ * video (o el canal es un "X - Topic" auto-generado); si no, devuelve el
+ * título limpio tal cual para no inventar datos.
+ */
+function splitYouTubeTitle(rawTitle, uploader) {
+    const cleaned = cleanTitleSuffix(rawTitle);
+    const channel = String(uploader || '').trim();
+
+    const topic = channel.match(/^(.*?)\s*-\s*topic$/i);
+    if (topic && topic[1].trim()) {
+        return { title: cleaned || String(rawTitle || '').trim(), artist: topic[1].trim() };
+    }
+
+    const dash = cleaned.indexOf(' - ');
+    if (dash > 0 && channel) {
+        const left = cleaned.slice(0, dash).trim();
+        const right = cleaned.slice(dash + 3).trim();
+        const leftNorm = normName(left);
+        const channelNorm = normName(channel);
+        if (
+            right &&
+            leftNorm &&
+            channelNorm &&
+            (leftNorm.includes(channelNorm) || channelNorm.includes(leftNorm))
+        ) {
+            return { title: right, artist: left };
+        }
+    }
+
+    return { title: cleaned || String(rawTitle || '').trim(), artist: channel };
+}
+
 /**
  * Normalize a yt-dlp info object (full or flat entry) to the fields DisTube's Song wants.
  */
 function youtubeInfo(info) {
     const id = info.id;
     const isLive = Boolean(info.is_live || info.live_status === 'is_live');
+    const uploaderName = info.uploader || info.channel || undefined;
+    const { title, artist } = splitYouTubeTitle(info.title || info.fulltitle || id, uploaderName);
     return {
         source: 'youtube',
         playFromSource: true,
         id,
-        name: info.title || info.fulltitle || id,
+        name: title,
         url: VIDEO_ID.test(id || '') ? watchUrl(id) : info.webpage_url || info.url,
         isLive,
         duration: isLive ? 0 : Number(info.duration) || 0,
         thumbnail: VIDEO_ID.test(id || '') ? thumbnailFor(id) : info.thumbnail,
         uploader: {
-            name: info.uploader || info.channel || undefined,
+            name: artist || uploaderName,
             url: info.uploader_url || info.channel_url || undefined,
         },
         views: info.view_count,
@@ -363,5 +420,5 @@ class RelayedDirectLinkPlugin extends DirectLinkPlugin {
 
 module.exports = {
     YouTubePlugin, GenericPlugin, RelayedDirectLinkPlugin,
-    parseYouTubeUrl, youtubeInfo, streamTtl, relayStream, AUDIO_FORMAT,
+    parseYouTubeUrl, youtubeInfo, splitYouTubeTitle, streamTtl, relayStream, AUDIO_FORMAT,
 };

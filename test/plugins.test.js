@@ -4,7 +4,7 @@ const { fakeMember } = require('./helpers');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { Playlist, Song } = require('distube');
-const { YouTubePlugin, GenericPlugin, parseYouTubeUrl, youtubeInfo, streamTtl } = require('../src/music/plugins');
+const { YouTubePlugin, GenericPlugin, parseYouTubeUrl, youtubeInfo, splitYouTubeTitle, streamTtl } = require('../src/music/plugins');
 
 const VIDEO = 'dQw4w9WgXcQ';
 const streamUrl = (id) => `https://rr1.googlevideo.com/videoplayback?id=${id}&expire=${Math.floor(Date.now() / 1000) + 6 * 3600}`;
@@ -68,6 +68,24 @@ test('youtubeInfo builds stable URLs and thumbnails, handles live and age limits
     const live = youtubeInfo({ id: VIDEO, title: 'L', duration: 999, live_status: 'is_live' });
     assert.equal(live.isLive, true);
     assert.equal(live.duration, 0);
+});
+
+test('splitYouTubeTitle separates artist and song name', () => {
+    assert.deepEqual(
+        splitYouTubeTitle('Xavi - La Diabla (Official Video)', 'Xavi Oficial'),
+        { title: 'La Diabla', artist: 'Xavi' }
+    );
+    assert.deepEqual(
+        splitYouTubeTitle('La Diabla', 'Xavi - Topic'),
+        { title: 'La Diabla', artist: 'Xavi' }
+    );
+    assert.deepEqual(
+        splitYouTubeTitle('lofi hip hop radio - beats to relax/study to 📚', 'Lofi Girl'),
+        { title: 'lofi hip hop radio - beats to relax/study to 📚', artist: 'Lofi Girl' }
+    );
+    const yt = youtubeInfo({ id: VIDEO, title: 'Shakira - BZRP Music Sessions #53', uploader: 'Shakira', duration: 200 });
+    assert.equal(yt.name, 'BZRP Music Sessions #53');
+    assert.equal(yt.uploader.name, 'Shakira');
 });
 
 test('streamTtl follows the googlevideo expiry with a safety margin', () => {
