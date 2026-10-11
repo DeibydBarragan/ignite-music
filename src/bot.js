@@ -9,6 +9,7 @@ const { loadCommands } = require('./commands');
 const { MusicManager } = require('./music/manager');
 const { onInteraction } = require('./handlers/interactions');
 const { startApiServer } = require('./api/server');
+const { startAnnouncer } = require('./api/announce');
 const ytdlp = require('./music/ytdlp');
 
 const log = logger.createLogger('bot');
@@ -47,6 +48,7 @@ function createClient() {
 
         if (!client.shard || client.shard.ids[0] === 0) {
             client.apiServer = startApiServer(client);
+            client.announcer = startAnnouncer();
         }
     });
 
@@ -54,6 +56,9 @@ function createClient() {
     client.shutdown = () => {
         stopping ??= (async () => {
             log.info('Shutting down...');
+            if (client.announcer) {
+                clearInterval(client.announcer);
+            }
             if (client.apiServer) {
                 client.apiServer.close();
             }
