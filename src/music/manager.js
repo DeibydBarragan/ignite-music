@@ -152,7 +152,15 @@ class MusicManager {
         }
 
         const requestedAt = Date.now();
-        const metadata = { requesterId: member.id, guildId };
+        const requesterUser = member?.user ? {
+            id: member.user.id,
+            username: member.displayName || member.user.globalName || member.user.username,
+            avatar: typeof (member.displayAvatarURL || member.user.displayAvatarURL) === 'function'
+                ? (member.displayAvatarURL?.() || member.user?.displayAvatarURL?.())
+                : null,
+            bot: Boolean(member.user.bot),
+        } : null;
+        const metadata = { requesterId: member?.id, requesterUser, guildId };
         const existing = this.getQueue(guildId);
         const joining = existing ? null : this.distube.voices.join(voiceChannel).then(() => null, (error) => error);
 
@@ -163,6 +171,21 @@ class MusicManager {
             if (joining && !(await joining) && !this.getQueue(guildId)) this.#scheduleLeave(guildId);
             throw error;
         }
+
+        if (resolved instanceof Playlist) {
+            resolved.member = member;
+            resolved.metadata = metadata;
+            if (Array.isArray(resolved.songs)) {
+                for (const s of resolved.songs) {
+                    s.member = member;
+                    s.metadata = { ...(s.metadata || {}), ...metadata };
+                }
+            }
+        } else if (resolved) {
+            resolved.member = member;
+            resolved.metadata = { ...(resolved.metadata || {}), ...metadata };
+        }
+
         const resolvedAt = Date.now();
         if (joining) {
             const joinError = await joining;
@@ -208,6 +231,16 @@ class MusicManager {
             });
             const current = this.getQueue(guildId);
             if (current && !current.textChannel && textChannel) current.textChannel = textChannel;
+            if (current && Array.isArray(current.songs)) {
+                const newSongs = resolved instanceof Playlist ? (resolved.songs || []) : [resolved];
+                const newSongSet = new Set(newSongs);
+                for (const s of current.songs) {
+                    if (newSongSet.has(s) || newSongs.some((ns) => ns && ns.id && ns.id === s.id)) {
+                        s.metadata = { ...(s.metadata || {}), ...metadata };
+                        if (member) s.member = member;
+                    }
+                }
+            }
             if (skip && current && current.songs.length > 1) {
                 try {
                     await current.skip();

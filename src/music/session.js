@@ -21,6 +21,8 @@ class SessionStore {
     }
 
     serializeSong(song) {
+        const user = song.metadata?.requesterUser || song.member?.user || song.user;
+        const isBot = Boolean(song.member?.user?.bot || user?.bot);
         return {
             plugin: this.pluginKey(song.plugin),
             source: song.source,
@@ -33,8 +35,16 @@ class SessionStore {
             thumbnail: song.thumbnail,
             uploader: { name: song.uploader?.name, url: song.uploader?.url },
             ageRestricted: Boolean(song.ageRestricted),
-            requesterId: song.metadata?.requesterId || null,
-            autoplay: Boolean(song.member?.user?.bot),
+            requesterId: song.metadata?.requesterId || (isBot ? null : user?.id),
+            requesterUser: song.metadata?.requesterUser || (user ? {
+                id: user.id,
+                username: song.member?.displayName || user.globalName || user.username,
+                avatar: typeof (song.member?.displayAvatarURL || user?.displayAvatarURL) === 'function'
+                    ? (song.member?.displayAvatarURL?.() || user?.displayAvatarURL?.())
+                    : (user.avatar || null),
+                bot: isBot,
+            } : null),
+            autoplay: isBot,
         };
     }
 
@@ -94,7 +104,7 @@ class SessionStore {
                     thumbnail: item.thumbnail,
                     uploader: item.uploader,
                     ageRestricted: item.ageRestricted,
-                }, { member: member || undefined, metadata: { requesterId: item.requesterId, guildId: guild.id } });
+                }, { member: member || undefined, metadata: { requesterId: item.requesterId, requesterUser: item.requesterUser, guildId: guild.id } });
             });
     }
 

@@ -101,9 +101,18 @@ function filterLabel(t, name) {
     return name ? FILTER_LABELS[name] || name : t('ui.filter_none');
 }
 
+function requesterUserOf(song) {
+    if (!song) return null;
+    if (song.metadata?.requesterUser && !song.metadata.requesterUser.bot) return song.metadata.requesterUser;
+    if (song.member?.user && !song.member.user.bot) return song.member.user;
+    if (song.user && !song.user.bot) return song.user;
+    return song.metadata?.requesterUser || song.member?.user || song.user || null;
+}
+
 function requesterLine(t, song) {
-    if (!song.user || song.user.bot) return t('ui.autoplay_added');
-    return `${t('commands.nowplaying.requested_by')}: <@${song.user.id}>`;
+    const user = requesterUserOf(song);
+    if (!user || user.bot) return t('ui.autoplay_added');
+    return `${t('commands.nowplaying.requested_by')}: <@${user.id}>`;
 }
 
 /**
@@ -133,8 +142,9 @@ function playerPanel(t, state) {
     c.addTextDisplayComponents(text(`-# ${details.join(' · ')}`));
 
     const next = upcoming[0];
-    const nextReq = next?.user
-        ? (next.user.bot ? ` · ${t('ui.autoplay_added')}` : ` · <@${next.user.id}>`)
+    const nextUser = requesterUserOf(next);
+    const nextReq = nextUser
+        ? (nextUser.bot ? ` · ${t('ui.autoplay_added')}` : ` · <@${nextUser.id}>`)
         : '';
     const queueLine = next
         ? `${t('commands.nowplaying.next_song')}: ${link(next.name, next.url, 60)}${nextReq}\n-# ${t('commands.nowplaying.footer_more_songs', { count: upcoming.length })} · ${formatDuration(upcomingDuration)}`
@@ -200,8 +210,9 @@ function queueView(t, { current, upcoming, page = 0 }) {
 
     const header = [`### ${t('buttons.queue')}`];
     if (current) {
-        const reqStr = current.user
-            ? (current.user.bot ? ` · ${t('ui.autoplay_added')}` : ` · <@${current.user.id}>`)
+        const u = requesterUserOf(current);
+        const reqStr = u
+            ? (u.bot ? ` · ${t('ui.autoplay_added')}` : ` · <@${u.id}>`)
             : '';
         header.push(`${t('buttonhandler.now_playing')}: ${link(current.name, current.url, 70)} · ${current.isLive ? t('ui.live') : formatDuration(current.duration)}${reqStr}`);
     }
@@ -210,8 +221,9 @@ function queueView(t, { current, upcoming, page = 0 }) {
     if (upcoming.length) {
         const start = safePage * QUEUE_PAGE_SIZE;
         const lines = upcoming.slice(start, start + QUEUE_PAGE_SIZE).map((song, index) => {
-            const req = song.user
-                ? (song.user.bot ? ` · *${t('ui.autoplay_added')}*` : ` · <@${song.user.id}>`)
+            const u = requesterUserOf(song);
+            const req = u
+                ? (u.bot ? ` · *${t('ui.autoplay_added')}*` : ` · <@${u.id}>`)
                 : '';
             return `\`${String(start + index + 1).padStart(2, ' ')}.\` ${link(song.name, song.url, 50)} · ${song.isLive ? t('ui.live') : formatDuration(song.duration)}${req}`;
         });

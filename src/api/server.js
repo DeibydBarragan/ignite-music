@@ -30,7 +30,12 @@ function getAvatarUrl(obj) {
  */
 function formatSong(song) {
     if (!song) return null;
-    const user = song.user || song.member?.user;
+    const user = (song.metadata?.requesterUser && !song.metadata.requesterUser.bot ? song.metadata.requesterUser : null)
+        || (song.member?.user && !song.member.user.bot ? song.member.user : null)
+        || (song.user && !song.user.bot ? song.user : null)
+        || song.metadata?.requesterUser
+        || song.member?.user
+        || song.user;
     return {
         id: song.id || song.url,
         title: song.name || 'Unknown Title',
@@ -47,7 +52,7 @@ function formatSong(song) {
         requestedBy: user ? {
             id: user.id,
             username: song.member?.displayName || user.globalName || user.username,
-            avatar: getAvatarUrl(song.member) || getAvatarUrl(user),
+            avatar: getAvatarUrl(song.member) || getAvatarUrl(user) || (typeof user.avatar === 'string' ? user.avatar : null),
         } : null,
     };
 }
