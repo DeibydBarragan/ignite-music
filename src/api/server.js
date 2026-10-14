@@ -238,6 +238,90 @@ function startApiServer(client) {
         }
     });
 
+    // ─── Recommendations / Contextual Radio ───────────────────────────
+    app.get('/api/guilds/:guildId/recommendations', async (req, res) => {
+        const { guildId } = req.params;
+        const guild = client.guilds.cache.get(guildId);
+        if (!guild) return res.status(404).json({ error: 'Guild not found' });
+
+        const queue = client.music?.distube?.getQueue(guildId);
+        const currentSong = queue?.songs?.[0];
+
+        // 1. Contextual Radio: If there is a song currently playing
+        if (currentSong) {
+            try {
+                let related = [];
+                if (typeof client.music?.youtube?.getRelatedSongs === 'function') {
+                    related = await client.music.youtube.getRelatedSongs(currentSong);
+                }
+                // If getRelatedSongs was empty (e.g. non-youtube or rare song), search artist/title on YouTube
+                if (!related || related.length === 0) {
+                    const query = `${currentSong.uploader?.name || currentSong.artist || ''} ${currentSong.name || currentSong.title || ''}`.trim();
+                    if (query && typeof client.music?.youtube?.search === 'function') {
+                        const searchResults = await client.music.youtube.search(query, 12, guildId);
+                        related = searchResults.filter((s) => s && s.id !== currentSong.id);
+                    }
+                }
+
+                if (related && related.length > 0) {
+                    return res.json({
+                        success: true,
+                        source: 'radio',
+                        basedOn: formatSong(currentSong),
+                        songs: related.slice(0, 15).map(formatSong).filter(Boolean),
+                    });
+                }
+            } catch (err) {
+                log.warn(`Recommendations contextual radio error: ${err.message}`);
+            }
+        }
+
+        // 2. Fallback: Return top songs of this guild
+        try {
+            const history = require('../music/history');
+            const top = await history.getTopSongs(guildId, 'all', 15);
+            return res.json({
+                success: true,
+                source: 'top',
+                basedOn: null,
+                songs: top,
+            });
+        } catch (err) {
+            log.warn(`Recommendations top fallback error: ${err.message}`);
+            return res.json({
+                success: true,
+                source: 'empty',
+                basedOn: null,
+                songs: [],
+            });
+        }
+    });
+
+    // ─── Top Songs (Semanal, Mensual, De siempre) ─────────────────────
+    app.get('/api/guilds/:guildId/top-songs', async (req, res) => {
+        const { guildId } = req.params;
+        const timeframe = String(req.query.timeframe || 'week').toLowerCase(); // 'week' | 'month' | 'all'
+        const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 25));
+
+        const guild = client.guilds.cache.get(guildId);
+        if (!guild) return res.status(404).json({ error: 'Guild not found' });
+
+        try {
+            const history = require('../music/history');
+            const songs = await history.getTopSongs(guildId, timeframe, limit);
+            return res.json({
+                success: true,
+                guildId,
+                timeframe,
+                total: songs.length,
+                songs,
+            });
+        } catch (error) {
+            log.error(`API Top Songs error: ${error.message}`);
+            return res.status(500).json({ success: false, error: error.message });
+        }
+    });
+
     // ─── Resolve playlist (no voice join, for web import preview) ─────
     app.get('/api/guilds/:guildId/playlist/resolve', async (req, res) => {
         const { guildId } = req.params;

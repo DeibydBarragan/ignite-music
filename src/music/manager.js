@@ -11,6 +11,7 @@ const { getRelay } = require('./relay');
 const { SessionStore } = require('./session');
 const { describeError, hostHint } = require('./errors');
 const views = require('../ui/views');
+const history = require('./history');
 const log = require('../core/logger').createLogger('music');
 
 const SESSION_SAVE_INTERVAL_MS = 15_000;
@@ -597,6 +598,7 @@ class MusicManager {
             this.#startRefresh(queue);
             this.prefetchNext(queue);
             if (!this.shuttingDown) this.sessions.save(queue);
+            history.recordPlay(queue.id, song).catch((err) => log.debug(`History record error: ${err.message}`));
         });
 
         const onQueueChange = (queue) => this.changed(queue);
