@@ -98,13 +98,14 @@ That is the only required setting. Everything else in [Settings](#settings-env) 
 
 ## Starting the bot
 
-All of these do the same thing:
+All of these start the bot:
 
-| | |
-| --- | --- |
-| Windows | double-click **`start.bat`** (or `start-shard.bat`) |
-| Any system | `npm start` |
-| Any system | `node .` or `node index.js` |
+| Platform | Method | Notes |
+| --- | --- | --- |
+| **Windows (Recommended)** | Double-click **`MierdaBot.exe`** | Native launcher with custom bot icon, automatic Node.js check & friendly alert, and console logs |
+| Windows | Double-click **`start.bat`** (or `start-shard.bat`) | Standard batch script launcher |
+| Any system | `npm start` | Standard npm start script |
+| Any system | `node .` or `node index.js` | Direct execution |
 
 The first start takes longer: it installs npm packages and downloads yt-dlp and ffmpeg. When you see `1 shard(s) running`, the bot is online — use `/play` in your server.
 

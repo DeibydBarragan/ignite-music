@@ -2,13 +2,16 @@
 
 const { spawn } = require('node:child_process');
 const fs = require('node:fs');
+const path = require('node:path');
+const config = require('../config');
 const log = require('../core/logger').createLogger('tunnel');
 
 let tunnelProcess = null;
 let tunnelUrl = null;
 
 const COMMON_WINDOWS_PATHS = [
-    'cloudflared',
+    path.join(config.binDir, 'cloudflared.exe'),
+    path.join(config.root, 'cloudflared.exe'),
     'C:\\Program Files (x86)\\cloudflared\\cloudflared.exe',
     'C:\\Program Files\\cloudflared\\cloudflared.exe',
 ];
@@ -17,6 +20,14 @@ function resolveBinary() {
     if (process.platform === 'win32') {
         for (const candidate of COMMON_WINDOWS_PATHS) {
             if (candidate === 'cloudflared') continue;
+            if (fs.existsSync(candidate)) return candidate;
+        }
+    } else {
+        const unixCandidates = [
+            path.join(config.binDir, 'cloudflared'),
+            path.join(config.root, 'cloudflared'),
+        ];
+        for (const candidate of unixCandidates) {
             if (fs.existsSync(candidate)) return candidate;
         }
     }
