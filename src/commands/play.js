@@ -27,6 +27,8 @@ async function playFromInteraction(interaction, ctx, query, { next = false } = {
             if (outcome.truncated) message += `\n-# ${t('ui.playlist_truncated', { max: config.bot.maxQueueSize })}`;
         } else if (outcome.started) {
             message = t('commands.play.track_started', { title: resolved.name });
+        } else if (next && t('commands.playnext.track_queued')) {
+            message = t('commands.playnext.track_queued', { title: resolved.name });
         } else {
             message = t('commands.play.track_queued', { title: resolved.name, position: outcome.position });
         }

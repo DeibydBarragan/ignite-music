@@ -11,11 +11,26 @@ const logger = require('../core/logger');
 
 const log = logger.createLogger('api');
 
+function getAvatarUrl(obj) {
+    if (!obj) return null;
+    if (typeof obj.displayAvatarURL === 'function') {
+        try { return obj.displayAvatarURL(); } catch { return null; }
+    }
+    if (typeof obj.avatarURL === 'function') {
+        try { return obj.avatarURL(); } catch { return null; }
+    }
+    if (typeof obj.avatar === 'string' && obj.avatar.startsWith('http')) {
+        return obj.avatar;
+    }
+    return null;
+}
+
 /**
  * Format a DisTube Song into the Ignite Frontend data contract.
  */
 function formatSong(song) {
     if (!song) return null;
+    const user = song.user || song.member?.user;
     return {
         id: song.id || song.url,
         title: song.name || 'Unknown Title',
@@ -29,10 +44,10 @@ function formatSong(song) {
         category: 'hits',
         isLive: Boolean(song.isLive),
         isLyric: isLyricSong(song.url),
-        requestedBy: song.user ? {
-            id: song.user.id,
-            username: song.user.username,
-            avatar: typeof song.user.displayAvatarURL === 'function' ? song.user.displayAvatarURL() : null,
+        requestedBy: user ? {
+            id: user.id,
+            username: song.member?.displayName || user.globalName || user.username,
+            avatar: getAvatarUrl(song.member) || getAvatarUrl(user),
         } : null,
     };
 }
@@ -283,6 +298,18 @@ function startApiServer(client) {
             let member = null;
             if (userId) {
                 member = guild.members.cache.get(userId) || await guild.members.fetch(userId).catch(() => null);
+                if (!member) {
+                    const u = client.users.cache.get(userId) || await client.users.fetch(userId).catch(() => null);
+                    if (u) {
+                        member = {
+                            id: u.id,
+                            user: u,
+                            displayName: u.globalName || u.username,
+                            guild,
+                            displayAvatarURL: (opts) => (typeof u.displayAvatarURL === 'function' ? u.displayAvatarURL(opts) : null),
+                        };
+                    }
+                }
             }
 
             const outcome = await client.music.play({

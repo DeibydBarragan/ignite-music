@@ -40,6 +40,7 @@ You only need **Node.js** and a **bot token**: everything else is installed and 
 | **Player panel** | Cover art, progress bar, queue preview, control buttons, and an audio filter menu (Discord Components V2) |
 | **Saved playlists** | `/new-playlist` imports a Spotify/YouTube link and stores it per user in Supabase; `/playlists` lists and plays them back |
 | **REST API** | Health, guilds, voice status, player state, queue management, playback controls, and playlist resolve — built for the Ignite web dashboard |
+| **Auto Tunnel & Discovery** | Integrated Cloudflare tunnel (`AUTO_TUNNEL`) and Supabase runtime discovery (`bot_status`) so web dashboard connects without redeploys |
 | **Sharding** | Always on (auto shard count), crashed shards restart automatically |
 | **Resume after restart** | Queue and position are saved and restored |
 | **Proxy, cookies, PO token** | Options for hosts that YouTube blocks |
@@ -151,6 +152,8 @@ Only `DISCORD_TOKEN` is required. See `.env.example` for the full commented list
 | `API_ENABLED` | `true` | Internal REST API for the Ignite dashboard |
 | `API_PORT` | `3001` | REST API port |
 | `API_SECRET` | | Shared secret for the REST API (`Authorization: Bearer <secret>`) |
+| `PUBLIC_API_URL` | | Public API URL announced to Supabase (`bot_status`) for remote/production deployments |
+| `AUTO_TUNNEL` | `false` | Automatically starts a `cloudflared` quick tunnel on boot and announces the URL to Supabase |
 
 ### Proxy
 
@@ -194,6 +197,15 @@ curl -H "Authorization: Bearer $API_SECRET" \
   http://localhost:3001/api/guilds/123456789012345678/player
 ```
 
+### Dynamic Dashboard Discovery & Auto-Tunnel
+
+The Ignite web dashboard (hosted on Vercel) dynamically discovers the bot's public API URL at runtime by reading the `bot_status` table in Supabase. This eliminates the need to update environment variables or redeploy the frontend when moving the bot between local development and cloud hosting.
+
+- **Local Development (`AUTO_TUNNEL=true`):**
+  When `AUTO_TUNNEL=true` is set in `.env`, the bot automatically launches a background `cloudflared` quick tunnel on boot, extracts the assigned `https://*.trycloudflare.com` URL, and immediately announces it to Supabase (and refreshes it every 60s). When the bot stops (`Ctrl + C`), the tunnel terminates cleanly.
+- **Production / Cloud (AWS EC2, VPS):**
+  Leave `AUTO_TUNNEL=false` and set `PUBLIC_API_URL` directly in `.env` (e.g. `PUBLIC_API_URL=https://api.yourdomain.com` or your AWS API Gateway URL). The bot will announce that fixed URL to Supabase on startup and every 60s.
+
 ---
 
 ## User playlists (Supabase)
@@ -213,6 +225,12 @@ create table if not exists user_playlists (
   tracks jsonb not null default '[]'::jsonb,
   created_at timestamptz not null default now(),
   unique (user_id, url)
+);
+
+create table if not exists bot_status (
+  id text primary key,
+  api_url text not null,
+  updated_at timestamptz not null default now()
 );
 ```
 
@@ -234,6 +252,7 @@ Without these keys the music playback and REST API still work — only the saved
 | Command | What it does |
 | --- | --- |
 | `/play <song or link> [next]` | Play a song, playlist, or link. Suggestions appear while typing. `next` queues it right after the current song |
+| `/playnext <song or link>` | Play a song or link right after the current one (jumps the queue) |
 | `/search <text>` | Pick a song from YouTube results |
 | `/new-playlist <url> [nombre]` | Import a Spotify/YouTube link into your saved collection (ephemeral) |
 | `/playlists [nombre] [reproducir] [page]` | List your saved playlists; `reproducir:<name or url>` plays one |
@@ -348,7 +367,7 @@ src/
   handlers/           Interaction router and permission/voice guards
   music/               DisTube setup, YouTube extractor, yt-dlp runner, audio relay,
                        sessions, lyrics, saved playlists (playlists.js)
-  api/server.js        Express REST API for the Ignite dashboard
+  api/                 REST API (server.js), Supabase announcer (announce.js), auto-tunnel (tunnel.js)
   ui/views.js          Components V2 layouts (player, queue, search, playlists, help)
   core/                Logger, i18n, cache, JSON store, formatting, yt-dlp/ffmpeg download,
                        DNS fix, Supabase client

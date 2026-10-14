@@ -45,6 +45,11 @@
       "playlist_success": "Playlist with **{count} songs** added to the queue!",
       "track_started": "Started playing **{title}**!",
       "track_queued": "**{title}** added to the queue! (at position {position})"
+    },
+    "playnext": {
+      "description": "Play a song right after the current one (jump the queue)",
+      "query_description": "Song name, artist, YouTube/Spotify URL or direct link",
+      "track_queued": "Playing next: **{title}**! (queued at position 1)"
     }
   },
   "youtube": {

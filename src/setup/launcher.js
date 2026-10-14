@@ -10,6 +10,8 @@ const logger = require('../core/logger');
 const { deployCommands } = require('../deploy');
 const preflight = require('./preflight');
 const { StreamRelay } = require('../music/relay');
+const tunnel = require('../api/tunnel');
+const { beat } = require('../api/announce');
 
 const log = logger.createLogger('manager');
 logger.setDebug(config.debug);
@@ -49,6 +51,15 @@ async function main() {
         }
     }
 
+    if (config.api.enabled && config.api.autoTunnel) {
+        const tunnelUrl = await tunnel.startTunnel(config.api.port);
+        if (tunnelUrl) {
+            process.env.PUBLIC_API_URL = tunnelUrl;
+            config.api.publicUrl = tunnelUrl;
+            await beat();
+        }
+    }
+
     const manager = new ShardingManager(path.join(__dirname, '..', 'bot.js'), {
         token: config.discord.token,
         totalShards: config.sharding.totalShards,
@@ -70,6 +81,9 @@ async function main() {
         stopping = true;
         manager.respawn = false;
         log.info('Stopping all shards...');
+        if (config.api.autoTunnel) {
+            tunnel.stopTunnel();
+        }
         await Promise.race([
             manager.broadcastEval((client) => client.shutdown?.()).catch(() => undefined),
             new Promise((resolve) => setTimeout(resolve, 10_000)),

@@ -105,6 +105,8 @@ const config = {
         // Public URL of this bot's API (tunnel, API Gateway...). Published to
         // Supabase so the dashboard discovers it at runtime. Empty = disabled.
         publicUrl: env('PUBLIC_API_URL'),
+        // Automatically start cloudflared quick tunnel and announce URL to Supabase
+        autoTunnel: bool('AUTO_TUNNEL', false),
     },
 };
 

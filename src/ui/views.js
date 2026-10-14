@@ -133,8 +133,11 @@ function playerPanel(t, state) {
     c.addTextDisplayComponents(text(`-# ${details.join(' · ')}`));
 
     const next = upcoming[0];
+    const nextReq = next?.user
+        ? (next.user.bot ? ` · ${t('ui.autoplay_added')}` : ` · <@${next.user.id}>`)
+        : '';
     const queueLine = next
-        ? `${t('commands.nowplaying.next_song')}: ${link(next.name, next.url, 70)}\n-# ${t('commands.nowplaying.footer_more_songs', { count: upcoming.length })} · ${formatDuration(upcomingDuration)}`
+        ? `${t('commands.nowplaying.next_song')}: ${link(next.name, next.url, 60)}${nextReq}\n-# ${t('commands.nowplaying.footer_more_songs', { count: upcoming.length })} · ${formatDuration(upcomingDuration)}`
         : `-# ${t('commands.nowplaying.footer_no_songs')}`;
     c.addTextDisplayComponents(text(queueLine));
 
@@ -196,13 +199,22 @@ function queueView(t, { current, upcoming, page = 0 }) {
     const c = container();
 
     const header = [`### ${t('buttons.queue')}`];
-    if (current) header.push(`${t('buttonhandler.now_playing')}: ${link(current.name, current.url, 80)} · ${current.isLive ? t('ui.live') : formatDuration(current.duration)}`);
+    if (current) {
+        const reqStr = current.user
+            ? (current.user.bot ? ` · ${t('ui.autoplay_added')}` : ` · <@${current.user.id}>`)
+            : '';
+        header.push(`${t('buttonhandler.now_playing')}: ${link(current.name, current.url, 70)} · ${current.isLive ? t('ui.live') : formatDuration(current.duration)}${reqStr}`);
+    }
     c.addTextDisplayComponents(text(header.join('\n')));
 
     if (upcoming.length) {
         const start = safePage * QUEUE_PAGE_SIZE;
-        const lines = upcoming.slice(start, start + QUEUE_PAGE_SIZE).map((song, index) =>
-            `\`${String(start + index + 1).padStart(2, ' ')}.\` ${link(song.name, song.url, 70)} · ${song.isLive ? t('ui.live') : formatDuration(song.duration)}`);
+        const lines = upcoming.slice(start, start + QUEUE_PAGE_SIZE).map((song, index) => {
+            const req = song.user
+                ? (song.user.bot ? ` · *${t('ui.autoplay_added')}*` : ` · <@${song.user.id}>`)
+                : '';
+            return `\`${String(start + index + 1).padStart(2, ' ')}.\` ${link(song.name, song.url, 50)} · ${song.isLive ? t('ui.live') : formatDuration(song.duration)}${req}`;
+        });
         c.addSeparatorComponents(separator());
         c.addTextDisplayComponents(text(`**${t('buttonhandler.upcoming_songs', { count: upcoming.length })}**\n${lines.join('\n')}`));
     } else {

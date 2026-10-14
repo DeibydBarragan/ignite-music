@@ -45,6 +45,11 @@
       "playlist_success": "¡Lista con **{count} canciones** añadida a la cola!",
       "track_started": "¡Comenzó a reproducir **{title}**!",
       "track_queued": "¡**{title}** añadido a la cola! (en posición {position})"
+    },
+    "playnext": {
+      "description": "Reproduce una canción siguiente a la actual (se salta la cola)",
+      "query_description": "Nombre de canción, artista, URL de YouTube/Spotify o enlace directo",
+      "track_queued": "¡**{title}** se reproducirá a continuación! (en posición 1)"
     }
   },
   "youtube": {

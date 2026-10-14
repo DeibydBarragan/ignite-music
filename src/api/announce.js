@@ -44,4 +44,4 @@ function startAnnouncer() {
     return timer;
 }
 
-module.exports = { startAnnouncer, publicUrl };
+module.exports = { startAnnouncer, publicUrl, beat };
