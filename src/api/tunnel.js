@@ -4,6 +4,7 @@ const { spawn } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 const config = require('../config');
+const binaries = require('../core/binaries');
 const log = require('../core/logger').createLogger('tunnel');
 
 let tunnelProcess = null;
@@ -16,7 +17,10 @@ const COMMON_WINDOWS_PATHS = [
     'C:\\Program Files\\cloudflared\\cloudflared.exe',
 ];
 
-function resolveBinary() {
+async function resolveBinary() {
+    const verified = await binaries.ensureCloudflared();
+    if (verified) return verified;
+
     if (process.platform === 'win32') {
         for (const candidate of COMMON_WINDOWS_PATHS) {
             if (candidate === 'cloudflared') continue;
@@ -42,12 +46,12 @@ function resolveBinary() {
  * @param {number} timeoutMs Max wait time for tunnel generation (default 25s)
  * @returns {Promise<string|null>} The public https://*.trycloudflare.com URL or null on failure.
  */
-function startTunnel(port = 3001, timeoutMs = 25_000) {
+async function startTunnel(port = 3001, timeoutMs = 25_000) {
     if (tunnelUrl && tunnelProcess && !tunnelProcess.killed) {
-        return Promise.resolve(tunnelUrl);
+        return tunnelUrl;
     }
 
-    const binary = resolveBinary();
+    const binary = await resolveBinary();
 
     return new Promise((resolve) => {
         let resolved = false;

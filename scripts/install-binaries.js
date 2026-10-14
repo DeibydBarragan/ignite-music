@@ -6,6 +6,6 @@
  */
 const binaries = require('../src/core/binaries');
 
-Promise.all([binaries.ensureYtDlp(), binaries.ensureFfmpeg()])
+Promise.all([binaries.ensureYtDlp(), binaries.ensureFfmpeg(), binaries.ensureCloudflared()])
     .catch((error) => console.warn('Binary setup will be retried on start:', error.message))
     .finally(() => process.exit(0));
