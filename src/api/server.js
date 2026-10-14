@@ -491,6 +491,8 @@ function startApiServer(client) {
         }
     });
 
+    const undoQueueCache = new Map();
+
     app.delete('/api/guilds/:guildId/queue', (req, res) => {
         const { guildId } = req.params;
         const queue = client.music?.distube?.getQueue(guildId);
@@ -499,9 +501,42 @@ function startApiServer(client) {
         // Keep current song (index 0) and remove upcoming
         const count = queue.songs.length - 1;
         if (queue.songs.length > 1) {
-            queue.songs.splice(1);
+            const removed = queue.songs.splice(1);
+            undoQueueCache.set(guildId, {
+                songs: removed,
+                expiresAt: Date.now() + 60_000,
+            });
+            client.music?.changed(queue);
         }
         return res.json({ success: true, cleared: count });
+    });
+
+    app.post('/api/guilds/:guildId/queue/undo', (req, res) => {
+        const { guildId } = req.params;
+        const cached = undoQueueCache.get(guildId);
+        if (!cached || !Array.isArray(cached.songs) || cached.songs.length === 0) {
+            return res.status(400).json({ success: false, error: 'No hay canciones recientes para restaurar.' });
+        }
+        if (Date.now() > cached.expiresAt) {
+            undoQueueCache.delete(guildId);
+            return res.status(400).json({ success: false, error: 'El tiempo para deshacer ha expirado.' });
+        }
+
+        const queue = client.music?.distube?.getQueue(guildId);
+        if (!queue) {
+            return res.status(404).json({ success: false, error: 'El reproductor no está activo en este servidor.' });
+        }
+
+        // Reinsertar las canciones directamente en la cola en memoria (0ms)
+        queue.songs.push(...cached.songs);
+        undoQueueCache.delete(guildId);
+        client.music?.changed(queue);
+
+        return res.json({
+            success: true,
+            restored: cached.songs.length,
+            message: `${cached.songs.length} canciones restauradas a la cola.`,
+        });
     });
 
     // ─── Start HTTP Listener ──────────────────────────────────────────
