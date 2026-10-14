@@ -49,6 +49,7 @@ function formatSong(song) {
         category: 'hits',
         isLive: Boolean(song.isLive),
         isLyric: isLyricSong(song.url),
+        isAutoplay: Boolean(song.autoplay || !user || user.bot),
         requestedBy: user ? {
             id: user.id,
             username: song.member?.displayName || user.globalName || user.username,
@@ -178,6 +179,7 @@ function startApiServer(client) {
     app.get('/api/guilds/:guildId/player', (req, res) => {
         const { guildId } = req.params;
         const queue = client.music?.distube?.getQueue(guildId);
+        const musicState = client.music?.state(guildId);
 
         if (!queue) {
             return res.json({
@@ -192,6 +194,7 @@ function startApiServer(client) {
                 filter: null,
                 currentSong: null,
                 queue: [],
+                disconnectReason: musicState?.disconnectReason || null,
             });
         }
 
@@ -215,6 +218,7 @@ function startApiServer(client) {
             voiceChannel: queue.voiceChannel ? { id: queue.voiceChannel.id, name: queue.voiceChannel.name } : null,
             currentSong,
             queue: upcoming,
+            disconnectReason: musicState?.disconnectReason || null,
         });
     });
 

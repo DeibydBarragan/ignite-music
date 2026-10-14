@@ -86,7 +86,7 @@ class MusicManager {
     state(guildId) {
         let state = this.guilds.get(guildId);
         if (!state) {
-            state = { panel: null, chain: Promise.resolve(), playLock: Promise.resolve(), debounce: null, refresh: null, leave: null, empty: null, pausedForEmpty: false };
+            state = { panel: null, chain: Promise.resolve(), playLock: Promise.resolve(), debounce: null, refresh: null, leave: null, empty: null, pausedForEmpty: false, disconnectReason: null };
             this.guilds.set(guildId, state);
         }
         return state;
@@ -142,6 +142,7 @@ class MusicManager {
      */
     async play({ voiceChannel, textChannel, member, query, position = 0, onQueued = null, skip = false }) {
         const guildId = voiceChannel.guild.id;
+        this.state(guildId).disconnectReason = null;
         if (this.#remaining(guildId) <= 0) throw this.#queueFull();
 
         if (String(query || '').toLowerCase().includes('soundcloud.com')) {
@@ -421,7 +422,10 @@ class MusicManager {
         if (!config.bot.leaveOnFinishMs) return;
         state.leave = setTimeout(() => {
             state.leave = null;
-            if (!this.getQueue(guildId)) this.distube.voices.leave(guildId);
+            if (!this.getQueue(guildId)) {
+                state.disconnectReason = 'inactivity_finished';
+                this.distube.voices.leave(guildId);
+            }
         }, config.bot.leaveOnFinishMs);
         state.leave.unref?.();
     }
@@ -455,6 +459,7 @@ class MusicManager {
                 state.pausedForEmpty = false;
                 await this.endPanel(guild.id, { titleKey: 'musicmanager.playback_ended', descriptionKey: 'ui.left_empty' });
                 await current.stop().catch(() => undefined);
+                state.disconnectReason = 'inactivity_empty';
                 this.distube.voices.leave(guild.id);
             }, config.bot.leaveOnEmptyMs);
             state.empty.unref?.();
