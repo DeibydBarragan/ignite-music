@@ -632,12 +632,17 @@ class MusicManager {
             // ffmpeg only reports "exited with code 1"; the relay knows what yt-dlp said.
             const played = song?.stream?.playFromSource ? song : song?.stream?.song;
             const cause = this.relay.errorFor(played?.stream?.url);
-            log.warn(`[${queue?.id ?? '?'}] ${song ? `${song.name}: ` : ''}${error.message}${cause ? ` (cause: ${cause.message})` : ''}`);
+            const detail = cause?.message || error?.message || 'Unknown playback error';
+            log.error(`[${queue?.id ?? '?'}] ${song ? `${song.name}: ` : ''}${detail}`);
+            if (error?.stack) log.debug(error.stack);
+            if (cause?.stderr) log.warn(`[yt-dlp stderr] ${cause.stderr.trim()}`);
+
             if (!queue?.textChannel || this.shuttingDown) return;
             const t = this.translator(queue.id);
             const header = song ? `${t('musicplayer.track_could_not_play')} **${song.name}**\n` : '';
             const key = this.explainError(cause || error, Date.now() - 60_000);
-            queue.textChannel.send(views.notice(`${header}${t(key)}`, { ephemeral: false })).catch(() => undefined);
+            const extra = key === 'errors.unknown' ? `\n-# Detalle: ${detail.slice(0, 200)}` : '';
+            queue.textChannel.send(views.notice(`${header}${t(key)}${extra}`, { ephemeral: false })).catch(() => undefined);
         });
 
         if (config.debug) {

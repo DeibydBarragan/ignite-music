@@ -49,9 +49,10 @@ async function playFromInteraction(interaction, ctx, query, { next = false } = {
     } catch (error) {
         if (error?.errorCode === 'QUEUE_FULL') return say(interaction, t('ui.queue_full', { max: config.bot.maxQueueSize }));
         const key = manager.explainError(error, startedAt);
-        if (key === 'errors.unknown') log.error(`Failed to play "${query}":`, error);
-        else log.warn(`Failed to play "${query}": ${error.message}`);
-        return say(interaction, t(key));
+        log.error(`Failed to play "${query}": ${error.message}`);
+        if (error.stack) log.debug(error.stack);
+        const extra = key === 'errors.unknown' ? `\n-# Detalle: ${error.message.slice(0, 200)}` : '';
+        return say(interaction, `${t(key)}${extra}`);
     }
 }
 
