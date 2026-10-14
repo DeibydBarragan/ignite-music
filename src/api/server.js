@@ -280,12 +280,33 @@ function startApiServer(client) {
         const guild = client.guilds.cache.get(guildId);
         if (!guild) return res.status(404).json({ error: 'Guild not found' });
 
+        const botVoiceChannel = guild.members.me?.voice?.channel;
         let channel = null;
-        if (voiceChannelId) {
-            channel = guild.channels.cache.get(voiceChannelId);
-        } else if (userId) {
+
+        if (userId) {
             const member = guild.members.cache.get(userId) || await guild.members.fetch(userId).catch(() => null);
-            channel = member?.voice?.channel;
+            const userVoice = member?.voice?.channel;
+            if (!userVoice) {
+                return res.status(400).json({
+                    success: false,
+                    error: '¡Debes estar en un canal de voz en Discord para reproducir música!',
+                });
+            }
+            if (botVoiceChannel && botVoiceChannel.id !== userVoice.id) {
+                return res.status(400).json({
+                    success: false,
+                    error: `¡Debes estar en el mismo canal de voz que el bot (${botVoiceChannel.name})!`,
+                });
+            }
+            channel = userVoice;
+        } else if (voiceChannelId) {
+            channel = guild.channels.cache.get(voiceChannelId);
+            if (botVoiceChannel && channel && botVoiceChannel.id !== channel.id) {
+                return res.status(400).json({
+                    success: false,
+                    error: `¡Debes estar en el mismo canal de voz que el bot (${botVoiceChannel.name})!`,
+                });
+            }
         }
 
         const existingQueue = client.music?.distube?.getQueue(guildId);
@@ -294,12 +315,9 @@ function startApiServer(client) {
         }
 
         if (!channel) {
-            channel = guild.channels.cache.find((c) => c.isVoiceBased());
-        }
-
-        if (!channel) {
             return res.status(400).json({
-                error: 'No target voice channel found. Specify voiceChannelId or connect to voice in Discord.',
+                success: false,
+                error: '¡Debes estar en un canal de voz en Discord para reproducir música!',
             });
         }
 
