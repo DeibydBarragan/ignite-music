@@ -63,7 +63,7 @@ async function recordPlay(guildId, song) {
 /**
  * Aggregate a list of play records into ranked songs with playCount.
  */
-function aggregatePlays(records, limit = 25) {
+function aggregatePlays(records, limit = 100) {
     if (!Array.isArray(records) || records.length === 0) return [];
 
     const map = new Map();
@@ -108,7 +108,7 @@ function aggregatePlays(records, limit = 25) {
 /**
  * Get top played songs for a guild by timeframe: 'week' | 'month' | 'all'.
  */
-async function getTopSongs(guildId, timeframe = 'all', limit = 25) {
+async function getTopSongs(guildId, timeframe = 'all', limit = 100) {
     if (!guildId) return [];
 
     const now = Date.now();

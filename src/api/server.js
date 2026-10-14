@@ -301,7 +301,7 @@ function startApiServer(client) {
     app.get('/api/guilds/:guildId/top-songs', async (req, res) => {
         const { guildId } = req.params;
         const timeframe = String(req.query.timeframe || 'week').toLowerCase(); // 'week' | 'month' | 'all'
-        const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 25));
+        const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 100));
 
         const guild = client.guilds.cache.get(guildId);
         if (!guild) return res.status(404).json({ error: 'Guild not found' });
