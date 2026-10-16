@@ -84,6 +84,7 @@ class StreamRelay {
         if (info) {
             entry.infoFile = path.join(this.dir, `${id}.json`);
             entry.format = info.format_id || 'bestaudio/best';
+            await fsp.mkdir(this.dir, { recursive: true });
             await fsp.writeFile(entry.infoFile, JSON.stringify(trimInfo(info)));
         }
         entry.timer = setTimeout(() => this.#forget(id), ENTRY_TTL_MS);
