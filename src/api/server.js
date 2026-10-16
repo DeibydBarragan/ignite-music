@@ -242,6 +242,7 @@ function startApiServer(client) {
 
     // ─── Search videos (full metadata with titles, artists and covers for web) ──
     const { TTLCache } = require('../core/cache');
+    const { searchVideosDirect } = require('../music/innertube');
     const searchVideosCache = new TTLCache({ ttlMs: 15 * 60_000, maxSize: 500 });
 
     app.get('/api/search', async (req, res) => {
@@ -253,6 +254,15 @@ function startApiServer(client) {
         const cacheKey = `${limit}|${q.toLowerCase()}`;
         try {
             const results = await searchVideosCache.wrap(cacheKey, async () => {
+                // 1. Try ultra-fast direct HTTP Innertube (~800ms)
+                try {
+                    const direct = await searchVideosDirect(q, limit);
+                    if (direct && direct.length > 0) return direct;
+                } catch (innertubeErr) {
+                    log.debug(`Direct Innertube search failed, falling back to yt-dlp: ${innertubeErr.message}`);
+                }
+
+                // 2. Fallback to yt-dlp extraction
                 const yt = client.music?.youtube || new (require('../music/plugins').YouTubePlugin)();
                 if (typeof yt?.search === 'function') {
                     const searchResults = await yt.search(q, limit);
