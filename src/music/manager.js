@@ -250,6 +250,13 @@ class MusicManager {
                     log.warn(`Skip after play error: ${e.message}`);
                 }
             }
+            if (current && current.paused) {
+                try {
+                    await current.resume();
+                } catch (e) {
+                    log.warn(`Resume after play error: ${e.message}`);
+                }
+            }
             if (current) outcome.position = current.songs.indexOf(first);
             return outcome;
         });

@@ -43,7 +43,9 @@ function formatSong(song) {
         albumArt: song.thumbnail || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&q=80',
         coverUrl: song.thumbnail || null,
         duration: song.duration || 0,
-        formattedDuration: song.formattedDuration || '00:00',
+        formattedDuration: song.formattedDuration && song.formattedDuration !== '00:00'
+            ? song.formattedDuration
+            : (song.duration ? `${Math.floor(song.duration / 60)}:${String(Math.floor(song.duration % 60)).padStart(2, '0')}` : '00:00'),
         source: song.source || 'youtube',
         url: song.url,
         category: 'hits',
@@ -235,6 +237,33 @@ function startApiServer(client) {
         } catch (error) {
             log.warn(`API Suggest error: ${error.message}`);
             return res.json({ query: q, suggestions: [] });
+        }
+    });
+
+    // ─── Search videos (full metadata with titles, artists and covers for web) ──
+    const { TTLCache } = require('../core/cache');
+    const searchVideosCache = new TTLCache({ ttlMs: 15 * 60_000, maxSize: 500 });
+
+    app.get('/api/search', async (req, res) => {
+        const q = String(req.query.q || '').trim();
+        const limit = Math.min(Math.max(Number(req.query.limit) || 6, 1), 15);
+        if (q.length < 2 || q.length > 100 || /^https?:\/\//i.test(q)) {
+            return res.json({ query: q, results: [] });
+        }
+        const cacheKey = `${limit}|${q.toLowerCase()}`;
+        try {
+            const results = await searchVideosCache.wrap(cacheKey, async () => {
+                const yt = client.music?.youtube || new (require('../music/plugins').YouTubePlugin)();
+                if (typeof yt?.search === 'function') {
+                    const searchResults = await yt.search(q, limit);
+                    return searchResults.map(formatSong).filter(Boolean);
+                }
+                return [];
+            });
+            return res.json({ query: q, results });
+        } catch (error) {
+            log.warn(`API Search error: ${error.message}`);
+            return res.json({ query: q, results: [] });
         }
     });
 
@@ -430,6 +459,13 @@ function startApiServer(client) {
                 position: next ? 1 : 0,
                 skip: Boolean(skip),
             });
+
+            const queue = client.music?.distube?.getQueue(guildId);
+            if (skip && queue && queue.paused) {
+                try {
+                    await queue.resume();
+                } catch (_) {}
+            }
 
             const resolved = outcome?.resolved;
             const isPlaylist = resolved && Array.isArray(resolved.songs);

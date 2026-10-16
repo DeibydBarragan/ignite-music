@@ -37,12 +37,22 @@ async function skip(queue, t) {
     if (queue.songs.length <= 1 && !queue.autoplay) return result(false, t('buttonhandler.no_songs_to_skip'));
     const current = queue.songs[0];
     await queue.skip();
+    if (queue.paused) {
+        try {
+            await queue.resume();
+        } catch (_) {}
+    }
     return result(true, `${t('buttonhandler.song_skipped_title')}: **${current?.name ?? ''}**`);
 }
 
 async function previous(queue, t) {
     if (!queue.previousSongs.length) return result(false, t('buttonhandler.no_previous_song'));
     await queue.previous();
+    if (queue.paused) {
+        try {
+            await queue.resume();
+        } catch (_) {}
+    }
     return result(true, t('buttonhandler.moved_to_previous'));
 }
 
@@ -125,6 +135,11 @@ async function jump(queue, t, position) {
         return result(false, t('ui.invalid_position', { position }));
     }
     const song = await queue.jump(position);
+    if (queue.paused) {
+        try {
+            await queue.resume();
+        } catch (_) {}
+    }
     return result(true, t('ui.jumped', { title: song.name }));
 }
 
