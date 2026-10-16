@@ -5,6 +5,7 @@ const config = require('../config');
 const { isLyricSong } = require('./plugins');
 const { supabase } = require('../core/supabase');
 const log = require('../core/logger').createLogger('playlists');
+const { getPlaylistVideosDirect } = require('./innertube');
 
 const TABLE = 'user_playlists';
 const FALLBACK_COVER = 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&q=80';
@@ -68,6 +69,32 @@ async function resolvePlaylist(manager, guild, url, { member = null, maxSize = n
         );
     }
     const limit = Math.max(1, maxSize || config.bot.maxPlaylistSize || 200);
+
+    // Fast-path: Resolve YouTube playlists directly via Innertube (~600ms)
+    if (detectSource(clean) === 'youtube') {
+        const listMatch = clean.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+        if (listMatch && listMatch[1]) {
+            try {
+                const direct = await getPlaylistVideosDirect(listMatch[1], limit, { timeoutMs: 5000 });
+                if (direct && Array.isArray(direct.tracks) && direct.tracks.length > 0) {
+                    const truncated = direct.tracks.length >= limit;
+                    return {
+                        kind: 'playlist',
+                        name: direct.title || deriveName(clean),
+                        tracks: direct.tracks.map((t) => ({
+                            ...t,
+                            isLyric: isLyricSong(t.url),
+                        })),
+                        truncated,
+                        source: 'youtube',
+                    };
+                }
+            } catch (err) {
+                log.warn(`Innertube playlist resolution failed for ${clean}, falling back to DisTube: ${err.message}`);
+            }
+        }
+    }
+
     const resolveAs = member || guild?.members?.me || null;
     let resolved;
     try {

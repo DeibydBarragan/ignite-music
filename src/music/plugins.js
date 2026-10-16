@@ -8,6 +8,7 @@ const { getRelay } = require('./relay');
 const { TTLCache } = require('../core/cache');
 const { setTimeout: sleep } = require('node:timers/promises');
 const log = require('../core/logger').createLogger('extractor');
+const { searchVideosDirect, getRelatedMixDirect } = require('./innertube');
 
 const AUDIO_FORMAT = 'bestaudio[acodec=opus]/bestaudio/best';
 const YOUTUBE_HOSTS = new Set([
@@ -315,9 +316,34 @@ class YouTubePlugin extends ExtractorPlugin {
     }
 
     /**
-     * Several results for /search (metadata only, fast flat extraction).
+     * Several results for /search (metadata only, ultra-fast direct Innertube with yt-dlp fallback).
      */
     async search(query, limit = 5, guildId = null) {
+        try {
+            const direct = await searchVideosDirect(query, limit, { timeoutMs: 3000 });
+            if (Array.isArray(direct) && direct.length > 0) {
+                return direct.map((v) => {
+                    const { title, artist } = splitYouTubeTitle(v.title, v.artist);
+                    return {
+                        source: 'youtube',
+                        playFromSource: true,
+                        id: v.id,
+                        name: title || v.title,
+                        url: v.url,
+                        isLive: Boolean(v.isLive),
+                        duration: v.duration || 0,
+                        thumbnail: v.thumbnail || thumbnailFor(v.id),
+                        uploader: {
+                            name: artist || v.artist,
+                            url: v.uploader?.url,
+                        },
+                    };
+                });
+            }
+        } catch (err) {
+            log.warn(`Innertube search failed for "${query}", falling back to yt-dlp: ${err.message}`);
+        }
+
         const result = await this.run(`ytsearch${limit}:${query}`, ['--flat-playlist'], { proxy: ytdlp.proxyFor(guildId) });
         return (result?.entries || []).filter((entry) => entry?.id && VIDEO_ID.test(entry.id)).map(youtubeInfo);
     }
@@ -344,6 +370,36 @@ class YouTubePlugin extends ExtractorPlugin {
     async getRelatedSongs(song) {
         if (!VIDEO_ID.test(song?.id || '')) return [];
         const guildId = guildIdOf(song);
+
+        try {
+            const direct = await getRelatedMixDirect(song.id, 15, { timeoutMs: 3000 });
+            if (Array.isArray(direct) && direct.length > 0) {
+                return direct
+                    .filter((entry) => entry?.id && entry.id !== song.id && VIDEO_ID.test(entry.id))
+                    .filter((entry) => !entry.duration || (entry.duration >= 50 && entry.duration <= 950))
+                    .map((entry) => {
+                        const { title, artist } = splitYouTubeTitle(entry.title, entry.artist);
+                        return new Song({
+                            source: 'youtube',
+                            playFromSource: true,
+                            id: entry.id,
+                            name: title || entry.title,
+                            url: entry.url,
+                            isLive: false,
+                            duration: entry.duration || 0,
+                            thumbnail: entry.thumbnail || thumbnailFor(entry.id),
+                            uploader: {
+                                name: artist || entry.artist,
+                                url: entry.uploader?.url,
+                            },
+                            plugin: this,
+                        }, { member: song.member, metadata: song.metadata });
+                    });
+            }
+        } catch (err) {
+            log.warn(`Innertube related songs failed for video ${song.id}, falling back to yt-dlp: ${err.message}`);
+        }
+
         const result = await this.run(`${watchUrl(song.id)}&list=RD${song.id}`, [
             '--flat-playlist', '--playlist-end', '15',
         ], { proxy: ytdlp.proxyFor(guildId), priority: 'low' });
