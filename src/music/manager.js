@@ -250,7 +250,7 @@ class MusicManager {
                     log.warn(`Skip after play error: ${e.message}`);
                 }
             }
-            if (current && current.paused) {
+            if (skip && current && current.paused) {
                 try {
                     await current.resume();
                 } catch (e) {
