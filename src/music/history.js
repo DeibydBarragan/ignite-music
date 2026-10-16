@@ -1,5 +1,6 @@
 'use strict';
 
+const fs = require('node:fs');
 const path = require('node:path');
 const { JsonStore } = require('../core/store');
 const { supabase } = require('../core/supabase');
@@ -60,6 +61,20 @@ async function recordPlay(guildId, song) {
     }
 }
 
+const exclusionsFile = path.resolve(__dirname, '../../data/history/exclusions.json');
+
+function isExcludedPlay(item) {
+    if (!item?.played_at) return false;
+    const dateStr = String(item.played_at).slice(0, 10);
+    try {
+        if (fs.existsSync(exclusionsFile)) {
+            const data = JSON.parse(fs.readFileSync(exclusionsFile, 'utf8'));
+            if (Array.isArray(data.dates) && data.dates.includes(dateStr)) return true;
+        }
+    } catch {}
+    return dateStr === '2026-10-16';
+}
+
 /**
  * Aggregate a list of play records into ranked songs with playCount.
  */
@@ -69,6 +84,7 @@ function aggregatePlays(records, limit = 100) {
     const map = new Map();
 
     for (const item of records) {
+        if (isExcludedPlay(item)) continue;
         const key = item.url || item.song_id || item.title;
         if (!key) continue;
 
