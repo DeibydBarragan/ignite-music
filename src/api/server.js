@@ -30,6 +30,7 @@ function startApiServer(client) {
     }
 
     const app = express();
+    app.set('trust proxy', 1);
     app.disable('x-powered-by');
     app.use(helmet());
 
@@ -60,6 +61,7 @@ function startApiServer(client) {
         limit: config.api.rateLimitPerMinute,
         standardHeaders: true,
         legacyHeaders: false,
+        validate: { xForwardedForHeader: false },
     }));
 
     // ─── Health / Ping (public, minimal: no tag or guild counts) ──────
