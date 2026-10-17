@@ -4,6 +4,12 @@
 
 A fast Discord music bot for YouTube, Spotify and direct links — with a button player panel, sharding, queue resume, saved user playlists (Supabase), and a REST API for the Ignite web dashboard.
 
+[![Node.js](https://img.shields.io/badge/Node.js-22.12+-339933?logo=node.js&logoColor=white)](https://nodejs.org)
+[![discord.js](https://img.shields.io/badge/discord.js-v14-5865F2?logo=discord&logoColor=white)](https://discord.js.org)
+[![DisTube](https://img.shields.io/badge/DisTube-v5-orange)](https://distube.js.org)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Desktop Launcher](https://img.shields.io/badge/Companion-Desktop%20App-informational)](https://github.com/DeibydBarragan/ignite-music-desktop)
+
 You only need **Node.js** and a **bot token**: everything else is installed and checked automatically.
 
 </div>
@@ -98,14 +104,14 @@ That is the only required setting. Everything else in [Settings](#settings-env) 
 
 ## Starting the bot
 
-All of these start the bot:
+Choose the method that fits your environment:
 
-| Platform | Method | Notes |
+| Platform / Use Case | Method | Notes |
 | --- | --- | --- |
-| **Windows (Desktop)** | Run **Ignite Music Desktop** | Native companion launcher with Discord Gatekeeper, Cloudflare tunnel and automatic updates |
-| Windows | Double-click **`start.bat`** (or `start-shard.bat`) | Standard batch script launcher |
-| Any system | `npm start` | Standard npm start script |
-| Any system | `node .` or `node index.js` | Direct execution |
+| **Windows Desktop (Recommended)** | [Ignite Music Desktop](https://github.com/DeibydBarragan/ignite-music-desktop) | Native launcher with Discord Gatekeeper, zero Node.js setup, Cloudflare tunnel & OTA updates |
+| **Windows CLI** | Double-click `start.bat` (or `start-shard.bat`) | Standard batch script launcher (requires Node.js) |
+| **Linux / Server / VPS** | `npm start` or `pm2 start index.js --name ignite-music` | Standard server execution for 24/7 hosting |
+| **Any system** | `node .` or `node index.js` | Direct execution |
 
 The first start takes longer: it installs npm packages and downloads yt-dlp and ffmpeg. When you see `1 shard(s) running`, the bot is online — use `/play` in your server.
 
@@ -359,14 +365,14 @@ The startup check reinstalls new packages by itself, so `npm install` is not nee
 
 ```text
 index.js               Entry point: startup check, then the sharding manager
-shard.js               Shard entry (spawned by the manager)
+shard.js               Shard entry point (spawned by the manager)
 src/
   setup/               Startup check (bootstrap needs no npm packages), launcher, preflight
   bot.js               One shard: Discord client, events, graceful shutdown (+ REST API attach)
   config.js            Reads .env
   deploy.js            Slash command registration (only when commands changed)
   commands/            Slash commands (playback, playlists, queue, info)
-  handlers/           Interaction router and permission/voice guards
+  handlers/            Interaction router and permission/voice guards
   music/               DisTube setup, YouTube extractor, yt-dlp runner, audio relay,
                        sessions, lyrics, saved playlists (playlists.js)
   api/                 REST API (server.js), Supabase announcer (announce.js), auto-tunnel (tunnel.js)
