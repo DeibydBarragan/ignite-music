@@ -1,5 +1,7 @@
 'use strict';
 
+const { isBotCheck } = require('../core/youtube-guards');
+
 /**
  * Map an error from DisTube / yt-dlp / Discord to a translation key.
  */
@@ -11,7 +13,7 @@ const RULES = [
     [(code) => code === 'NOT_SUPPORTED_URL' || code === 'NOT_SUPPORTED_SONG', 'ui.unsupported'],
     [(code) => code === 'EMPTY_PLAYLIST' || code === 'EMPTY_FILTERED_PLAYLIST', 'youtube.no_valid_tracks'],
     [(code) => code === 'NO_RESULT', 'musicplayer.no_results_found'],
-    [(code, text) => /sign in to confirm|not a bot|confirm you.re not/.test(text), 'errors.youtube_bot_detection'],
+    [(code, text) => isBotCheck({ message: text }), 'errors.youtube_bot_detection'],
     [(code, text) => /age.?restrict|confirm your age|inappropriate for some users/.test(text), 'errors.youtube_age_restricted'],
     [(code, text) => /available in your country|geo.?restrict|blocked it in your country/.test(text), 'errors.youtube_geo_blocked'],
     [(code, text) => /\b429\b|too many requests|rate.?limit/.test(text), 'errors.rate_limited'],

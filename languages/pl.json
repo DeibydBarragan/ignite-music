@@ -45,6 +45,11 @@
       "playlist_success": "Playlista z **{count} piosenkami** dodana do kolejki!",
       "track_started": "Rozpoczęto odtwarzanie **{title}**!",
       "track_queued": "**{title}** dodane do kolejki! (na pozycji {position})"
+    },
+    "playnext": {
+      "description": "Odtwórz utwór od razu po bieżącym (poza kolejką)",
+      "query_description": "Nazwa utworu, wykonawca, URL YouTube/Spotify lub bezpośredni link",
+      "track_queued": "Następnie: **{title}**! (pozycja 1)"
     }
   },
   "youtube": {
@@ -105,7 +110,8 @@
     "loop_queue": "Pętla: Kolejka",
     "autoplay_off": "Auto: Wyłączone",
     "autoplay_on": "Auto: Włączone",
-    "lyrics": "Tekst"
+    "lyrics": "Tekst",
+    "favorite": "Ulubione"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube zablokował to żądanie (wykrycie bota)**\nYouTube odrzuca żądania z adresu IP tego serwera.\n\n**Rozwiązanie:** Dodaj `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (lub firefox/edge) lub `YOUTUBE_PO_TOKEN` do pliku `.env`. Zobacz `README.md` po instrukcje krok po kroku.",
@@ -116,7 +122,8 @@
     "network_error": "**Błąd sieci**\nBot nie mógł połączyć się z platformą muzyczną. Zwykle jest to tymczasowy problem.\n\n**Rozwiązanie:** Poczekaj chwilę i spróbuj ponownie.",
     "stream_failed": "**Strumień audio nie powiódł się**\nBot znalazł utwór, ale nie mógł uruchomić strumienia audio.\n\n**Rozwiązanie:** Spróbuj ponownie lub wypróbuj inną wersję piosenki.",
     "voice_no_permission": "**Brak uprawnień kanału głosowego**\nBot nie ma uprawnień do dołączenia lub mówienia na Twoim kanale głosowym.\n\n**Rozwiązanie:** Ustawienia kanału głosowego → Uprawnienia → przyznaj botowi uprawnienia **Połącz** i **Mów**.",
-    "unknown": "**Wystąpił nieoczekiwany błąd**\nCoś poszło nie tak podczas przetwarzania Twojego żądania.\n\n**Rozwiązanie:** Spróbuj ponownie za chwilę. Jeśli problem nadal występuje, sprawdź log konsoli bota."
+    "unknown": "**Wystąpił nieoczekiwany błąd**\nCoś poszło nie tak podczas przetwarzania Twojego żądania.\n\n**Rozwiązanie:** Spróbuj ponownie za chwilę. Jeśli problem nadal występuje, sprawdź log konsoli bota.",
+    "drm_protected": "**Utwór chroniony DRM**\nTen utwór jest chroniony DRM (SoundCloud Go+ itp.) i nie można go odtworzyć bez płatnej subskrypcji. Poszukaj alternatywnej wersji lub remiksu."
   },
   "ui": {
     "voice_full": "Ten kanał głosowy jest pełny.",
@@ -144,6 +151,11 @@
     "moved": "Przeniesiono **{title}** na pozycję {position}.",
     "invalid_position": "Na pozycji {position} nie ma piosenki.",
     "invite": "Zaproś",
-    "fallback_soundcloud": "YouTube nie zadziałał dla tej piosenki, więc jest odtwarzana z SoundCloud."
+    "fallback_soundcloud": "YouTube nie zadziałał dla tej piosenki, więc jest odtwarzana z SoundCloud.",
+    "playlists_title": "Twoje playlisty ({count})",
+    "playlists_title_query": "Twoje playlisty · \"{filter}\" ({count})",
+    "playlists_empty": "Nie masz jeszcze zapisanych playlist.\nUżyj `/new-playlist` z linkiem Spotify lub YouTube, aby zaimportować pierwszą.",
+    "playlists_line": "{source} · {count} utworów · ~{duration}",
+    "playlists_hint": "`/playlists reproducir:<nombre>` odtworzy ją · `/new-playlist` importuje"
   }
 }

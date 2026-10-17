@@ -1,15 +1,73 @@
 'use strict';
 
 const fs = require('node:fs');
+const fsp = require('node:fs/promises');
 const path = require('node:path');
+const config = require('../config');
 const { JsonStore } = require('../core/store');
 const { supabase } = require('../core/supabase');
+const { resolveRequester, requesterName } = require('../core/user');
 const logger = require('../core/logger');
 
 const log = logger.createLogger('history');
-const historyStore = new JsonStore(path.resolve(__dirname, '../../data/history'));
+const historyStore = new JsonStore(path.join(config.dataDir, 'history'));
 
 const MAX_LOCAL_HISTORY = 500;
+const EXCLUSIONS_FILE = path.join(config.dataDir, 'history', 'exclusions.json');
+
+// Dates ("YYYY-MM-DD") excluded from top-song aggregation, cached in memory.
+// Loaded asynchronously once and refreshed by a directory watcher; the
+// aggregation hot path never touches the filesystem.
+let excludedDates = new Set();
+let exclusionsWatcher = null;
+
+/**
+ * Load excluded dates into memory. Never throws: a missing file clears the
+ * list, any other error is logged and keeps the last known list.
+ */
+async function loadExclusions() {
+    try {
+        const raw = await fsp.readFile(EXCLUSIONS_FILE, 'utf8');
+        const data = JSON.parse(raw);
+        excludedDates = new Set(Array.isArray(data?.dates) ? data.dates.map(String) : []);
+    } catch (error) {
+        if (error.code === 'ENOENT') {
+            excludedDates = new Set();
+        } else {
+            log.warn(`Could not load history exclusions: ${error.message}`);
+        }
+    }
+    ensureExclusionsWatcher();
+    return excludedDates;
+}
+
+function ensureExclusionsWatcher() {
+    if (exclusionsWatcher) return;
+    try {
+        exclusionsWatcher = fs.watch(path.dirname(EXCLUSIONS_FILE), (_event, filename) => {
+            if (!filename || filename === path.basename(EXCLUSIONS_FILE)) {
+                loadExclusions().catch(() => undefined);
+            }
+        });
+        if (exclusionsWatcher.unref) exclusionsWatcher.unref();
+    } catch {
+        // Data directory does not exist yet; retried on the next load.
+    }
+}
+
+// Warm the caches without blocking startup; the watcher keeps exclusions fresh.
+loadExclusions().catch(() => undefined);
+historyStore.initialize().catch((error) => log.warn(`Could not load local history: ${error.message}`));
+
+function isExcludedPlay(item) {
+    if (!item?.played_at) return false;
+    return excludedDates.has(String(item.played_at).slice(0, 10));
+}
+
+/** Snapshot of the excluded dates ("YYYY-MM-DD"), for the top_songs RPC. */
+function getExcludedDates() {
+    return [...excludedDates];
+}
 
 /**
  * Record a song playback event in both Supabase and local store.
@@ -17,12 +75,7 @@ const MAX_LOCAL_HISTORY = 500;
 async function recordPlay(guildId, song) {
     if (!guildId || !song) return;
 
-    const user = (song.metadata?.requesterUser && !song.metadata.requesterUser.bot ? song.metadata.requesterUser : null)
-        || (song.member?.user && !song.member.user.bot ? song.member.user : null)
-        || (song.user && !song.user.bot ? song.user : null)
-        || song.metadata?.requesterUser
-        || song.member?.user
-        || song.user;
+    const user = resolveRequester(song);
 
     const record = {
         guild_id: String(guildId),
@@ -34,7 +87,7 @@ async function recordPlay(guildId, song) {
         duration: Number(song.duration) || 0,
         source: String(song.source || 'youtube'),
         user_id: user?.id ? String(user.id) : null,
-        username: user ? (song.member?.displayName || user.globalName || user.username) : null,
+        username: user ? requesterName(song, user) : null,
         played_at: new Date().toISOString(),
     };
 
@@ -43,7 +96,8 @@ async function recordPlay(guildId, song) {
         const list = historyStore.get(guildId) || [];
         list.unshift(record);
         if (list.length > MAX_LOCAL_HISTORY) list.length = MAX_LOCAL_HISTORY;
-        historyStore.set(guildId, list);
+        await historyStore.set(guildId, list);
+        ensureExclusionsWatcher();
     } catch (e) {
         log.warn(`Failed to save local play history for guild ${guildId}: ${e.message}`);
     }
@@ -61,117 +115,10 @@ async function recordPlay(guildId, song) {
     }
 }
 
-const exclusionsFile = path.resolve(__dirname, '../../data/history/exclusions.json');
-
-function isExcludedPlay(item) {
-    if (!item?.played_at) return false;
-    const dateStr = String(item.played_at).slice(0, 10);
-    try {
-        if (fs.existsSync(exclusionsFile)) {
-            const data = JSON.parse(fs.readFileSync(exclusionsFile, 'utf8'));
-            if (Array.isArray(data.dates) && data.dates.includes(dateStr)) return true;
-        }
-    } catch {}
-    return dateStr === '2026-10-16';
-}
-
-/**
- * Aggregate a list of play records into ranked songs with playCount.
- */
-function aggregatePlays(records, limit = 100) {
-    if (!Array.isArray(records) || records.length === 0) return [];
-
-    const map = new Map();
-
-    for (const item of records) {
-        if (isExcludedPlay(item)) continue;
-        const key = item.url || item.song_id || item.title;
-        if (!key) continue;
-
-        let entry = map.get(key);
-        if (!entry) {
-            entry = {
-                id: item.song_id || item.url,
-                title: item.title,
-                artist: item.artist,
-                albumArt: item.album_art || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&q=80',
-                coverUrl: item.album_art || null,
-                duration: item.duration || 0,
-                source: item.source || 'youtube',
-                url: item.url,
-                playCount: 0,
-                lastPlayed: item.played_at,
-            };
-            map.set(key, entry);
-        }
-
-        entry.playCount += 1;
-        if (new Date(item.played_at) > new Date(entry.lastPlayed)) {
-            entry.lastPlayed = item.played_at;
-        }
-    }
-
-    const sorted = [...map.values()]
-        .sort((a, b) => b.playCount - a.playCount || new Date(b.lastPlayed).getTime() - new Date(a.lastPlayed).getTime())
-        .slice(0, limit);
-
-    return sorted.map((song, index) => ({
-        ...song,
-        rank: index + 1,
-    }));
-}
-
-/**
- * Get top played songs for a guild by timeframe: 'week' | 'month' | 'all'.
- */
-async function getTopSongs(guildId, timeframe = 'all', limit = 100) {
-    if (!guildId) return [];
-
-    const now = Date.now();
-    let minTime = null;
-    if (timeframe === 'week') {
-        minTime = new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString();
-    } else if (timeframe === 'month') {
-        minTime = new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString();
-    }
-
-    // Try Supabase first
-    if (supabase) {
-        try {
-            let query = supabase
-                .from('song_plays')
-                .select('*')
-                .eq('guild_id', String(guildId));
-
-            if (minTime) {
-                query = query.gte('played_at', minTime);
-            }
-
-            const { data, error } = await query;
-            if (!error && Array.isArray(data) && data.length > 0) {
-                return aggregatePlays(data, limit);
-            }
-        } catch (e) {
-            log.debug(`Supabase getTopSongs fallback: ${e.message}`);
-        }
-    }
-
-    // Fallback to local store
-    try {
-        const localList = historyStore.get(guildId) || [];
-        const filtered = minTime
-            ? localList.filter((item) => new Date(item.played_at) >= new Date(minTime))
-            : localList;
-
-        return aggregatePlays(filtered, limit);
-    } catch (e) {
-        log.warn(`Local getTopSongs error: ${e.message}`);
-        return [];
-    }
-}
-
 module.exports = {
     recordPlay,
-    getTopSongs,
-    aggregatePlays,
+    loadExclusions,
+    isExcludedPlay,
+    getExcludedDates,
+    historyStore,
 };

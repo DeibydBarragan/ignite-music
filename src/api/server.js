@@ -1,64 +1,24 @@
 'use strict';
 
+/**
+ * Internal REST API. This module only wires the HTTP shell (security
+ * middleware, rate limiting, health) and mounts the v1 router; routes live in
+ * src/api/v1/*.routes.js and execute domain operations through the
+ * ShardProxy + MusicManager.apiOps (see src/api/shard-proxy.js).
+ */
+
+const crypto = require('node:crypto');
 const express = require('express');
 const cors = require('cors');
-const { RepeatMode } = require('distube');
+const helmet = require('helmet');
+const { rateLimit } = require('express-rate-limit');
 const config = require('../config');
-const actions = require('../music/actions');
-const { isLyricSong } = require('../music/plugins');
-const i18n = require('../core/i18n');
+const { createRouter } = require('./v1/router');
+const { sendError } = require('./contracts');
+const { getSseHub } = require('./sse');
 const logger = require('../core/logger');
 
 const log = logger.createLogger('api');
-
-function getAvatarUrl(obj) {
-    if (!obj) return null;
-    if (typeof obj.displayAvatarURL === 'function') {
-        try { return obj.displayAvatarURL(); } catch { return null; }
-    }
-    if (typeof obj.avatarURL === 'function') {
-        try { return obj.avatarURL(); } catch { return null; }
-    }
-    if (typeof obj.avatar === 'string' && obj.avatar.startsWith('http')) {
-        return obj.avatar;
-    }
-    return null;
-}
-
-/**
- * Format a DisTube Song into the Ignite Frontend data contract.
- */
-function formatSong(song) {
-    if (!song) return null;
-    const user = (song.metadata?.requesterUser && !song.metadata.requesterUser.bot ? song.metadata.requesterUser : null)
-        || (song.member?.user && !song.member.user.bot ? song.member.user : null)
-        || (song.user && !song.user.bot ? song.user : null)
-        || song.metadata?.requesterUser
-        || song.member?.user
-        || song.user;
-    return {
-        id: song.id || song.url,
-        title: song.name || 'Unknown Title',
-        artist: song.uploader?.name || 'Unknown Artist',
-        albumArt: song.thumbnail || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&q=80',
-        coverUrl: song.thumbnail || null,
-        duration: song.duration || 0,
-        formattedDuration: song.formattedDuration && song.formattedDuration !== '00:00'
-            ? song.formattedDuration
-            : (song.duration ? `${Math.floor(song.duration / 60)}:${String(Math.floor(song.duration % 60)).padStart(2, '0')}` : '00:00'),
-        source: song.source || 'youtube',
-        url: song.url,
-        category: 'hits',
-        isLive: Boolean(song.isLive),
-        isLyric: isLyricSong(song.url),
-        isAutoplay: Boolean(song.autoplay || !user || user.bot),
-        requestedBy: user ? {
-            id: user.id,
-            username: song.member?.displayName || user.globalName || user.username,
-            avatar: getAvatarUrl(song.member) || getAvatarUrl(user) || (typeof user.avatar === 'string' ? user.avatar : null),
-        } : null,
-    };
-}
 
 /**
  * Start the internal REST API server attached to the Discord client.
@@ -70,609 +30,64 @@ function startApiServer(client) {
     }
 
     const app = express();
-    app.use(cors({ origin: '*' }));
-    app.use(express.json());
+    app.disable('x-powered-by');
+    app.use(helmet());
 
-    // ─── Authentication Middleware ────────────────────────────────────
-    const requireAuth = (req, res, next) => {
-        const header = req.headers.authorization || req.headers['x-api-key'];
-        const token = header?.startsWith('Bearer ') ? header.slice(7) : header;
+    // CORS: only the browser origins explicitly listed in API_ALLOWED_ORIGINS.
+    // Requests without an Origin header (server-to-server, curl, the Next.js
+    // BFF) are unaffected; they still need the Bearer token below.
+    const allowedOrigins = config.api.allowedOrigins;
+    if (allowedOrigins.length === 0) {
+        log.warn('API_ALLOWED_ORIGINS is empty: browser cross-origin requests will be rejected.');
+    }
+    app.use(cors({
+        origin(origin, callback) {
+            if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) return callback(null, true);
+            return callback(null, false);
+        },
+    }));
 
-        if (!config.api.secret || token === config.api.secret) {
-            return next();
-        }
-        return res.status(401).json({ error: 'Unauthorized: Invalid or missing API secret' });
+    app.use(express.json({ limit: '100kb' }));
+
+    // Request id for log correlation (structured logs pick it up per request).
+    app.use((req, res, next) => {
+        req.id = crypto.randomUUID().slice(0, 8);
+        next();
+    });
+
+    app.use(rateLimit({
+        windowMs: 60_000,
+        limit: config.api.rateLimitPerMinute,
+        standardHeaders: true,
+        legacyHeaders: false,
+    }));
+
+    // ─── Health / Ping (public, minimal: no tag or guild counts) ──────
+    const health = (req, res) => {
+        res.json({ status: 'ok', uptime: Math.floor(process.uptime()) });
     };
+    app.get('/api/health', health);
+    app.get('/api/v1/health', health);
 
-    // ─── Health / Ping ────────────────────────────────────────────────
-    app.get('/api/health', (req, res) => {
-        res.json({
-            status: 'ok',
-            uptime: Math.floor(process.uptime()),
-            bot: client.user ? { id: client.user.id, tag: client.user.tag } : null,
-            guildsCount: client.guilds.cache.size,
-            timestamp: new Date().toISOString(),
-        });
+    const router = createRouter(client);
+    app.use('/api/v1', router);
+    app.use('/api', router);
+
+    // RFC 7807 for anything a route did not handle (Express 5 forwards
+    // rejected async handlers here automatically).
+    app.use((error, req, res, next) => {
+        if (res.headersSent) return next(error);
+        log.error(`Unhandled API error (${req.method} ${req.originalUrl}) [req ${req.id}]: ${error.message}`);
+        return sendError(res, error);
     });
 
-    // Apply auth to all subsequent endpoints
-    app.use('/api', requireAuth);
-
-    // ─── Guilds List ──────────────────────────────────────────────────
-    app.get('/api/guilds', (req, res) => {
-        const guilds = client.guilds.cache.map((guild) => ({
-            id: guild.id,
-            name: guild.name,
-            icon: guild.iconURL(),
-            memberCount: guild.memberCount,
-        }));
-        res.json({ guilds });
-    });
-
-    // ─── Voice Channel Status ─────────────────────────────────────────
-    app.get('/api/guilds/:guildId/voice-status', async (req, res) => {
-        const { guildId } = req.params;
-        const { userId } = req.query;
-
-        const guild = client.guilds.cache.get(guildId);
-        if (!guild) return res.status(404).json({ error: 'Guild not found' });
-
-        const botMember = guild.members.me;
-        const botChannel = botMember?.voice?.channel;
-
-        let userChannel = null;
-        if (userId) {
-            try {
-                const member = guild.members.cache.get(userId) || await guild.members.fetch(userId).catch(() => null);
-                userChannel = member?.voice?.channel;
-            } catch {
-                // ignore
-            }
-        }
-
-        res.json({
-            bot: botChannel ? { id: botChannel.id, name: botChannel.name } : null,
-            user: userChannel ? { id: userChannel.id, name: userChannel.name } : null,
-            canControl: Boolean(botChannel && userChannel && botChannel.id === userChannel.id),
-        });
-    });
-
-    // ─── Voice Channels of a Guild (canales + gente conectada) ───
-    app.get('/api/guilds/:guildId/channels', async (req, res) => {
-        const { guildId } = req.params;
-
-        const guild = client.guilds.cache.get(guildId);
-        if (!guild) return res.status(404).json({ error: 'Guild not found' });
-
-        try {
-            await guild.channels.fetch().catch(() => null);
-        } catch {
-            // Seguir con la caché si el fetch falla
-        }
-
-        const botId = client.user?.id;
-        const channels = [...guild.channels.cache.filter((c) => c.isVoiceBased()).values()]
-            .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
-            .map((c) => {
-                const humans = c.members.filter((m) => !m.user.bot);
-                return {
-                    id: c.id,
-                    name: c.name,
-                    bitrate: c.bitrate,
-                    userLimit: c.userLimit || 0,
-                    userCount: humans.size,
-                    botPresent: botId ? c.members.has(botId) : false,
-                    members: [...humans.values()].slice(0, 25).map((m) => ({
-                        id: m.id,
-                        username: m.user.username,
-                        avatar:
-                            typeof m.user.displayAvatarURL === 'function'
-                                ? m.user.displayAvatarURL()
-                                : null,
-                        bot: m.user.bot,
-                    })),
-                };
-            });
-
-        res.json({ guildId, total: channels.length, channels });
-    });
-
-    // ─── Player State & Queue ─────────────────────────────────────────
-    app.get('/api/guilds/:guildId/player', (req, res) => {
-        const { guildId } = req.params;
-        const queue = client.music?.distube?.getQueue(guildId);
-        const musicState = client.music?.state(guildId);
-
-        if (!queue) {
-            return res.json({
-                hasQueue: false,
-                isPlaying: false,
-                isPaused: false,
-                currentTime: 0,
-                duration: 0,
-                volume: config.bot.defaultVolume,
-                repeatMode: 'off',
-                autoplay: false,
-                filter: null,
-                currentSong: null,
-                queue: [],
-                disconnectReason: musicState?.disconnectReason || null,
-            });
-        }
-
-        const currentSong = queue.songs[0] ? formatSong(queue.songs[0]) : null;
-        const upcoming = queue.songs.slice(1).map(formatSong);
-
-        let repeatMode = 'off';
-        if (queue.repeatMode === RepeatMode.SONG) repeatMode = 'track';
-        else if (queue.repeatMode === RepeatMode.QUEUE) repeatMode = 'queue';
-
-        res.json({
-            hasQueue: true,
-            isPlaying: !queue.paused && queue.playing,
-            isPaused: Boolean(queue.paused),
-            currentTime: Math.floor(queue.currentTime || 0),
-            duration: currentSong?.duration || 0,
-            volume: queue.volume,
-            repeatMode,
-            autoplay: Boolean(queue.autoplay),
-            filter: queue.filters.names[0] || null,
-            voiceChannel: queue.voiceChannel ? { id: queue.voiceChannel.id, name: queue.voiceChannel.name } : null,
-            currentSong,
-            queue: upcoming,
-            disconnectReason: musicState?.disconnectReason || null,
-        });
-    });
-
-    // ─── Search suggestions (same source as /play autocomplete) ──
-    app.get('/api/search/suggest', async (req, res) => {
-        const q = String(req.query.q || '').trim();
-        if (q.length < 2 || q.length > 100 || /^https?:\/\//i.test(q)) {
-            return res.json({ query: q, suggestions: [] });
-        }
-        try {
-            const { suggestions } = require('../music/suggest');
-            const items = await suggestions(q);
-            return res.json({ query: q, suggestions: items });
-        } catch (error) {
-            log.warn(`API Suggest error: ${error.message}`);
-            return res.json({ query: q, suggestions: [] });
-        }
-    });
-
-    // ─── Search videos (full metadata with titles, artists and covers for web) ──
-    const { TTLCache } = require('../core/cache');
-    const { searchVideosDirect } = require('../music/innertube');
-    const searchVideosCache = new TTLCache({ ttlMs: 15 * 60_000, maxSize: 500 });
-
-    app.get('/api/search', async (req, res) => {
-        const q = String(req.query.q || '').trim();
-        const limit = Math.min(Math.max(Number(req.query.limit) || 6, 1), 15);
-        if (q.length < 2 || q.length > 100 || /^https?:\/\//i.test(q)) {
-            return res.json({ query: q, results: [] });
-        }
-        const cacheKey = `${limit}|${q.toLowerCase()}`;
-        try {
-            const results = await searchVideosCache.wrap(cacheKey, async () => {
-                // 1. Try ultra-fast direct HTTP Innertube (~800ms)
-                try {
-                    const direct = await searchVideosDirect(q, limit);
-                    if (direct && direct.length > 0) return direct;
-                } catch (innertubeErr) {
-                    log.debug(`Direct Innertube search failed, falling back to yt-dlp: ${innertubeErr.message}`);
-                }
-
-                // 2. Fallback to yt-dlp extraction
-                const yt = client.music?.youtube || new (require('../music/plugins').YouTubePlugin)();
-                if (typeof yt?.search === 'function') {
-                    const searchResults = await yt.search(q, limit);
-                    return searchResults.map(formatSong).filter(Boolean);
-                }
-                return [];
-            });
-            return res.json({ query: q, results });
-        } catch (error) {
-            log.warn(`API Search error: ${error.message}`);
-            return res.json({ query: q, results: [] });
-        }
-    });
-
-    // ─── Recommendations / Contextual Radio ───────────────────────────
-    app.get('/api/guilds/:guildId/recommendations', async (req, res) => {
-        const { guildId } = req.params;
-        const guild = client.guilds.cache.get(guildId);
-        if (!guild) return res.status(404).json({ error: 'Guild not found' });
-
-        const queue = client.music?.distube?.getQueue(guildId);
-        const currentSong = queue?.songs?.[0];
-
-        // 1. Contextual Radio: If there is a song currently playing
-        if (currentSong) {
-            try {
-                let related = [];
-                if (typeof client.music?.youtube?.getRelatedSongs === 'function') {
-                    related = await client.music.youtube.getRelatedSongs(currentSong);
-                }
-                // If getRelatedSongs was empty (e.g. non-youtube or rare song), search artist/title on YouTube
-                if (!related || related.length === 0) {
-                    const query = `${currentSong.uploader?.name || currentSong.artist || ''} ${currentSong.name || currentSong.title || ''}`.trim();
-                    if (query && typeof client.music?.youtube?.search === 'function') {
-                        const searchResults = await client.music.youtube.search(query, 12, guildId);
-                        related = searchResults.filter((s) => s && s.id !== currentSong.id);
-                    }
-                }
-
-                if (related && related.length > 0) {
-                    return res.json({
-                        success: true,
-                        source: 'radio',
-                        basedOn: formatSong(currentSong),
-                        songs: related.slice(0, 15).map(formatSong).filter(Boolean),
-                    });
-                }
-            } catch (err) {
-                log.warn(`Recommendations contextual radio error: ${err.message}`);
-            }
-        }
-
-        // 2. Fallback: Return top songs of this guild
-        try {
-            const history = require('../music/history');
-            const top = await history.getTopSongs(guildId, 'all', 15);
-            return res.json({
-                success: true,
-                source: 'top',
-                basedOn: null,
-                songs: top,
-            });
-        } catch (err) {
-            log.warn(`Recommendations top fallback error: ${err.message}`);
-            return res.json({
-                success: true,
-                source: 'empty',
-                basedOn: null,
-                songs: [],
-            });
-        }
-    });
-
-    // ─── Top Songs (Semanal, Mensual, De siempre) ─────────────────────
-    app.get('/api/guilds/:guildId/top-songs', async (req, res) => {
-        const { guildId } = req.params;
-        const timeframe = String(req.query.timeframe || 'week').toLowerCase(); // 'week' | 'month' | 'all'
-        const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 100));
-
-        const guild = client.guilds.cache.get(guildId);
-        if (!guild) return res.status(404).json({ error: 'Guild not found' });
-
-        try {
-            const history = require('../music/history');
-            const songs = await history.getTopSongs(guildId, timeframe, limit);
-            return res.json({
-                success: true,
-                guildId,
-                timeframe,
-                total: songs.length,
-                songs,
-            });
-        } catch (error) {
-            log.error(`API Top Songs error: ${error.message}`);
-            return res.status(500).json({ success: false, error: error.message });
-        }
-    });
-
-    // ─── Resolve playlist (no voice join, for web import preview) ─────
-    app.get('/api/guilds/:guildId/playlist/resolve', async (req, res) => {
-        const { guildId } = req.params;
-        const url = String(req.query.url || '').trim();
-        if (!url) return res.status(400).json({ error: 'Query param "url" is required' });
-
-        const guild = client.guilds.cache.get(guildId);
-        if (!guild) return res.status(404).json({ error: 'Guild not found' });
-
-        try {
-            const playlists = require('../music/playlists');
-            const result = await playlists.resolvePlaylist(client.music, guild, url, {
-                member: guild.members.me,
-            });
-            return res.json({
-                success: true,
-                kind: result.kind,
-                name: result.name,
-                source: result.source,
-                count: result.tracks.length,
-                truncated: result.truncated,
-                tracks: result.tracks,
-            });
-        } catch (error) {
-            log.error(`API Playlist resolve error: ${error.message}`);
-            if (String(url || '').toLowerCase().includes('soundcloud.com')) {
-                return res.status(422).json({ success: false, error: 'SoundCloud is no longer supported. Use a YouTube or Spotify link.' });
-            }
-            return res.status(422).json({ success: false, error: error.message });
-        }
-    });
-
-    // ─── Play / Add to Queue ──────────────────────────────────────────
-    app.post('/api/guilds/:guildId/play', async (req, res) => {
-        const { guildId } = req.params;
-        const { query, voiceChannelId, userId, next = false, skip = false } = req.body;
-
-        if (!query) return res.status(400).json({ error: 'Query is required' });
-
-        const guild = client.guilds.cache.get(guildId);
-        if (!guild) return res.status(404).json({ error: 'Guild not found' });
-
-        const botVoiceChannel = guild.members.me?.voice?.channel;
-        let channel = null;
-
-        if (userId) {
-            const member = guild.members.cache.get(userId) || await guild.members.fetch(userId).catch(() => null);
-            const userVoice = member?.voice?.channel;
-            if (!userVoice) {
-                return res.status(400).json({
-                    success: false,
-                    error: '¡Debes estar en un canal de voz en Discord para reproducir música!',
-                });
-            }
-            if (botVoiceChannel && botVoiceChannel.id !== userVoice.id) {
-                return res.status(400).json({
-                    success: false,
-                    error: `¡Debes estar en el mismo canal de voz que el bot (${botVoiceChannel.name})!`,
-                });
-            }
-            channel = userVoice;
-        } else if (voiceChannelId) {
-            channel = guild.channels.cache.get(voiceChannelId);
-            if (botVoiceChannel && channel && botVoiceChannel.id !== channel.id) {
-                return res.status(400).json({
-                    success: false,
-                    error: `¡Debes estar en el mismo canal de voz que el bot (${botVoiceChannel.name})!`,
-                });
-            }
-        }
-
-        const existingQueue = client.music?.distube?.getQueue(guildId);
-        if (!channel && existingQueue) {
-            channel = existingQueue.voiceChannel;
-        }
-
-        if (!channel) {
-            return res.status(400).json({
-                success: false,
-                error: '¡Debes estar en un canal de voz en Discord para reproducir música!',
-            });
-        }
-
-        try {
-            let member = null;
-            if (userId) {
-                member = guild.members.cache.get(userId) || await guild.members.fetch(userId).catch(() => null);
-                if (!member) {
-                    const u = client.users.cache.get(userId) || await client.users.fetch(userId).catch(() => null);
-                    if (u) {
-                        member = {
-                            id: u.id,
-                            user: u,
-                            displayName: u.globalName || u.username,
-                            guild,
-                            displayAvatarURL: (opts) => (typeof u.displayAvatarURL === 'function' ? u.displayAvatarURL(opts) : null),
-                        };
-                    }
-                }
-            }
-
-            const outcome = await client.music.play({
-                voiceChannel: channel,
-                member: member || guild.members.me,
-                query,
-                position: next ? 1 : 0,
-                skip: Boolean(skip),
-            });
-
-            const queue = client.music?.distube?.getQueue(guildId);
-            if (skip && queue && queue.paused) {
-                try {
-                    await queue.resume();
-                } catch (_) {}
-            }
-
-            const resolved = outcome?.resolved;
-            const isPlaylist = resolved && Array.isArray(resolved.songs);
-            return res.json({
-                success: true,
-                started: Boolean(outcome?.started),
-                position: outcome?.position || 0,
-                song: resolved ? formatSong(isPlaylist ? resolved.songs[0] : resolved) : null,
-                playlist: isPlaylist
-                    ? { name: resolved.name || null, count: resolved.songs.length, truncated: Boolean(outcome?.truncated) }
-                    : null,
-            });
-        } catch (error) {
-            log.error(`API Play error: ${error.message}`);
-            if (String(query || '').toLowerCase().includes('soundcloud.com')) {
-                return res.status(400).json({ error: 'SoundCloud is no longer supported. Use a YouTube or Spotify link, or search by name.' });
-            }
-            return res.status(500).json({ error: error.message });
-        }
-    });
-
-    // ─── Playback Control Actions ─────────────────────────────────────
-    app.post('/api/guilds/:guildId/control', async (req, res) => {
-        const { guildId } = req.params;
-        const { action, value } = req.body;
-
-        const queue = client.music?.distube?.getQueue(guildId);
-        if (!queue) {
-            return res.status(404).json({ error: 'No active playback queue in this guild' });
-        }
-
-        const t = i18n.forGuild(client.guilds.cache.get(guildId));
-
-        try {
-            let result = { ok: false, message: 'Unknown action' };
-
-            switch (action) {
-                case 'pause':
-                    result = await actions.pause(queue, t);
-                    break;
-                case 'resume':
-                    result = await actions.resume(queue, t);
-                    break;
-                case 'toggle':
-                    result = await actions.togglePause(queue, t);
-                    break;
-                case 'skip':
-                    result = await actions.skip(queue, t);
-                    break;
-                case 'previous':
-                    result = await actions.previous(queue, t);
-                    break;
-                case 'stop':
-                    result = await actions.stop(queue, t, client.music);
-                    break;
-                case 'shuffle':
-                    result = await actions.shuffle(queue, t);
-                    break;
-                case 'autoplay':
-                    result = actions.toggleAutoplay(queue, t);
-                    break;
-                case 'filter': {
-                    result = actions.setFilter(queue, t, value);
-                    break;
-                }
-                case 'volume': {
-                    result = actions.setVolume(queue, t, value);
-                    break;
-                }
-                case 'seek': {
-                    result = await actions.seek(queue, t, Number(value));
-                    break;
-                }
-                case 'loop': {
-                    let mode = value;
-                    if (value === 'off') mode = RepeatMode.DISABLED;
-                    else if (value === 'track') mode = RepeatMode.SONG;
-                    else if (value === 'queue') mode = RepeatMode.QUEUE;
-                    result = actions.setLoop(queue, t, mode);
-                    break;
-                }
-                default:
-                    return res.status(400).json({ error: `Invalid action: ${action}` });
-            }
-
-            return res.json({ success: result.ok, message: result.message });
-        } catch (error) {
-            log.error(`API Control error (${action}): ${error.message}`);
-            return res.status(500).json({ error: error.message });
-        }
-    });
-
-    // ─── Queue Management ─────────────────────────────────────────────
-    app.delete('/api/guilds/:guildId/queue/:index', (req, res) => {
-        const { guildId, index } = req.params;
-        const idx = Number.parseInt(index, 10);
-
-        const queue = client.music?.distube?.getQueue(guildId);
-        if (!queue) return res.status(404).json({ error: 'No queue found' });
-
-        if (Number.isNaN(idx) || idx < 1 || idx >= queue.songs.length) {
-            return res.status(400).json({ error: 'Invalid song queue index' });
-        }
-
-        const removed = queue.songs.splice(idx, 1);
-        return res.json({ success: true, removed: removed[0] ? formatSong(removed[0]) : null });
-    });
-
-    app.post('/api/guilds/:guildId/queue/move', async (req, res) => {
-        const { guildId } = req.params;
-        const { from, to } = req.body;
-        const queue = client.music?.distube?.getQueue(guildId);
-        if (!queue) return res.status(404).json({ error: 'No queue found' });
-
-        const t = i18n.forGuild(client.guilds.cache.get(guildId));
-        try {
-            const outcome = await actions.safely(
-                () => actions.move(queue, t, Number(from), Number(to)), t);
-            if (!outcome.ok) return res.status(400).json({ error: outcome.message });
-            client.music.changed(queue);
-            return res.json({ success: true, message: outcome.message });
-        } catch (error) {
-            log.error(`API Queue move error: ${error.message}`);
-            return res.status(500).json({ error: error.message });
-        }
-    });
-
-    app.post('/api/guilds/:guildId/queue/jump', async (req, res) => {
-        const { guildId } = req.params;
-        const { position } = req.body;
-        const queue = client.music?.distube?.getQueue(guildId);
-        if (!queue) return res.status(404).json({ error: 'No queue found' });
-
-        const t = i18n.forGuild(client.guilds.cache.get(guildId));
-        try {
-            const outcome = await actions.safely(
-                () => actions.jump(queue, t, Number(position)), t);
-            if (!outcome.ok) return res.status(400).json({ error: outcome.message });
-            return res.json({ success: true, message: outcome.message });
-        } catch (error) {
-            log.error(`API Queue jump error: ${error.message}`);
-            return res.status(500).json({ error: error.message });
-        }
-    });
-
-    const undoQueueCache = new Map();
-
-    app.delete('/api/guilds/:guildId/queue', (req, res) => {
-        const { guildId } = req.params;
-        const queue = client.music?.distube?.getQueue(guildId);
-        if (!queue) return res.status(404).json({ error: 'No queue found' });
-
-        // Keep current song (index 0) and remove upcoming
-        const count = queue.songs.length - 1;
-        if (queue.songs.length > 1) {
-            const removed = queue.songs.splice(1);
-            undoQueueCache.set(guildId, {
-                songs: removed,
-                expiresAt: Date.now() + 60_000,
-            });
-            client.music?.changed(queue);
-        }
-        return res.json({ success: true, cleared: count });
-    });
-
-    app.post('/api/guilds/:guildId/queue/undo', (req, res) => {
-        const { guildId } = req.params;
-        const cached = undoQueueCache.get(guildId);
-        if (!cached || !Array.isArray(cached.songs) || cached.songs.length === 0) {
-            return res.status(400).json({ success: false, error: 'No hay canciones recientes para restaurar.' });
-        }
-        if (Date.now() > cached.expiresAt) {
-            undoQueueCache.delete(guildId);
-            return res.status(400).json({ success: false, error: 'El tiempo para deshacer ha expirado.' });
-        }
-
-        const queue = client.music?.distube?.getQueue(guildId);
-        if (!queue) {
-            return res.status(404).json({ success: false, error: 'El reproductor no está activo en este servidor.' });
-        }
-
-        // Reinsertar las canciones directamente en la cola en memoria (0ms)
-        queue.songs.push(...cached.songs);
-        undoQueueCache.delete(guildId);
-        client.music?.changed(queue);
-
-        return res.json({
-            success: true,
-            restored: cached.songs.length,
-            message: `${cached.songs.length} canciones restauradas a la cola.`,
-        });
-    });
-
-    // ─── Start HTTP Listener ──────────────────────────────────────────
     const server = app.listen(config.api.port, '0.0.0.0', () => {
         log.ok(`REST API server listening on http://0.0.0.0:${config.api.port}`);
     });
+
+    // End every SSE stream when the listener closes (bot.shutdown also calls
+    // closeAllConnections(), so keep-alive sockets cannot hold the process).
+    server.on('close', () => getSseHub().close());
 
     return server;
 }

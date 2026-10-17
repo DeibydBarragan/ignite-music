@@ -21,18 +21,16 @@ const log = require('../core/logger').createLogger('pot');
 const REFRESH_INTERVAL_MS = 30 * 60_000;
 const EXPIRY_MARGIN_MS = 60 * 60_000;
 const MINT_TIMEOUT_MS = 180_000;
-const AUTODETECT_PATH = '/home/ubuntu/bgutil-ytdlp-pot-provider/server/build/generate_once.js';
 
 let cache = null; // { token: string, expiresAtMs: number }
 let started = false;
 let inflight = null;
 
 function generatorPath() {
-    const configured = (config.ytdlp && config.ytdlp.potGenerator) || process.env.POT_GENERATOR || '';
+    // POT_GENERATOR_PATH is the documented variable; POT_GENERATOR is kept as
+    // a legacy alias. No machine-specific paths are hardcoded anymore.
+    const configured = config.ytdlp.potGeneratorPath || config.ytdlp.potGenerator || '';
     if (configured && fs.existsSync(configured)) return configured;
-    try {
-        if (fs.existsSync(AUTODETECT_PATH)) return AUTODETECT_PATH;
-    } catch {}
     return null;
 }
 
@@ -150,4 +148,26 @@ function currentPoToken() {
     return cache?.token || null;
 }
 
-module.exports = { currentPoToken, refreshPoToken: refresh };
+/**
+ * Like currentPoToken(), but waits for a pending mint on a cold start so the
+ * first yt-dlp calls still run with a token. Never throws.
+ */
+async function currentPoTokenAsync() {
+    if (cache && Date.now() < cache.expiresAtMs - EXPIRY_MARGIN_MS) {
+        ensureStarted();
+        return cache.token;
+    }
+    ensureStarted();
+    if (!generatorPath()) return cache?.token || null;
+    const result = await refresh();
+    return result?.token || null;
+}
+
+/**
+ * Start the renewal timer before the first download needs it (preflight / shard boot).
+ */
+function startPoTokenRenewal() {
+    ensureStarted();
+}
+
+module.exports = { currentPoToken, currentPoTokenAsync, startPoTokenRenewal, refreshPoToken: refresh };

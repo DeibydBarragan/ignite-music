@@ -9,12 +9,15 @@ const config = require('../config');
 const logger = require('../core/logger');
 const { deployCommands } = require('../deploy');
 const preflight = require('./preflight');
+const { SetupError } = require('./setup-error');
 const { StreamRelay } = require('../music/relay');
 const tunnel = require('../api/tunnel');
 const { beat } = require('../api/announce');
 
 const log = logger.createLogger('manager');
 logger.setDebug(config.debug);
+
+const SHUTDOWN_GRACE_MS = 10_000;
 
 /**
  * v16 and older downloaded every song into audio_cache/. Nothing uses it any more, so free the disk space.
@@ -28,6 +31,20 @@ function removeLegacyCache() {
     } catch (error) {
         log.warn('Could not remove the old audio_cache folder:', error.message);
     }
+}
+
+/**
+ * Shard-only environment values. discord.js copies the manager's process.env
+ * into every shard and offers no per-spawn environment option, so everything
+ * shards must see is published here, in one place, right before spawning.
+ * announce.js resolves the same tunnel-first URL at runtime.
+ */
+function buildShardEnv(config) {
+    process.env.SHARDING_MANAGER = '1';
+    process.env.SHARDING_MANAGER_MODE = config.sharding.mode;
+    const publicUrl = tunnel.getTunnelUrl() || config.api.publicUrl;
+    if (publicUrl) process.env.PUBLIC_API_URL = publicUrl;
+    return process.env;
 }
 
 /**
@@ -52,12 +69,10 @@ async function main() {
     }
 
     if (config.api.enabled && config.api.autoTunnel) {
+        // announce.js prefers the live tunnel URL over the static PUBLIC_API_URL,
+        // so no config mutation is needed here.
         const tunnelUrl = await tunnel.startTunnel(config.api.port);
-        if (tunnelUrl) {
-            process.env.PUBLIC_API_URL = tunnelUrl;
-            config.api.publicUrl = tunnelUrl;
-            await beat();
-        }
+        if (tunnelUrl) await beat();
     }
 
     const manager = new ShardingManager(path.join(__dirname, '..', 'bot.js'), {
@@ -71,7 +86,7 @@ async function main() {
 
     manager.on('shardCreate', (shard) => {
         log.info(`Launching shard ${shard.id}`);
-        shard.on('death', (child) => log.warn(`Shard ${shard.id} exited (code ${child.exitCode ?? 'unknown'})${manager.respawn ? ', restarting' : ''}`));
+        shard.on('death', (/** @type {any} */ child) => log.warn(`Shard ${shard.id} exited (code ${child.exitCode ?? 'unknown'})${manager.respawn ? ', restarting' : ''}`));
         shard.on('error', (error) => log.error(`Shard ${shard.id} error:`, error));
     });
 
@@ -84,11 +99,30 @@ async function main() {
         if (config.api.autoTunnel) {
             tunnel.stopTunnel();
         }
+
+        // Each shard saves its sessions, closes its API server (dropping
+        // keep-alive sockets) and destroys its client before replying.
         await Promise.race([
-            manager.broadcastEval((client) => client.shutdown?.()).catch(() => undefined),
-            new Promise((resolve) => setTimeout(resolve, 10_000)),
+            manager.broadcastEval((client) => /** @type {any} */ (client).shutdown?.()).catch(() => undefined),
+            new Promise((resolve) => setTimeout(resolve, SHUTDOWN_GRACE_MS)),
         ]);
-        for (const shard of manager.shards.values()) shard.kill();
+
+        // Managed shards intentionally ignore SIGTERM, so the fallback after
+        // the grace window is SIGKILL: nothing outlives the manager.
+        for (const shard of manager.shards.values()) {
+            const child = shard.process;
+            if (child && child.exitCode === null && child.signalCode === null) {
+                log.warn(`Shard ${shard.id} did not exit in time; sending SIGKILL.`);
+                try {
+                    child.kill('SIGKILL');
+                } catch {
+                    // already gone
+                }
+            } else if (!child && shard.worker) {
+                log.warn(`Shard ${shard.id} did not exit in time; terminating worker.`);
+                shard.worker.terminate().catch(() => undefined);
+            }
+        }
         process.exit(0);
     };
     process.once('SIGINT', stop);
@@ -97,19 +131,20 @@ async function main() {
     process.on('unhandledRejection', (reason) => log.error('Manager unhandled rejection:', reason));
     process.on('uncaughtException', (error) => log.error('Manager uncaught exception:', error));
 
+    buildShardEnv(config);
     await manager.spawn({
         amount: config.sharding.totalShards,
         delay: config.sharding.spawnDelay,
         timeout: config.sharding.spawnTimeout,
     });
     log.ok(`${manager.shards.size} shard(s) running`);
-
-    // Keep manager event loop alive on Windows
-    setInterval(() => {}, 60_000);
 }
 
 module.exports = {
+    buildShardEnv,
     main: () => main().catch((error) => {
+        // Preflight failures were already explained on stderr by report.js.
+        if (error instanceof SetupError) process.exit(1);
         log.error('Failed to start:', error);
         process.exit(1);
     }),

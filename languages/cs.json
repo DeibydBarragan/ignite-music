@@ -45,6 +45,11 @@
       "playlist_success": "Playlist s **{count} skladeb** přidán do fronty!",
       "track_started": "Začalo přehrávání **{title}**!",
       "track_queued": "**{title}** přidána do fronty! (pozice {position})"
+    },
+    "playnext": {
+      "description": "Přehrát skladbu hned po aktuální (předběhne frontu)",
+      "query_description": "Název skladby, interpret, URL YouTube/Spotify nebo přímý odkaz",
+      "track_queued": "Hraje jako další: **{title}**! (pozice 1)"
     }
   },
   "youtube": {
@@ -105,7 +110,8 @@
     "loop_queue": "Opakování: Fronta",
     "autoplay_off": "Autoplay: Vypnuto",
     "autoplay_on": "Autoplay: Zapnuto",
-    "lyrics": "Text"
+    "lyrics": "Text",
+    "favorite": "Oblíbené"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube zablokoval tento požadavek (detekce bota)**\nYouTube odmítá požadavky z IP adresy tohoto serveru.\n\n**Řešení:** Přidejte `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (nebo firefox/edge) nebo `YOUTUBE_PO_TOKEN` do souboru `.env`. Viz `README.md` pro podrobné pokyny.",
@@ -116,7 +122,8 @@
     "network_error": "**Chyba sítě**\nBot se nemohl připojit k hudební platformě. Obvykle jde o dočasný problém.\n\n**Řešení:** Chvíli počkejte a zkuste to znovu.",
     "stream_failed": "**Selhání zvukového streamu**\nBot skladbu našel, ale nemohl spustit zvukový stream.\n\n**Řešení:** Zkuste to znovu nebo vyzkoušejte jinou verzi skladby.",
     "voice_no_permission": "**Chybí oprávnění pro hlasový kanál**\nBot nemá oprávnění připojit se nebo mluvit ve vašem hlasovém kanálu.\n\n**Řešení:** Nastavení hlasového kanálu → Oprávnění → udělte botovi oprávnění **Připojit** a **Mluvit**.",
-    "unknown": "**Došlo k neočekávané chybě**\nPři zpracování vašeho požadavku se něco pokazilo.\n\n**Řešení:** Zkuste to za chvíli znovu. Pokud problém přetrvává, zkontrolujte konzoli bota."
+    "unknown": "**Došlo k neočekávané chybě**\nPři zpracování vašeho požadavku se něco pokazilo.\n\n**Řešení:** Zkuste to za chvíli znovu. Pokud problém přetrvává, zkontrolujte konzoli bota.",
+    "drm_protected": "**Skladba chráněná DRM**\nTato skladba je chráněna DRM (SoundCloud Go+ apod.) a nelze ji přehrát bez placeného předplatného. Zkus jinou verzi nebo remix."
   },
   "ui": {
     "voice_full": "Tento hlasový kanál je plný.",
@@ -144,6 +151,11 @@
     "moved": "**{title}** byla přesunuta na pozici {position}.",
     "invalid_position": "Na pozici {position} není žádná skladba.",
     "invite": "Pozvat",
-    "fallback_soundcloud": "YouTube u této skladby nefungoval, proto se přehrává ze SoundCloudu."
+    "fallback_soundcloud": "YouTube u této skladby nefungoval, proto se přehrává ze SoundCloudu.",
+    "playlists_title": "Tvé playlisty ({count})",
+    "playlists_title_query": "Tvé playlisty · \"{filter}\" ({count})",
+    "playlists_empty": "Zatím nemáš žádné uložené playlisty.\nPoužij `/new-playlist` s odkazem na Spotify nebo YouTube a importuj první.",
+    "playlists_line": "{source} · {count} skladeb · ~{duration}",
+    "playlists_hint": "`/playlists reproducir:<nombre>` ji přehraje · `/new-playlist` importuje"
   }
 }

@@ -45,6 +45,11 @@
       "playlist_success": "Afspeellijst met **{count} nummers** toegevoegd aan de wachtrij!",
       "track_started": "Begonnen met afspelen van **{title}**!",
       "track_queued": "**{title}** toegevoegd aan de wachtrij! (op positie {position})"
+    },
+    "playnext": {
+      "description": "Speel een nummer direct na het huidige (slaat de wachtrij over)",
+      "query_description": "Naam van nummer, artiest, YouTube/Spotify-URL of directe link",
+      "track_queued": "Nu als volgende: **{title}**! (positie 1)"
     }
   },
   "youtube": {
@@ -105,7 +110,8 @@
     "loop_queue": "Herhalen: Wachtrij",
     "autoplay_off": "Auto: Uit",
     "autoplay_on": "Auto: Aan",
-    "lyrics": "Tekst"
+    "lyrics": "Tekst",
+    "favorite": "Favoriet"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube heeft dit verzoek geblokkeerd (botdetectie)**\nYouTube weigert verzoeken van het IP-adres van deze server.\n\n**Oplossing:** Voeg `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (of firefox/edge) of `YOUTUBE_PO_TOKEN` toe aan het `.env`-bestand. Zie `README.md` voor stapsgewijze instructies.",
@@ -116,7 +122,8 @@
     "network_error": "**Netwerkfout**\nDe bot kon geen verbinding maken met het muziekplatform. Dit is meestal een tijdelijk probleem.\n\n**Oplossing:** Wacht even en probeer het opnieuw.",
     "stream_failed": "**Audiostream mislukt**\nDe bot vond het nummer maar kon de audiostream niet starten.\n\n**Oplossing:** Probeer het opnieuw of probeer een andere versie van het nummer.",
     "voice_no_permission": "**Ontbrekende spraakmachtigingen**\nDe bot heeft geen toestemming om deel te nemen aan of te spreken in je spraakkanaal.\n\n**Oplossing:** Spraakkanaalinstellingen → Machtigingen → geef de bot de machtigingen **Verbinden** en **Spreken**.",
-    "unknown": "**Er is een onverwachte fout opgetreden**\nEr is iets misgegaan bij het verwerken van je verzoek.\n\n**Oplossing:** Probeer het over een moment opnieuw. Controleer het foutlogboek van de bot als het probleem aanhoudt."
+    "unknown": "**Er is een onverwachte fout opgetreden**\nEr is iets misgegaan bij het verwerken van je verzoek.\n\n**Oplossing:** Probeer het over een moment opnieuw. Controleer het foutlogboek van de bot als het probleem aanhoudt.",
+    "drm_protected": "**DRM-beveiligd nummer**\nDit nummer is DRM-beveiligd (SoundCloud Go+ of vergelijkbaar) en kan niet worden afgespeeld zonder betaald abonnement. Zoek een alternatieve versie of remix."
   },
   "ui": {
     "voice_full": "Dat spraakkanaal is vol.",
@@ -144,6 +151,11 @@
     "moved": "**{title}** is verplaatst naar positie {position}.",
     "invalid_position": "Er staat geen nummer op positie {position}.",
     "invite": "Uitnodigen",
-    "fallback_soundcloud": "YouTube werkte niet voor dit nummer, dus het wordt afgespeeld via SoundCloud."
+    "fallback_soundcloud": "YouTube werkte niet voor dit nummer, dus het wordt afgespeeld via SoundCloud.",
+    "playlists_title": "Jouw playlists ({count})",
+    "playlists_title_query": "Jouw playlists · \"{filter}\" ({count})",
+    "playlists_empty": "Je hebt nog geen opgeslagen playlists.\nGebruik `/new-playlist` met een Spotify- of YouTube-link om je eerste te importeren.",
+    "playlists_line": "{source} · {count} nummers · ~{duration}",
+    "playlists_hint": "`/playlists reproducir:<nombre>` om af te spelen · `/new-playlist` om te importeren"
   }
 }

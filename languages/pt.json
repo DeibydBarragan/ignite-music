@@ -45,6 +45,11 @@
       "playlist_success": "Playlist com **{count} músicas** adicionada à fila!",
       "track_started": "Começou a reproduzir **{title}**!",
       "track_queued": "**{title}** adicionado à fila! (na posição {position})"
+    },
+    "playnext": {
+      "description": "Toque uma música logo após a atual (fura a fila)",
+      "query_description": "Nome da música, artista, URL do YouTube/Spotify ou link direto",
+      "track_queued": "Tocando a seguir: **{title}**! (posição 1)"
     }
   },
   "youtube": {
@@ -105,7 +110,8 @@
     "loop_queue": "Repetir: Fila",
     "autoplay_off": "Auto: Desativado",
     "autoplay_on": "Auto: Ativado",
-    "lyrics": "Letra"
+    "lyrics": "Letra",
+    "favorite": "Favorito"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube bloqueou este pedido (deteção de bot)**\nO YouTube rejeita pedidos do endereço IP deste servidor.\n\n**Solução:** Adicione `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (ou firefox/edge) ou `YOUTUBE_PO_TOKEN` no ficheiro `.env`. Consulte `README.md` para instruções passo a passo.",
@@ -116,7 +122,8 @@
     "network_error": "**Erro de rede**\nO bot não conseguiu ligar-se à plataforma de música. Normalmente é um problema temporário.\n\n**Solução:** Aguarde um momento e tente novamente.",
     "stream_failed": "**Falha no stream de áudio**\nO bot encontrou a faixa, mas não conseguiu iniciar o stream de áudio.\n\n**Solução:** Tente novamente ou experimente uma versão diferente da música.",
     "voice_no_permission": "**Permissões do canal de voz em falta**\nO bot não tem permissão para entrar ou falar no seu canal de voz.\n\n**Solução:** Definições do canal de voz → Permissões → dê ao bot as permissões **Ligar** e **Falar**.",
-    "unknown": "**Ocorreu um erro inesperado**\nAlgo correu mal ao processar o seu pedido.\n\n**Solução:** Tente novamente em breve. Se o problema persistir, verifique o registo da consola do bot."
+    "unknown": "**Ocorreu um erro inesperado**\nAlgo correu mal ao processar o seu pedido.\n\n**Solução:** Tente novamente em breve. Se o problema persistir, verifique o registo da consola do bot.",
+    "drm_protected": "**Faixa protegida por DRM**\nEsta faixa tem proteção DRM (SoundCloud Go+ ou similar) e não pode ser reproduzida sem assinatura paga. Tente buscar uma versão alternativa ou remix."
   },
   "ui": {
     "voice_full": "Esse canal de voz está cheio.",
@@ -144,6 +151,11 @@
     "moved": "**{title}** foi movida para a posição {position}.",
     "invalid_position": "Não há nenhuma música na posição {position}.",
     "invite": "Convidar",
-    "fallback_soundcloud": "O YouTube não funcionou para esta música, por isso está a ser reproduzida a partir do SoundCloud."
+    "fallback_soundcloud": "O YouTube não funcionou para esta música, por isso está a ser reproduzida a partir do SoundCloud.",
+    "playlists_title": "Suas playlists ({count})",
+    "playlists_title_query": "Suas playlists · \"{filter}\" ({count})",
+    "playlists_empty": "Você ainda não tem playlists salvas.\nUse `/new-playlist` com um link do Spotify ou YouTube para importar a primeira.",
+    "playlists_line": "{source} · {count} faixas · ~{duration}",
+    "playlists_hint": "`/playlists reproducir:<nombre>` para tocá-la · `/new-playlist` para importar"
   }
 }

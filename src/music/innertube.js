@@ -6,35 +6,43 @@
  * related tracks/mix resolution, and playlist browsing in ~300-800ms.
  */
 
-const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
+const config = require('../config');
 
-function parseDurationFromLabel(label) {
-    if (!label) return { duration: 0, formatted: '00:00' };
-    let hours = 0, mins = 0, secs = 0;
-    const hMatch = label.match(/(\d+)\s*(?:hour|hora|hr)s?/i);
-    const mMatch = label.match(/(\d+)\s*(?:minute|minuto|min)s?/i);
-    const sMatch = label.match(/(\d+)\s*(?:second|segundo|seg)s?/i);
-    if (hMatch) hours = parseInt(hMatch[1], 10);
-    if (mMatch) mins = parseInt(mMatch[1], 10);
-    if (sMatch) secs = parseInt(sMatch[1], 10);
-    const total = hours * 3600 + mins * 60 + secs;
-    if (total === 0) return { duration: 0, formatted: '00:00' };
-    const formatted = hours > 0
-        ? `${hours}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
-        : `${mins}:${String(secs).padStart(2, '0')}`;
-    return { duration: total, formatted };
-}
+const {
+    USER_AGENT,
+    CLIENT_VERSION,
+    RELATED_MIN_SECONDS,
+    RELATED_MAX_SECONDS,
+    parseDurationFromLabel,
+    parseColonDuration,
+} = require('./innertube-util');
 
-function parseColonDuration(str) {
-    if (!str || typeof str !== 'string') return 0;
-    const parts = str.split(':').map(Number);
-    if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-        return parts[0] * 60 + parts[1];
-    }
-    if (parts.length === 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) {
-        return parts[0] * 3600 + parts[1] * 60 + parts[2];
-    }
-    return 0;
+/**
+ * POST to a YouTube Innertube endpoint with the shared context/headers and a
+ * hard timeout. Throws on non-2xx; the three callers no longer duplicate this.
+ */
+async function postInnertube(endpoint, payload, timeoutMs = 3500) {
+    const res = await fetch(`https://www.youtube.com/youtubei/v1/${endpoint}?prettyPrint=false`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': USER_AGENT,
+        },
+        body: JSON.stringify({
+            context: {
+                client: {
+                    clientName: 'WEB',
+                    clientVersion: CLIENT_VERSION,
+                    hl: config.innertube.hl,
+                    gl: config.innertube.gl,
+                },
+            },
+            ...payload,
+        }),
+        signal: AbortSignal.timeout(timeoutMs),
+    });
+    if (!res.ok) throw new Error(`YouTube Innertube ${endpoint} HTTP ${res.status}`);
+    return res.json();
 }
 
 /**
@@ -44,34 +52,7 @@ async function searchVideosDirect(query, limit = 6, { timeoutMs = 3500 } = {}) {
     const raw = String(query || '').trim();
     if (!raw || raw.length < 2) return [];
 
-    const url = 'https://www.youtube.com/youtubei/v1/search?prettyPrint=false';
-    const body = {
-        context: {
-            client: {
-                clientName: 'WEB',
-                clientVersion: '2.20240101.00.00',
-                hl: 'es',
-                gl: 'CO'
-            }
-        },
-        query: raw
-    };
-
-    const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': USER_AGENT
-        },
-        body: JSON.stringify(body),
-        signal: AbortSignal.timeout(timeoutMs)
-    });
-
-    if (!res.ok) {
-        throw new Error(`YouTube Innertube search HTTP ${res.status}`);
-    }
-
-    const data = await res.json();
+    const data = /** @type {any} */ (await postInnertube('search', { query: raw }, timeoutMs));
     const sections = data?.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents || [];
     const videos = [];
 
@@ -128,35 +109,7 @@ async function getRelatedMixDirect(videoId, limit = 15, { timeoutMs = 3500 } = {
     if (!videoId || typeof videoId !== 'string') return [];
     const cleanId = videoId.trim();
 
-    const url = 'https://www.youtube.com/youtubei/v1/next?prettyPrint=false';
-    const body = {
-        context: {
-            client: {
-                clientName: 'WEB',
-                clientVersion: '2.20240101.00.00',
-                hl: 'es',
-                gl: 'CO'
-            }
-        },
-        videoId: cleanId,
-        playlistId: `RD${cleanId}`
-    };
-
-    const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': USER_AGENT
-        },
-        body: JSON.stringify(body),
-        signal: AbortSignal.timeout(timeoutMs)
-    });
-
-    if (!res.ok) {
-        throw new Error(`YouTube Innertube next HTTP ${res.status}`);
-    }
-
-    const data = await res.json();
+    const data = /** @type {any} */ (await postInnertube('next', { videoId: cleanId, playlistId: `RD${cleanId}` }, timeoutMs));
     const plItems = data?.contents?.twoColumnWatchNextResults?.playlist?.playlist?.contents || [];
     const related = [];
     const seen = new Set([cleanId]);
@@ -170,8 +123,7 @@ async function getRelatedMixDirect(videoId, limit = 15, { timeoutMs = 3500 } = {
         const durationText = v.lengthText?.simpleText || '00:00';
         const durationSec = parseColonDuration(durationText);
 
-        // Filtrar duraciones coherentes (1 a 15 minutos)
-        if (durationSec > 0 && (durationSec < 50 || durationSec > 950)) continue;
+        if (durationSec > 0 && (durationSec < RELATED_MIN_SECONDS || durationSec > RELATED_MAX_SECONDS)) continue;
 
         const title = v.title?.simpleText || v.title?.runs?.map((r) => r.text).join('') || 'Unknown Title';
         const channel = v.shortBylineText?.runs?.[0]?.text || 'YouTube';
@@ -210,34 +162,7 @@ async function getPlaylistVideosDirect(playlistId, limit = 200, { timeoutMs = 50
     if (!playlistId || typeof playlistId !== 'string') return null;
     const cleanId = playlistId.trim().replace(/^VL/, '');
 
-    const url = 'https://www.youtube.com/youtubei/v1/browse?prettyPrint=false';
-    const body = {
-        context: {
-            client: {
-                clientName: 'WEB',
-                clientVersion: '2.20240101.00.00',
-                hl: 'es',
-                gl: 'CO'
-            }
-        },
-        browseId: `VL${cleanId}`
-    };
-
-    const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': USER_AGENT
-        },
-        body: JSON.stringify(body),
-        signal: AbortSignal.timeout(timeoutMs)
-    });
-
-    if (!res.ok) {
-        throw new Error(`YouTube Innertube browse HTTP ${res.status}`);
-    }
-
-    const data = await res.json();
+    const data = /** @type {any} */ (await postInnertube('browse', { browseId: `VL${cleanId}` }, timeoutMs));
     const plTitle = data?.metadata?.playlistMetadataRenderer?.title || 'YouTube Playlist';
     const rawItems = data?.contents?.twoColumnBrowseResultsRenderer?.tabs?.[0]?.tabRenderer?.content?.sectionListRenderer?.contents?.[0]?.itemSectionRenderer?.contents || [];
 
@@ -309,7 +234,10 @@ async function getPlaylistVideosDirect(playlistId, limit = 200, { timeoutMs = 50
 }
 
 module.exports = {
+    postInnertube,
     searchVideosDirect,
     getRelatedMixDirect,
-    getPlaylistVideosDirect
+    getPlaylistVideosDirect,
+    RELATED_MIN_SECONDS,
+    RELATED_MAX_SECONDS
 };

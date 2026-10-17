@@ -45,6 +45,11 @@
       "playlist_success": "Soittolista **{count} kappaleella** lisätty jonoon!",
       "track_started": "Aloitettiin **{title}** soittaminen!",
       "track_queued": "**{title}** lisätty jonoon! (sijalla {position})"
+    },
+    "playnext": {
+      "description": "Toista kappale heti nykyisen jälkeen (ohittaa jonon)",
+      "query_description": "Kappaleen nimi, artisti, YouTube/Spotify-URL tai suora linkki",
+      "track_queued": "Seuraavaksi: **{title}**! (sijainti 1)"
     }
   },
   "youtube": {
@@ -105,7 +110,8 @@
     "loop_queue": "Toisto: Jono",
     "autoplay_off": "Auto: Pois",
     "autoplay_on": "Auto: Päällä",
-    "lyrics": "Sanat"
+    "lyrics": "Sanat",
+    "favorite": "Suosikki"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube esti tämän pyynnön (bottitunnistus)**\nYouTube hylkää pyynnöt tämän palvelimen IP-osoitteesta.\n\n**Ratkaisu:** Lisää `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (tai firefox/edge) tai `YOUTUBE_PO_TOKEN` `.env`-tiedostoon. Katso `README.md` vaihe vaiheelta.",
@@ -116,7 +122,8 @@
     "network_error": "**Verkkovirhe**\nBotti ei voinut muodostaa yhteyttä musiikkialustaan. Tämä on yleensä väliaikainen ongelma.\n\n**Ratkaisu:** Odota hetki ja yritä uudelleen.",
     "stream_failed": "**Äänivirta epäonnistui**\nBotti löysi kappaleen, mutta ei voinut aloittaa äänen toistoa.\n\n**Ratkaisu:** Yritä uudelleen tai kokeile eri versiota kappaleesta.",
     "voice_no_permission": "**Puuttuvat äänikanavan oikeudet**\nBotilla ei ole oikeutta liittyä tai puhua äänikanavallasi.\n\n**Ratkaisu:** Äänikanavan asetukset → Oikeudet → anna botille **Yhdistä** ja **Puhu**.",
-    "unknown": "**Odottamaton virhe tapahtui**\nPyyntöäsi käsiteltäessä tapahtui jotain odottamatonta.\n\n**Ratkaisu:** Yritä uudelleen hetken kuluttua. Jos ongelma jatkuu, tarkista botin konsolin virheloki."
+    "unknown": "**Odottamaton virhe tapahtui**\nPyyntöäsi käsiteltäessä tapahtui jotain odottamatonta.\n\n**Ratkaisu:** Yritä uudelleen hetken kuluttua. Jos ongelma jatkuu, tarkista botin konsolin virheloki.",
+    "drm_protected": "**DRM-suojattu kappale**\nTämä kappale on DRM-suojattu (SoundCloud Go+ tms.), eikä sitä voi toistaa ilman maksullista tilausta. Kokeile etsiä vaihtoehtoinen versio tai remix."
   },
   "ui": {
     "voice_full": "Tämä äänikanava on täynnä.",
@@ -144,6 +151,11 @@
     "moved": "**{title}** siirrettiin sijalle {position}.",
     "invalid_position": "Sijalla {position} ei ole kappaletta.",
     "invite": "Kutsu",
-    "fallback_soundcloud": "YouTube ei toiminut tälle kappaleelle, joten se toistetaan SoundCloudista."
+    "fallback_soundcloud": "YouTube ei toiminut tälle kappaleelle, joten se toistetaan SoundCloudista.",
+    "playlists_title": "Soittolistasi ({count})",
+    "playlists_title_query": "Soittolistasi · \"{filter}\" ({count})",
+    "playlists_empty": "Sinulla ei ole vielä tallennettuja soittolistoja.\nKäytä `/new-playlist`-komentoa Spotify- tai YouTube-linkin kanssa tuodaksesi ensimmäisen.",
+    "playlists_line": "{source} · {count} kappaletta · ~{duration}",
+    "playlists_hint": "`/playlists reproducir:<nombre>` soittaa sen · `/new-playlist` tuo"
   }
 }

@@ -45,6 +45,11 @@
       "playlist_success": "Playliste med **{count} sange** tilføjet til køen!",
       "track_started": "Begyndte at afspille **{title}**!",
       "track_queued": "**{title}** tilføjet til køen! (på position {position})"
+    },
+    "playnext": {
+      "description": "Afspil en sang lige efter den nuværende (spring køen over)",
+      "query_description": "Sangnavn, kunstner, YouTube/Spotify-URL eller direkte link",
+      "track_queued": "Afspiller næste: **{title}**! (position 1)"
     }
   },
   "youtube": {
@@ -105,7 +110,8 @@
     "loop_queue": "Gentag: Kø",
     "autoplay_off": "Auto: Fra",
     "autoplay_on": "Auto: Til",
-    "lyrics": "Tekst"
+    "lyrics": "Tekst",
+    "favorite": "Favorit"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube blokerede denne anmodning (bot-detektion)**\nYouTube afviser anmodninger fra denne servers IP-adresse.\n\n**Løsning:** Tilføj `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (eller firefox/edge) eller `YOUTUBE_PO_TOKEN` i `.env`-filen. Se `README.md` for trin-for-trin vejledning.",
@@ -116,7 +122,8 @@
     "network_error": "**Netværksfejl**\nBotten kunne ikke oprette forbindelse til musikplatformen. Dette er normalt et midlertidigt problem.\n\n**Løsning:** Vent et øjeblik og prøv igen.",
     "stream_failed": "**Lydstream mislykkedes**\nBotten fandt sangen, men kunne ikke starte lydstreamen.\n\n**Løsning:** Prøv igen eller prøv en anden version af sangen.",
     "voice_no_permission": "**Manglende tilladelser til stemmekanal**\nBotten har ikke tilladelse til at deltage eller tale i din stemmekanal.\n\n**Løsning:** Stemmekanals indstillinger → Tilladelser → giv botten **Forbind** og **Tal**.",
-    "unknown": "**En uventet fejl opstod**\nNoget gik galt under behandlingen af din anmodning.\n\n**Løsning:** Prøv igen om et øjeblik. Tjek bottens konsol for hele fejlloggen, hvis problemet fortsætter."
+    "unknown": "**En uventet fejl opstod**\nNoget gik galt under behandlingen af din anmodning.\n\n**Løsning:** Prøv igen om et øjeblik. Tjek bottens konsol for hele fejlloggen, hvis problemet fortsætter.",
+    "drm_protected": "**DRM-beskyttet nummer**\nDette nummer er DRM-beskyttet (SoundCloud Go+ eller lignende) og kan ikke afspilles uden et betalt abonnement. Prøv at søge efter en alternativ version eller remix."
   },
   "ui": {
     "voice_full": "Den stemmekanal er fuld.",
@@ -144,6 +151,11 @@
     "moved": "**{title}** blev flyttet til plads {position}.",
     "invalid_position": "Der er ingen sang på plads {position}.",
     "invite": "Inviter",
-    "fallback_soundcloud": "YouTube virkede ikke for denne sang, så den afspilles fra SoundCloud."
+    "fallback_soundcloud": "YouTube virkede ikke for denne sang, så den afspilles fra SoundCloud.",
+    "playlists_title": "Dine playlister ({count})",
+    "playlists_title_query": "Dine playlister · \"{filter}\" ({count})",
+    "playlists_empty": "Du har ingen gemte playlister endnu.\nBrug `/new-playlist` med et Spotify- eller YouTube-link til at importere din første.",
+    "playlists_line": "{source} · {count} numre · ~{duration}",
+    "playlists_hint": "`/playlists reproducir:<nombre>` afspiller den · `/new-playlist` importerer"
   }
 }

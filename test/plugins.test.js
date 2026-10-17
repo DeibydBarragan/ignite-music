@@ -35,6 +35,12 @@ function fakeRunner(handler) {
     return runner;
 }
 
+// Forces the yt-dlp fallback: the real Innertube client would hit the network in tests.
+const offlineDirect = {
+    search: async () => { throw new Error('offline'); },
+    related: async () => { throw new Error('offline'); },
+};
+
 const fullInfo = (id = VIDEO, extra = {}) => ({
     id, title: `Title ${id}`, duration: 213, uploader: 'Rick Astley', uploader_url: 'https://youtube.com/@rick',
     view_count: 10, age_limit: 0, url: streamUrl(id), ...extra,
@@ -204,7 +210,7 @@ test('related songs exclude the current song, shorts and very long videos', asyn
             { id: 'ddddddddddd', title: 'unknown length' },
         ],
     }));
-    const plugin = new YouTubePlugin({ runner });
+    const plugin = new YouTubePlugin({ runner, direct: offlineDirect });
     const current = new Song({ plugin, source: 'youtube', playFromSource: true, id: VIDEO, name: 'x', url: 'u' });
     const related = await plugin.getRelatedSongs(current);
     assert.deepEqual(related.map((s) => s.id), ['aaaaaaaaaaa', 'ddddddddddd']);
@@ -213,10 +219,53 @@ test('related songs exclude the current song, shorts and very long videos', asyn
 });
 
 test('search() returns metadata for the /search menu', async () => {
-    const plugin = new YouTubePlugin({ runner: fakeRunner(() => ({ entries: [{ id: 'aaaaaaaaaaa', title: 'A', duration: 10 }, { id: 'bad' }] })) });
+    const plugin = new YouTubePlugin({
+        runner: fakeRunner(() => ({ entries: [{ id: 'aaaaaaaaaaa', title: 'A', duration: 10 }, { id: 'bad' }] })),
+        direct: offlineDirect,
+    });
     const results = await plugin.search('query', 5);
     assert.equal(results.length, 1);
     assert.equal(results[0].name, 'A');
+});
+
+test('search() maps Innertube results first without spawning yt-dlp', async () => {
+    const runner = fakeRunner(() => { throw new Error('yt-dlp should not run'); });
+    const direct = {
+        ...offlineDirect,
+        search: async () => [{
+            id: 'aaaaaaaaaaa',
+            title: 'Xavi - La Diabla (Official Video)',
+            artist: 'Xavi',
+            url: 'https://www.youtube.com/watch?v=aaaaaaaaaaa',
+            duration: 200,
+            isLive: false,
+            uploader: { name: 'Xavi' },
+        }],
+    };
+    const plugin = new YouTubePlugin({ runner, direct });
+    const results = await plugin.search('la diabla', 5);
+    assert.equal(results.length, 1);
+    assert.equal(results[0].name, 'La Diabla');
+    assert.equal(results[0].uploader.name, 'Xavi');
+    assert.equal(runner.calls.length, 0);
+});
+
+test('getRelatedSongs uses Innertube results and keeps the shared duration window', async () => {
+    const runner = fakeRunner(() => { throw new Error('yt-dlp should not run'); });
+    const direct = {
+        ...offlineDirect,
+        related: async () => [
+            { id: VIDEO, title: 'self', artist: 'X', url: `https://www.youtube.com/watch?v=${VIDEO}`, duration: 200 },
+            { id: 'aaaaaaaaaaa', title: 'ok', artist: 'X', url: 'https://www.youtube.com/watch?v=aaaaaaaaaaa', duration: 300 },
+            { id: 'bbbbbbbbbbb', title: 'short', artist: 'X', url: 'https://www.youtube.com/watch?v=bbbbbbbbbbb', duration: 30 },
+            { id: 'ccccccccccc', title: 'long', artist: 'X', url: 'https://www.youtube.com/watch?v=ccccccccccc', duration: 3600 },
+        ],
+    };
+    const plugin = new YouTubePlugin({ runner, direct });
+    const current = new Song({ plugin, source: 'youtube', playFromSource: true, id: VIDEO, name: 'x', url: 'u' });
+    const related = await plugin.getRelatedSongs(current);
+    assert.deepEqual(related.map((s) => s.id), ['aaaaaaaaaaa']);
+    assert.equal(runner.calls.length, 0);
 });
 
 test('GenericPlugin handles single media and playlists from other sites', async () => {

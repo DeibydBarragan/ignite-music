@@ -1,9 +1,11 @@
 'use strict';
 
 const fs = require('node:fs');
+const fsp = require('node:fs/promises');
 const path = require('node:path');
 const config = require('../config');
 const { JsonStore } = require('./store');
+const { EMOJI } = require('./constants');
 const log = require('./logger').createLogger('i18n');
 
 const LANG_DIR = path.join(__dirname, '..', '..', 'languages');
@@ -17,8 +19,6 @@ const DISCORD_LOCALES = {
 };
 
 // Emoji, flags, keycaps and variation selectors are stripped from translations for a clean UI.
-const EMOJI = /(?:\p{Extended_Pictographic}|[\u{1F1E6}-\u{1F1FF}]|[\u{FE0E}\u{FE0F}\u{20E3}\u{200D}])/gu;
-
 function clean(text) {
     return text.replace(EMOJI, '').replace(/[ \t]{2,}/g, ' ').replace(/^[ \t]+/gm, '').trim();
 }
@@ -30,17 +30,36 @@ function lookup(object, key) {
     return key.split('.').reduce((node, part) => (node && typeof node === 'object' ? node[part] : undefined), object);
 }
 
+function parseAndStore(code, jsonString) {
+    const data = JSON.parse(jsonString);
+    languages.set(code, data);
+    for (const [locale, target] of Object.entries(DISCORD_LOCALES)) {
+        if (target === code) discordLocaleMap.set(locale, code);
+    }
+}
+
+async function loadAsync() {
+    languages.clear();
+    discordLocaleMap.clear();
+    const files = (await fsp.readdir(LANG_DIR)).filter((name) => name.endsWith('.json')).sort();
+    for (const file of files) {
+        const code = file.slice(0, -5);
+        try {
+            parseAndStore(code, await fsp.readFile(path.join(LANG_DIR, file), 'utf8'));
+        } catch (error) {
+            log.error(`Invalid language file ${file}:`, error.message);
+        }
+    }
+    if (!languages.has(FALLBACK)) throw new Error('languages/en.json is required');
+}
+
 function load() {
     languages.clear();
     discordLocaleMap.clear();
     for (const file of fs.readdirSync(LANG_DIR).filter((name) => name.endsWith('.json')).sort()) {
         const code = file.slice(0, -5);
         try {
-            const data = JSON.parse(fs.readFileSync(path.join(LANG_DIR, file), 'utf8'));
-            languages.set(code, data);
-            for (const [locale, target] of Object.entries(DISCORD_LOCALES)) {
-                if (target === code) discordLocaleMap.set(locale, code);
-            }
+            parseAndStore(code, fs.readFileSync(path.join(LANG_DIR, file), 'utf8'));
         } catch (error) {
             log.error(`Invalid language file ${file}:`, error.message);
         }
@@ -53,6 +72,10 @@ load();
 const defaultLanguage = languages.has(config.bot.defaultLanguage) ? config.bot.defaultLanguage : FALLBACK;
 let settings = null;
 const getSettings = () => (settings ??= new JsonStore(path.join(config.dataDir, 'guilds')));
+
+// Mirror guild language choices into memory without blocking startup: no interaction can
+// arrive before this finishes.
+getSettings().initialize().catch((error) => log.warn('Could not load guild languages:', error.message));
 
 /**
  * Translate key for a language code. Missing keys fall back to English, then to the key itself.
@@ -70,17 +93,38 @@ function fromDiscordLocale(locale) {
 }
 
 /**
- * Language settings written by v16 and older (database/languages.json). Read-only: they keep
- * working after an upgrade without any migration step, and new choices are saved per guild.
+ * Language settings written by v16 and older (database/languages.json). Read-only and
+ * optional: the repository no longer ships a database/ folder, but upgrades from v16 keep
+ * their guild choices without a migration step. New choices are saved under data/ instead.
  */
 let legacy = null;
+let legacyPromise = null;
+
+async function loadLegacy(rootDir = config.root) {
+    if (legacyPromise) return legacyPromise;
+    legacyPromise = (async () => {
+        try {
+            const content = await fsp.readFile(path.join(rootDir, 'database', 'languages.json'), 'utf8');
+            legacy = JSON.parse(content)?.servers || {};
+        } catch (error) {
+            if (error.code !== 'ENOENT') log.warn('Could not read database/languages.json:', error.message);
+            legacy = {};
+        }
+        return legacy;
+    })();
+    return legacyPromise;
+}
+
+// Warm the legacy cache asynchronously on start so runtime lookups never touch disk.
+loadLegacy().catch(() => undefined);
+
 function legacyLanguage(guildId, rootDir = config.root) {
     if (legacy === null) {
-        legacy = {};
         try {
             legacy = JSON.parse(fs.readFileSync(path.join(rootDir, 'database', 'languages.json'), 'utf8'))?.servers || {};
         } catch (error) {
             if (error.code !== 'ENOENT') log.warn('Could not read database/languages.json:', error.message);
+            legacy = {};
         }
     }
     return legacy[guildId]?.language || null;
@@ -143,8 +187,11 @@ module.exports = {
     localizations,
     resetLegacyCache: () => {
         legacy = null;
+        legacyPromise = null;
     },
     legacyLanguage,
+    loadLegacy,
+    loadAsync,
     languages,
     FALLBACK,
     get defaultLanguage() {

@@ -1,24 +1,22 @@
 'use strict';
 
-const { Playlist, DisTubeError } = require('distube');
+const { Playlist } = require('distube');
 const config = require('../config');
 const { isLyricSong } = require('./plugins');
+const { serializeTrack, FALLBACK_COVER } = require('../api/contracts');
 const { supabase } = require('../core/supabase');
+const { assertSupportedUrl } = require('../core/youtube-guards');
 const log = require('../core/logger').createLogger('playlists');
 const { getPlaylistVideosDirect } = require('./innertube');
 
 const TABLE = 'user_playlists';
-const FALLBACK_COVER = 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&q=80';
-
-function isSoundCloudUrl(url) {
-    return String(url || '').toLowerCase().includes('soundcloud.com');
-}
+const snapshotTrack = (song) => serializeTrack(song, { extended: false });
 
 function detectSource(url) {
     const lower = String(url || '').toLowerCase();
     if (lower.includes('spotify.com')) return 'spotify';
     if (lower.includes('youtube.com') || lower.includes('youtu.be')) return 'youtube';
-    return 'spotify';
+    return 'generic';
 }
 
 function deriveName(url, customName) {
@@ -35,39 +33,13 @@ function deriveName(url, customName) {
 }
 
 /**
- * DisTube Song -> frontend Song contract (same shape as api/server.js formatSong).
- */
-function toFrontendTrack(song) {
-    if (!song) return null;
-    return {
-        id: song.id || song.url,
-        title: song.name || 'Unknown Title',
-        artist: song.uploader?.name || 'Unknown Artist',
-        albumArt: song.thumbnail || FALLBACK_COVER,
-        coverUrl: song.thumbnail || null,
-        duration: song.duration || 0,
-        formattedDuration: song.formattedDuration || '00:00',
-        source: song.source || 'youtube',
-        url: song.url,
-        category: 'hits',
-        isLive: Boolean(song.isLive),
-        isLyric: isLyricSong(song.url),
-    };
-}
-
-/**
  * Resolve a playlist/track URL with DisTube without joining voice.
  * Returns { kind: 'playlist'|'track', name, tracks, truncated, source }.
  */
 async function resolvePlaylist(manager, guild, url, { member = null, maxSize = null } = {}) {
     const clean = String(url || '').trim();
     if (!clean) throw new Error('EMPTY_URL');
-    if (isSoundCloudUrl(clean)) {
-        throw new DisTubeError(
-            'NOT_SUPPORTED_URL',
-            'SoundCloud is no longer supported. Use a YouTube or Spotify link.'
-        );
-    }
+    assertSupportedUrl(clean);
     const limit = Math.max(1, maxSize || config.bot.maxPlaylistSize || 200);
 
     // Fast-path: Resolve YouTube playlists directly via Innertube (~600ms)
@@ -109,7 +81,7 @@ async function resolvePlaylist(manager, guild, url, { member = null, maxSize = n
     if (resolved instanceof Playlist) {
         const songs = Array.isArray(resolved.songs) ? resolved.songs : [];
         const truncated = songs.length > limit;
-        const tracks = songs.slice(0, limit).map(toFrontendTrack).filter(Boolean);
+        const tracks = songs.slice(0, limit).map(snapshotTrack).filter(Boolean);
         return {
             kind: 'playlist',
             name: resolved.name || deriveName(clean),
@@ -118,7 +90,7 @@ async function resolvePlaylist(manager, guild, url, { member = null, maxSize = n
             source: detectSource(clean),
         };
     }
-    const track = toFrontendTrack(resolved);
+    const track = snapshotTrack(resolved);
     return {
         kind: 'track',
         name: resolved?.name || deriveName(clean),
@@ -205,9 +177,8 @@ module.exports = {
     TABLE,
     FALLBACK_COVER,
     detectSource,
-    isSoundCloudUrl,
     deriveName,
-    toFrontendTrack,
+    snapshotTrack,
     resolvePlaylist,
     fetchUserPlaylists,
     upsertUserPlaylist,

@@ -58,7 +58,7 @@ test('the onedir yt-dlp build (no Python, no unpacking on every run) is chosen f
     assert.equal(ytDlpAsset('freebsd', 'x64'), null);
 });
 
-test('extractZip unpacks folders, permissions and rejects unsafe paths', () => {
+test('extractZip unpacks folders, permissions and rejects unsafe paths', async () => {
     const { extractZip } = require('../src/core/unzip');
     const dir = path.join(process.env.DATA_DIR, 'unzip');
     const zip = createZip([
@@ -66,11 +66,23 @@ test('extractZip unpacks folders, permissions and rejects unsafe paths', () => {
         { name: '_internal/lib.txt', data: Buffer.from('lib') },
         { name: 'tool', data: Buffer.from('#!/bin/sh\necho hi\n'), mode: 0o755 },
     ]);
-    assert.equal(extractZip(zip, dir), 3);
+    assert.equal(await extractZip(zip, dir), 3);
     assert.equal(fs.readFileSync(path.join(dir, '_internal', 'lib.txt'), 'utf8'), 'lib');
     if (process.platform !== 'win32') assert.equal(fs.statSync(path.join(dir, 'tool')).mode & 0o777, 0o755);
-    assert.throws(() => extractZip(createZip([{ name: '../evil', data: Buffer.from('x') }]), dir), /Unsafe path/);
-    assert.throws(() => extractZip(Buffer.from('not a zip'), dir), /Not a ZIP/);
+    await assert.rejects(extractZip(createZip([{ name: '../evil', data: Buffer.from('x') }]), dir), /Unsafe path/);
+    await assert.rejects(extractZip(Buffer.from('not a zip'), dir), /Not a ZIP/);
+});
+
+test('extractZip enforces entry and size limits (zip-bomb guard)', async () => {
+    const { extractZip } = require('../src/core/unzip');
+    const dir = path.join(process.env.DATA_DIR, 'unzip-limits');
+    const zip = createZip([
+        { name: 'a.txt', data: Buffer.alloc(2000) },
+        { name: 'b.txt', data: Buffer.alloc(2000) },
+    ]);
+    await assert.rejects(extractZip(zip, dir, { maxEntries: 1 }), /too many entries/);
+    await assert.rejects(extractZip(zip, dir, { maxBytes: 1000 }), /expands beyond/);
+    assert.equal(await extractZip(zip, dir, { maxBytes: 5000 }), 2);
 });
 
 test('ensureYtDlp installs the onedir build, replaces a broken one, keeps a working one; updates daily', { skip }, async () => {

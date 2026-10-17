@@ -40,6 +40,17 @@ function fakeQueue(count = 5) {
     return queue;
 }
 
+test('applyControl dispatches every REST control action and rejects unknown ones', async () => {
+    const values = { filter: 'bassboost', volume: '55', seek: '90', loop: 'queue' };
+    for (const action of actions.CONTROL_ACTIONS) {
+        const queue = fakeQueue();
+        const manager = { endPanel: async () => undefined, distube: { voices: { leave: () => undefined } } };
+        const outcome = await actions.applyControl(queue, t, action, values[action], manager);
+        assert.ok(outcome, `applyControl(${action}) must return a result`);
+    }
+    assert.equal(actions.applyControl(fakeQueue(), t, 'explode', null, {}), null);
+});
+
 test('pause / resume / toggle', async () => {
     const q = fakeQueue();
     assert.equal((await actions.resume(q, t)).ok, false);

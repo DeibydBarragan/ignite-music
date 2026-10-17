@@ -45,6 +45,11 @@
       "playlist_success": "Playlist con **{count} canzoni** aggiunta alla coda!",
       "track_started": "Iniziato a riprodurre **{title}**!",
       "track_queued": "**{title}** aggiunto alla coda! (alla posizione {position})"
+    },
+    "playnext": {
+      "description": "Riproduci un brano subito dopo quello attuale (salta la coda)",
+      "query_description": "Nome del brano, artista, URL YouTube/Spotify o link diretto",
+      "track_queued": "In riproduzione dopo: **{title}**! (posizione 1)"
     }
   },
   "youtube": {
@@ -105,7 +110,8 @@
     "loop_queue": "Ripeti: Coda",
     "autoplay_off": "Riproduzione Auto: Disattivata",
     "autoplay_on": "Riproduzione Auto: Attivata",
-    "lyrics": "Testo"
+    "lyrics": "Testo",
+    "favorite": "Preferiti"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube ha bloccato questa richiesta (rilevamento bot)**\nYouTube rifiuta le richieste dall'indirizzo IP di questo server.\n\n**Soluzione:** Aggiungi `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (o firefox/edge) o `YOUTUBE_PO_TOKEN` nel file `.env`. Vedi `README.md` per le istruzioni dettagliate.",
@@ -116,7 +122,8 @@
     "network_error": "**Errore di rete**\nIl bot non è riuscito a connettersi alla piattaforma musicale. Di solito è un problema temporaneo.\n\n**Soluzione:** Aspetta un momento e riprova.",
     "stream_failed": "**Stream audio fallito**\nIl bot ha trovato il brano ma non è riuscito ad avviare lo stream audio.\n\n**Soluzione:** Riprova o prova una versione diversa del brano.",
     "voice_no_permission": "**Permessi canale vocale mancanti**\nIl bot non ha il permesso di unirsi o parlare nel tuo canale vocale.\n\n**Soluzione:** Impostazioni canale vocale → Permessi → dai al bot i permessi **Connetti** e **Parla**.",
-    "unknown": "**Si è verificato un errore inaspettato**\nQualcosa è andato storto durante l'elaborazione della richiesta.\n\n**Soluzione:** Riprova tra un momento. Se il problema persiste, controlla il log della console del bot."
+    "unknown": "**Si è verificato un errore inaspettato**\nQualcosa è andato storto durante l'elaborazione della richiesta.\n\n**Soluzione:** Riprova tra un momento. Se il problema persiste, controlla il log della console del bot.",
+    "drm_protected": "**Brano protetto da DRM**\nQuesto brano è protetto da DRM (SoundCloud Go+ o simili) e non può essere riprodotto senza abbonamento. Prova a cercare una versione alternativa o un remix."
   },
   "ui": {
     "voice_full": "Quel canale vocale è pieno.",
@@ -144,6 +151,11 @@
     "moved": "**{title}** è stata spostata alla posizione {position}.",
     "invalid_position": "Non c’è nessuna canzone alla posizione {position}.",
     "invite": "Invita",
-    "fallback_soundcloud": "YouTube non ha funzionato per questa canzone, quindi viene riprodotta da SoundCloud."
+    "fallback_soundcloud": "YouTube non ha funzionato per questa canzone, quindi viene riprodotta da SoundCloud.",
+    "playlists_title": "Le tue playlist ({count})",
+    "playlists_title_query": "Le tue playlist · \"{filter}\" ({count})",
+    "playlists_empty": "Non hai ancora playlist salvate.\nUsa `/new-playlist` con un link Spotify o YouTube per importare la prima.",
+    "playlists_line": "{source} · {count} brani · ~{duration}",
+    "playlists_hint": "`/playlists reproducir:<nombre>` per riprodurla · `/new-playlist` per importare"
   }
 }

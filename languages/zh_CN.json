@@ -45,6 +45,11 @@
       "playlist_success": "包含 **{count} 首歌曲** 的播放列表已添加到队列！",
       "track_started": "开始播放 **{title}**！",
       "track_queued": "**{title}** 已添加到队列！（位于第 {position} 位）"
+    },
+    "playnext": {
+      "description": "在当前歌曲之后立即播放（跳过队列）",
+      "query_description": "歌曲名、歌手、YouTube/Spotify URL 或直链",
+      "track_queued": "即将播放：**{title}**！（第 1 位）"
     }
   },
   "youtube": {
@@ -105,7 +110,8 @@
     "loop_queue": "循环: 队列",
     "autoplay_off": "自动播放: 关闭",
     "autoplay_on": "自动播放: 开启",
-    "lyrics": "歌词"
+    "lyrics": "歌词",
+    "favorite": "收藏"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube 屏蔽了此请求（机器人检测）**\nYouTube 正在拒绝来自此服务器 IP 地址的请求。\n\n**解决方案：** 在 `.env` 文件中添加 `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome`（或 firefox/edge）或 `YOUTUBE_PO_TOKEN`。详细步骤请参阅 `README.md`。",
@@ -116,7 +122,8 @@
     "network_error": "**网络错误**\n机器人无法连接到音乐平台。这通常是临时问题。\n\n**解决方案：** 稍等片刻后重试。",
     "stream_failed": "**音频流失败**\n机器人找到了曲目，但无法启动音频流。\n\n**解决方案：** 重试，或尝试歌曲的不同版本。",
     "voice_no_permission": "**缺少语音频道权限**\n机器人没有权限加入或在你的语音频道中说话。\n\n**解决方案：** 语音频道设置 → 权限 → 授予机器人**连接**和**说话**权限。",
-    "unknown": "**发生意外错误**\n处理你的请求时出现了问题。\n\n**解决方案：** 稍后重试。如果问题持续存在，请检查机器人控制台日志。"
+    "unknown": "**发生意外错误**\n处理你的请求时出现了问题。\n\n**解决方案：** 稍后重试。如果问题持续存在，请检查机器人控制台日志。",
+    "drm_protected": "**受 DRM 保护的曲目**\n该曲目受 DRM 保护（SoundCloud Go+ 等），没有付费订阅无法播放。请尝试搜索其他版本或混音。"
   },
   "ui": {
     "voice_full": "该语音频道已满。",
@@ -144,6 +151,11 @@
     "moved": "已将 **{title}** 移动到第 {position} 位。",
     "invalid_position": "第 {position} 位没有歌曲。",
     "invite": "邀请",
-    "fallback_soundcloud": "此歌曲无法通过 YouTube 播放，已改为从 SoundCloud 播放。"
+    "fallback_soundcloud": "此歌曲无法通过 YouTube 播放，已改为从 SoundCloud 播放。",
+    "playlists_title": "你的播放列表 ({count})",
+    "playlists_title_query": "你的播放列表 · \"{filter}\" ({count})",
+    "playlists_empty": "你还没有保存的播放列表。\n使用 `/new-playlist` 加 Spotify 或 YouTube 链接导入第一个。",
+    "playlists_line": "{source} · {count} 首 · ~{duration}",
+    "playlists_hint": "用 `/playlists reproducir:<nombre>` 播放 · 用 `/new-playlist` 导入"
   }
 }

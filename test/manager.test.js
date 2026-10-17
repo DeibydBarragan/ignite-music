@@ -203,6 +203,7 @@ function fakeInteraction(client, overrides = {}) {
 
 async function withPanel() {
     const { client, manager } = setup();
+    manager.client.guilds.cache.set(ids.guild, { id: ids.guild, preferredLocale: 'en-US' });
     const queue = fakeQueue([makeSong(1), makeSong(2), makeSong(3)]);
     manager.getQueue = () => queue;
     await manager.sendPanel(queue);

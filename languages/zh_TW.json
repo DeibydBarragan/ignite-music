@@ -45,6 +45,11 @@
       "playlist_success": "包含 **{count} 首歌曲** 的播放清單已新增至佇列！",
       "track_started": "開始播放 **{title}**！",
       "track_queued": "**{title}** 已新增至佇列！（位於第 {position} 位）"
+    },
+    "playnext": {
+      "description": "在目前歌曲之後立即播放（跳過佇列）",
+      "query_description": "歌曲名稱、歌手、YouTube/Spotify URL 或直連連結",
+      "track_queued": "即將播放：**{title}**！（第 1 位）"
     }
   },
   "youtube": {
@@ -105,7 +110,8 @@
     "loop_queue": "循環: 佇列",
     "autoplay_off": "自動播放: 關閉",
     "autoplay_on": "自動播放: 開啟",
-    "lyrics": "歌詞"
+    "lyrics": "歌詞",
+    "favorite": "收藏"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube 封鎖了此請求（機器人偵測）**\nYouTube 正在拒絕來自此伺服器 IP 位址的請求。\n\n**解決方案：** 在 `.env` 檔案中新增 `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome`（或 firefox/edge）或 `YOUTUBE_PO_TOKEN`。詳細步驟請參閱 `README.md`。",
@@ -116,7 +122,8 @@
     "network_error": "**網路錯誤**\n機器人無法連線至音樂平台。這通常是暫時性問題。\n\n**解決方案：** 稍後重試。",
     "stream_failed": "**音訊串流失敗**\n機器人找到了曲目，但無法啟動音訊串流。\n\n**解決方案：** 重試，或嘗試歌曲的不同版本。",
     "voice_no_permission": "**缺少語音頻道權限**\n機器人沒有權限加入或在你的語音頻道中說話。\n\n**解決方案：** 語音頻道設定 → 權限 → 授予機器人**連線**和**說話**權限。",
-    "unknown": "**發生意外錯誤**\n處理你的請求時出現了問題。\n\n**解決方案：** 稍後重試。如果問題持續存在，請檢查機器人主控台日誌。"
+    "unknown": "**發生意外錯誤**\n處理你的請求時出現了問題。\n\n**解決方案：** 稍後重試。如果問題持續存在，請檢查機器人主控台日誌。",
+    "drm_protected": "**受 DRM 保護的曲目**\n此曲目受 DRM 保護（SoundCloud Go+ 等），沒有付費訂閱無法播放。請嘗試搜尋其他版本或混音。"
   },
   "ui": {
     "voice_full": "該語音頻道已滿。",
@@ -144,6 +151,11 @@
     "moved": "已將 **{title}** 移至第 {position} 位。",
     "invalid_position": "第 {position} 位沒有歌曲。",
     "invite": "邀請",
-    "fallback_soundcloud": "此歌曲無法透過 YouTube 播放，已改為從 SoundCloud 播放。"
+    "fallback_soundcloud": "此歌曲無法透過 YouTube 播放，已改為從 SoundCloud 播放。",
+    "playlists_title": "你的播放清單 ({count})",
+    "playlists_title_query": "你的播放清單 · \"{filter}\" ({count})",
+    "playlists_empty": "你還沒有儲存的播放清單。\n使用 `/new-playlist` 加上 Spotify 或 YouTube 連結匯入第一個。",
+    "playlists_line": "{source} · {count} 首 · ~{duration}",
+    "playlists_hint": "用 `/playlists reproducir:<nombre>` 播放 · 用 `/new-playlist` 匯入"
   }
 }

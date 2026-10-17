@@ -74,8 +74,21 @@ test('TTLCache expires entries and deduplicates concurrent loads', async () => {
     assert.equal(calls, 1);
     await new Promise((r) => setTimeout(r, 40));
     assert.equal(cache.get('k'), undefined);
-    await assert.rejects(cache.wrap('err', async () => { throw new Error('x'); }));
+    let attempts = 0;
+    const failing = async () => { attempts++; throw new Error('x'); };
+    await assert.rejects(cache.wrap('err', failing));
+    await assert.rejects(cache.wrap('err', failing));
+    assert.equal(attempts, 2, 'rejected loads are retried instead of cached');
     assert.equal(cache.pending.size, 0);
+});
+
+test('TTLCache sweeps expired entries without a read', async () => {
+    const cache = new TTLCache({ ttlMs: 20 });
+    cache.set('a', 1);
+    await new Promise((r) => setTimeout(r, 30));
+    assert.equal(cache.entries.size, 1, 'entries expire lazily until swept');
+    cache.sweep();
+    assert.equal(cache.entries.size, 0);
 });
 
 test('TTLCache evicts oldest entries beyond maxSize', () => {
@@ -100,16 +113,48 @@ test('Semaphore limits concurrency and prefers high priority', async () => {
     assert.equal(sem.active, 0);
 });
 
+test('Semaphore alternates lanes once both are waiting (prefetch is not starved)', async () => {
+    const sem = new Semaphore(1);
+    const order = [];
+    let releaseFirst;
+    const first = sem.run(() => new Promise((r) => { releaseFirst = r; }));
+    const high1 = sem.run(async () => order.push('high1'));
+    const low1 = sem.run(async () => order.push('low1'), { priority: 'low' });
+    const high2 = sem.run(async () => order.push('high2'));
+    releaseFirst();
+    await Promise.all([first, high1, low1, high2]);
+    assert.deepEqual(order, ['high1', 'low1', 'high2']);
+    assert.equal(sem.active, 0);
+});
+
+test('Semaphore acquire honors timeoutMs and AbortSignal', async () => {
+    const sem = new Semaphore(1);
+    let release;
+    const held = sem.run(() => new Promise((r) => { release = r; }));
+    await assert.rejects(sem.run(async () => 'never', { timeoutMs: 20 }), /Timed out/);
+    const controller = new AbortController();
+    const aborted = sem.run(async () => 'never', { signal: controller.signal });
+    controller.abort();
+    await assert.rejects(aborted);
+    release();
+    await held;
+    assert.equal(sem.active, 0);
+});
+
 test('JsonStore writes atomically, caches and deletes', async () => {
     const dir = path.join(process.env.DATA_DIR, 'store-test');
     const store = new JsonStore(dir);
     await store.set('123', { a: 1 });
     await store.set('123', { a: 2 });
     assert.deepEqual(JSON.parse(fs.readFileSync(path.join(dir, '123.json'), 'utf8')), { a: 2 });
-    assert.deepEqual(new JsonStore(dir).get('123'), { a: 2 });
+    const reopened = new JsonStore(dir);
+    assert.equal(reopened.get('123'), null, 'reads come from the in-memory mirror only');
+    await reopened.initialize();
+    assert.deepEqual(reopened.get('123'), { a: 2 });
     assert.deepEqual(store.keys(), ['123']);
     await store.delete('123');
     assert.equal(fs.existsSync(path.join(dir, '123.json')), false);
+    assert.deepEqual(store.keys(), []);
     assert.throws(() => store.file('../evil'));
     assert.equal(fs.readdirSync(dir).filter((f) => f.endsWith('.tmp')).length, 0);
 });

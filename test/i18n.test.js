@@ -92,7 +92,7 @@ test('v16 language settings (database/languages.json) keep working without migra
     i18n.resetLegacyCache();
 });
 
-test('the repository database/languages.json is valid', () => {
+test('legacy language lookup degrades cleanly when no legacy file exists', () => {
     i18n.resetLegacyCache();
     assert.equal(i18n.legacyLanguage('000000000000000000'), null);
 });

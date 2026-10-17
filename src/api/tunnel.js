@@ -55,10 +55,17 @@ async function startTunnel(port = 3001, timeoutMs = 25_000) {
 
     return new Promise((resolve) => {
         let resolved = false;
+        let child = null;
         const timer = setTimeout(() => {
             if (!resolved) {
                 resolved = true;
-                log.warn('Timeout waiting for Cloudflare tunnel URL.');
+                log.warn('Timeout waiting for Cloudflare tunnel URL; killing cloudflared.');
+                // Without this a tunnel that never produced a URL would keep running unseen.
+                try {
+                    child?.kill('SIGKILL');
+                } catch {
+                    // already gone
+                }
                 resolve(null);
             }
         }, timeoutMs);
@@ -66,7 +73,7 @@ async function startTunnel(port = 3001, timeoutMs = 25_000) {
 
         try {
             log.info(`Starting Cloudflare tunnel for http://localhost:${port}...`);
-            const child = spawn(binary, ['tunnel', '--url', `http://localhost:${port}`], {
+            child = spawn(binary, ['tunnel', '--url', `http://localhost:${port}`], {
                 stdio: ['ignore', 'pipe', 'pipe'],
                 windowsHide: true,
             });

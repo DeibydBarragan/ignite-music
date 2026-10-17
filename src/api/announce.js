@@ -1,13 +1,16 @@
 'use strict';
 
 const config = require('../config');
+const tunnel = require('./tunnel');
 const { supabase } = require('../core/supabase');
 const log = require('../core/logger').createLogger('announce');
 
 const HEARTBEAT_MS = 60_000;
 
 function publicUrl() {
-    const raw = String(config.api.publicUrl || '').trim().replace(/\/+$/, '');
+    // The auto-tunnel URL lives in the tunnel module (manager process only);
+    // PUBLIC_API_URL covers shards and setups with a fixed public URL.
+    const raw = String(tunnel.getTunnelUrl() || config.api.publicUrl || '').trim().replace(/\/+$/, '');
     return /^https?:\/\//i.test(raw) ? raw : '';
 }
 

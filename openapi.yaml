@@ -1,0 +1,359 @@
+openapi: 3.1.0
+info:
+  title: Ignite Music Bot API
+  version: 17.0.0
+  description: |
+    Internal REST API exposed by each bot shard (default port 3001).
+    Every endpoint except /health requires `Authorization: Bearer <API_SECRET>`.
+    Errors follow RFC 7807 and include a stable `code` (kept next to the legacy
+    `error` key the Next.js dashboard BFF still reads).
+servers:
+  - url: http://localhost:3001
+    description: Local shard API
+security:
+  - bearerAuth: []
+tags:
+  - name: health
+  - name: player
+  - name: queue
+  - name: discovery
+
+paths:
+  /api/v1/health:
+    get:
+      tags: [health]
+      security: []
+      summary: Liveness probe
+      responses:
+        '200':
+          description: Bot uptime
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: ok }
+                  uptime: { type: integer }
+
+  /api/v1/guilds/{guildId}/player:
+    get:
+      tags: [player]
+      summary: Current player snapshot (queue, track, voice state)
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+      responses:
+        '200':
+          description: Player state
+          content:
+            application/json:
+              schema: { type: object }
+        '404': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/play:
+    post:
+      tags: [player]
+      summary: Queue a search query, URL or playlist
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [query]
+              properties:
+                query: { type: string, minLength: 1, maxLength: 1000 }
+                voiceChannelId: { type: string, pattern: '^\d{17,20}$' }
+                userId: { type: string, pattern: '^\d{17,20}$' }
+                next: { type: boolean }
+                skip: { type: boolean }
+      responses:
+        '200':
+          description: Play result
+          content:
+            application/json:
+              schema: { type: object }
+        '400': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/control:
+    post:
+      tags: [player]
+      summary: Run a playback control action
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action:
+                  type: string
+                  enum: [pause, resume, toggle, skip, previous, stop, shuffle, autoplay, filter, volume, seek, loop]
+                value:
+                  oneOf: [{ type: string }, { type: number }, { type: boolean }, { type: 'null' }]
+      responses:
+        '200':
+          description: Action result
+          content:
+            application/json:
+              schema: { type: object }
+        '400': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/events:
+    get:
+      tags: [player]
+      summary: Server-Sent Events stream (initial player.sync snapshot, then updates)
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+      responses:
+        '200':
+          description: |
+            SSE stream. Events: `player.sync` with the player snapshot payload.
+          content:
+            text/event-stream:
+              schema: { type: string }
+        '404': { $ref: '#/components/responses/Problem' }
+
+  /api/v1/guilds/{guildId}/queue:
+    delete:
+      tags: [queue]
+      summary: Clear every upcoming song (current song keeps playing)
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Clear result
+          content:
+            application/json:
+              schema: { type: object }
+        '404': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/queue/undo:
+    post:
+      tags: [queue]
+      summary: Restore the songs removed by the last clear (60s window)
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Restore result
+          content:
+            application/json:
+              schema: { type: object }
+        '400': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/queue/{index}:
+    delete:
+      tags: [queue]
+      summary: Remove the upcoming song at a queue index
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - name: index
+          in: path
+          required: true
+          schema: { type: integer, minimum: 1 }
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Removed song
+          content:
+            application/json:
+              schema: { type: object }
+        '400': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/queue/items/{trackId}:
+    delete:
+      tags: [queue]
+      summary: Remove an upcoming song by stable trackId
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - name: trackId
+          in: path
+          required: true
+          schema: { type: string, pattern: '^[A-Za-z0-9_-]{8,64}$' }
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Removed song
+          content:
+            application/json:
+              schema: { type: object }
+        '404': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/queue/move:
+    post:
+      tags: [queue]
+      summary: Move an upcoming song from one index to another
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [from, to]
+              properties:
+                from: { type: integer, minimum: 1 }
+                to: { type: integer, minimum: 1 }
+      responses:
+        '200':
+          description: Move result
+          content:
+            application/json:
+              schema: { type: object }
+        '400': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/queue/order:
+    patch:
+      tags: [queue]
+      summary: Reorder a track by trackId
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [trackId, to]
+              properties:
+                trackId: { type: string, pattern: '^[A-Za-z0-9_-]{8,64}$' }
+                to: { type: integer, minimum: 1 }
+      responses:
+        '200':
+          description: Order result
+          content:
+            application/json:
+              schema: { type: object }
+        '404': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/queue/jump:
+    post:
+      tags: [queue]
+      summary: Jump to an upcoming position
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [position]
+              properties:
+                position: { type: integer, minimum: 1 }
+      responses:
+        '200':
+          description: Jump result
+          content:
+            application/json:
+              schema: { type: object }
+        '400': { $ref: '#/components/responses/Problem' }
+
+  /api/v1/guilds:
+    get:
+      tags: [discovery]
+      summary: Guilds with an active player across every shard
+      responses:
+        '200':
+          description: Guild list
+          content:
+            application/json:
+              schema: { type: array, items: { type: object } }
+  /api/v1/search:
+    get:
+      tags: [discovery]
+      summary: Search tracks
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema: { type: string, minLength: 1 }
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Track' } }
+  /api/v1/search/suggest:
+    get:
+      tags: [discovery]
+      summary: Autocomplete suggestions
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema: { type: string, minLength: 1 }
+      responses:
+        '200':
+          description: Suggestions
+          content:
+            application/json:
+              schema: { type: array, items: { type: string } }
+  /api/v1/guilds/{guildId}/top-songs:
+    get:
+      tags: [discovery]
+      summary: Most played songs for the guild
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+      responses:
+        '200':
+          description: Top songs
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Track' } }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API_SECRET from .env (minimum 32 characters)
+  parameters:
+    GuildId:
+      name: guildId
+      in: path
+      required: true
+      schema: { type: string, pattern: '^\d{17,20}$' }
+    UserId:
+      name: X-User-Discord-Id
+      in: header
+      required: true
+      description: Acting Discord user; required on every mutating request.
+      schema: { type: string, pattern: '^\d{17,20}$' }
+  responses:
+    Problem:
+      description: RFC 7807 problem document
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+  schemas:
+    Problem:
+      type: object
+      required: [type, title, status, code]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        code:
+          type: string
+          description: Stable machine-readable error code (e.g. UNAUTHORIZED, BLOCKED_URL, UNDO_EXPIRED).
+        error:
+          type: string
+          description: Legacy alias kept for the dashboard BFF.
+        timestamp: { type: string, format: date-time }
+    Track:
+      type: object
+      properties:
+        trackId: { type: string }
+        title: { type: string }
+        artist: { type: string }
+        url: { type: string, format: uri }
+        duration: { type: integer }
+        thumbnail: { type: string, format: uri }
+        source: { type: string, enum: [youtube, spotify] }

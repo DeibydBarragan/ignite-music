@@ -1,5 +1,7 @@
 'use strict';
 
+const { EMOJI } = require('./constants');
+
 /**
  * Format seconds as m:ss or h:mm:ss.
  */
@@ -52,8 +54,6 @@ function safeUrl(url) {
     }
 }
 
-// Emoji (with their joiners, variation selectors, skin tones and keycaps) and flags.
-const EMOJI = /[\p{Extended_Pictographic}\p{Regional_Indicator}\u{1F3FB}-\u{1F3FF}\u20E3\uFE0E\uFE0F\u200D]/gu;
 // Control, format (zero-width, bidi), separator and private-use characters.
 const INVISIBLE = /[\p{Cc}\p{Cf}\p{Zl}\p{Zp}\p{Co}]/gu;
 // Url schemes and dots between letters/digits, which Discord reads as a url or domain in a label.
@@ -90,6 +90,9 @@ function link(title, url, max = 80) {
 }
 
 function chunk(items, size) {
+    if (!Number.isInteger(size) || size < 1) {
+        throw new RangeError(`chunk size must be a positive integer, got: ${size}`);
+    }
     const out = [];
     for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
     return out;

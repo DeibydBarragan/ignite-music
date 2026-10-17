@@ -69,7 +69,10 @@ function runNpmInstall(root = ROOT) {
     const result = npmCli && npmCli.endsWith('.js')
         ? spawnSync(process.execPath, [npmCli, ...args], { cwd: root, stdio: 'inherit' })
         : spawnSync(process.platform === 'win32' ? 'npm.cmd' : 'npm', args, { cwd: root, stdio: 'inherit', shell: process.platform === 'win32' });
-    if (result.error) return { ok: false, error: result.error.code === 'ENOENT' ? 'npm was not found' : result.error.message };
+    if (result.error) {
+        const code = /** @type {NodeJS.ErrnoException} */ (result.error).code;
+        return { ok: false, error: code === 'ENOENT' ? 'npm was not found' : result.error.message };
+    }
     return { ok: result.status === 0, error: result.status === 0 ? null : `npm install exited with code ${result.status}` };
 }
 
@@ -102,6 +105,8 @@ function run(root = ROOT) {
         fs.writeFileSync(markerFile(root), dependencyFingerprint(root));
     }
     report.ok('npm packages');
+    // Failures throw SetupError via report.stop; reaching this line always means success.
+    return { ok: true, problems: [] };
 }
 
 module.exports = { run, nodeVersionOk, needsInstall, missingPackages, dependencyFingerprint, markerFile };

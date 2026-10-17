@@ -45,6 +45,11 @@
       "playlist_success": "Playlist mit **{count} Songs** zur Warteschlange hinzugefügt!",
       "track_started": "**{title}** wird jetzt abgespielt!",
       "track_queued": "**{title}** zur Warteschlange hinzugefügt! (Position {position})"
+    },
+    "playnext": {
+      "description": "Einen Song direkt nach dem aktuellen abspielen (überspringt die Warteschlange)",
+      "query_description": "Songname, Künstler, YouTube/Spotify-URL oder Direktlink",
+      "track_queued": "Als Nächstes: **{title}**! (Position 1)"
     }
   },
   "youtube": {
@@ -105,7 +110,8 @@
     "loop_queue": "Schleife: Warteschlange",
     "autoplay_off": "Autoplay: Aus",
     "autoplay_on": "Autoplay: An",
-    "lyrics": "Songtext"
+    "lyrics": "Songtext",
+    "favorite": "Favorit"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube hat diese Anfrage blockiert (Bot-Erkennung)**\nYouTube lehnt Anfragen von der IP-Adresse dieses Servers ab.\n\n**Lösung:** Füge `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (oder firefox/edge) oder `YOUTUBE_PO_TOKEN` in die `.env`-Datei ein. Siehe `README.md` für Schritt-für-Schritt-Anleitung.",
@@ -116,7 +122,8 @@
     "network_error": "**Netzwerkfehler**\nDer Bot konnte sich nicht mit der Musikplattform verbinden. Dies ist meist ein vorübergehendes Problem.\n\n**Lösung:** Warte kurz und versuche es erneut.",
     "stream_failed": "**Audio-Stream fehlgeschlagen**\nDer Bot hat den Song gefunden, konnte den Audio-Stream jedoch nicht starten.\n\n**Lösung:** Versuche es erneut oder probiere eine andere Version des Songs.",
     "voice_no_permission": "**Fehlende Sprachkanal-Berechtigungen**\nDer Bot hat keine Berechtigung, deinem Sprachkanal beizutreten oder darin zu sprechen.\n\n**Lösung:** Sprachkanal-Einstellungen → Berechtigungen → gib dem Bot **Verbinden** und **Sprechen**.",
-    "unknown": "**Ein unerwarteter Fehler ist aufgetreten**\nBei der Verarbeitung deiner Anfrage ist etwas schiefgelaufen.\n\n**Lösung:** Versuche es in Kürze erneut. Falls das Problem anhält, prüfe die Bot-Konsole für das vollständige Fehlerprotokoll."
+    "unknown": "**Ein unerwarteter Fehler ist aufgetreten**\nBei der Verarbeitung deiner Anfrage ist etwas schiefgelaufen.\n\n**Lösung:** Versuche es in Kürze erneut. Falls das Problem anhält, prüfe die Bot-Konsole für das vollständige Fehlerprotokoll.",
+    "drm_protected": "**DRM-geschützter Titel**\nDieser Titel ist DRM-geschützt (SoundCloud Go+ o. Ä.) und kann ohne Abo nicht abgespielt werden. Suche nach einer Alternativversion oder einem Remix."
   },
   "ui": {
     "voice_full": "Dieser Sprachkanal ist voll.",
@@ -144,6 +151,11 @@
     "moved": "**{title}** wurde auf Position {position} verschoben.",
     "invalid_position": "Auf Position {position} gibt es keinen Song.",
     "invite": "Einladen",
-    "fallback_soundcloud": "YouTube hat für diesen Song nicht funktioniert, daher wird er von SoundCloud abgespielt."
+    "fallback_soundcloud": "YouTube hat für diesen Song nicht funktioniert, daher wird er von SoundCloud abgespielt.",
+    "playlists_title": "Deine Playlists ({count})",
+    "playlists_title_query": "Deine Playlists · \"{filter}\" ({count})",
+    "playlists_empty": "Du hast noch keine gespeicherten Playlists.\nNutze `/new-playlist` mit einem Spotify- oder YouTube-Link, um deine erste zu importieren.",
+    "playlists_line": "{source} · {count} Titel · ~{duration}",
+    "playlists_hint": "`/playlists reproducir:<nombre>` spielt sie ab · `/new-playlist` importiert"
   }
 }

@@ -8,12 +8,16 @@ const logger = require('./core/logger');
 const { loadCommands } = require('./commands');
 const { MusicManager } = require('./music/manager');
 const { onInteraction } = require('./handlers/interactions');
+const { registerApiOps } = require('./api/v1/ops');
 const { startApiServer } = require('./api/server');
 const { startAnnouncer } = require('./api/announce');
 const ytdlp = require('./music/ytdlp');
 
 const log = logger.createLogger('bot');
 logger.setDebug(config.debug);
+
+// Start minting the PO token while the client logs in (shards run without preflight).
+require('./music/pot').startPoTokenRenewal();
 
 /**
  * Create the Discord client with the music system attached. Exported for tests.
@@ -28,6 +32,8 @@ function createClient() {
     client.commands = loadCommands();
     client.commandIds = new Map();
     client.music = new MusicManager(client);
+    // Every shard can serve REST operations for the guilds it owns.
+    registerApiOps(client.music);
 
     client.on(Events.InteractionCreate, onInteraction);
     client.on(Events.VoiceStateUpdate, (oldState, newState) => {
@@ -61,6 +67,8 @@ function createClient() {
             }
             if (client.apiServer) {
                 client.apiServer.close();
+                // Drop keep-alive sockets so the listener actually closes (Node 18.2+).
+                client.apiServer.closeAllConnections?.();
             }
             await client.music.shutdown().catch((error) => log.error('Music shutdown failed:', error));
             await client.destroy();
@@ -83,7 +91,7 @@ async function start() {
     else log.error(`yt-dlp at "${ytdlp.binary}" does not work: ${ytdlpStatus.error}. YouTube will not play until this is fixed.`);
 
     const client = createClient();
-    const managed = Boolean(process.env.SHARDING_MANAGER);
+    const managed = config.sharding.managed;
 
     const exit = async (code) => {
         await client.shutdown();

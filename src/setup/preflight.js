@@ -9,82 +9,22 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const config = require('../config');
 const binaries = require('../core/binaries');
+const supabaseModule = require('../core/supabase');
+const pot = require('../music/pot');
 const report = require('./report');
-
-const SNOWFLAKE = /^\d{17,20}$/;
-const TOKEN = /^[\w-]{20,}\.[\w-]{4,}\.[\w-]{20,}$/;
-const BROWSERS = ['brave', 'chrome', 'chromium', 'edge', 'firefox', 'opera', 'safari', 'vivaldi', 'whale'];
-
-const TOKEN_STEPS = [
-    '1. Open https://discord.com/developers/applications and select your bot',
-    '2. Go to "Bot" and press "Reset Token", then copy the token',
-    '3. Paste it into the .env file in the bot folder:  DISCORD_TOKEN=your_token',
-];
-
-const installHelp = (what) => ({
-    darwin: `macOS: install Homebrew (https://brew.sh), then run: brew install ${what}`,
-    win32: `Windows: run in a terminal: winget install ${what === 'ffmpeg' ? 'Gyan.FFmpeg' : 'yt-dlp.yt-dlp'}`,
-    linux: `Linux (Ubuntu/Debian): sudo apt install ${what}`,
-}[process.platform] || `Install ${what} with your system's package manager`);
-
-/**
- * Create .env from .env.example on first start (unless the host provides variables directly).
- */
-function ensureEnvFile(root = config.root) {
-    const envFile = path.join(root, '.env');
-    const example = path.join(root, '.env.example');
-    if (fs.existsSync(envFile) || process.env.DISCORD_TOKEN) return false;
-    if (!fs.existsSync(example)) return false;
-    fs.copyFileSync(example, envFile);
-    return true;
-}
-
-function validateProxy(url) {
-    try {
-        const parsed = new URL(url);
-        return ['http:', 'https:', 'socks4:', 'socks5:', 'socks5h:'].includes(parsed.protocol) && Boolean(parsed.hostname);
-    } catch {
-        return false;
-    }
-}
-
-/**
- * Ask Discord who this token belongs to. Returns { ok, application } or { ok: false, reason }.
- */
-async function checkToken(token, fetchImpl = fetch) {
-    try {
-        const response = await fetchImpl('https://discord.com/api/v10/applications/@me', {
-            headers: { Authorization: `Bot ${token}` },
-            signal: AbortSignal.timeout(10_000),
-        });
-        if (response.status === 401) return { ok: false, reason: 'invalid' };
-        if (!response.ok) return { ok: false, reason: 'unreachable', detail: `HTTP ${response.status}` };
-        return { ok: true, application: await response.json() };
-    } catch (error) {
-        return { ok: false, reason: 'unreachable', detail: error.message };
-    }
-}
-
-function canWrite(dir) {
-    try {
-        fs.mkdirSync(dir, { recursive: true });
-        const probe = path.join(dir, `.write-test-${crypto.randomBytes(4).toString('hex')}`);
-        fs.writeFileSync(probe, 'ok');
-        fs.rmSync(probe);
-        return true;
-    } catch {
-        return false;
-    }
-}
-
-function loads(name) {
-    try {
-        require(name);
-        return true;
-    } catch {
-        return false;
-    }
-}
+const {
+    MIN_API_SECRET_LENGTH,
+    SNOWFLAKE,
+    TOKEN,
+    BROWSERS,
+    TOKEN_STEPS,
+    installHelp,
+    ensureEnvFile,
+    validateProxy,
+    checkToken,
+    canWrite,
+    loads,
+} = require('./preflight-checks');
 
 async function run({ fetchImpl = fetch } = {}) {
     let problems = 0;
@@ -117,8 +57,9 @@ async function run({ fetchImpl = fetch } = {}) {
                     `Using this bot's own id instead: ${app.id}. You can remove CLIENT_ID from .env.`,
                 ]);
             }
-            config.discord.clientId = app.id;
-            process.env.CLIENT_ID = app.id; // shards read it from the environment
+            // config.discord.clientId is a live getter over CLIENT_ID, so this
+            // single write serves the manager, deploy and every shard.
+            process.env.CLIENT_ID = app.id;
             report.ok('Discord token', `${name} (application ${app.id})`);
         } else if (result.reason === 'invalid') {
             fail('Discord rejected DISCORD_TOKEN (wrong or reset token)', TOKEN_STEPS);
@@ -155,7 +96,8 @@ async function run({ fetchImpl = fetch } = {}) {
                 'or remove COOKIES_FILE from .env.',
             ]);
         } else {
-            config.ytdlp.cookiesFile = file;
+            // config.ytdlp.cookiesFile is a live getter over COOKIES_FILE, so
+            // the resolved absolute path flows to every shard from here.
             process.env.COOKIES_FILE = file;
             report.ok('YouTube cookies', file);
         }
@@ -166,6 +108,23 @@ async function run({ fetchImpl = fetch } = {}) {
     }
     if (!canWrite(config.dataDir)) {
         fail(`Cannot write to ${config.dataDir}`, ['The bot saves settings there. Give your user write permission to the bot folder.']);
+    }
+
+    // ─── API security ──────────────────────────────────────────────────
+    if (config.api.enabled) {
+        if ((config.api.secret || '').length < MIN_API_SECRET_LENGTH) {
+            fail(`API_SECRET is missing or too short (minimum ${MIN_API_SECRET_LENGTH} characters)`, [
+                'The REST API refuses to start with a weak, empty or default secret.',
+                'Generate one and add it to .env:',
+                '  node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"',
+                'Or set API_ENABLED=false to run the bot without the web dashboard API.',
+            ]);
+        } else {
+            report.ok('API secret', `configured (${MIN_API_SECRET_LENGTH}+ characters)`);
+        }
+        if (config.api.allowedOrigins.length === 0) {
+            report.info('API_ALLOWED_ORIGINS is empty', 'browser cross-origin requests will be rejected (server-to-server clients are unaffected)');
+        }
     }
 
     // ─── Audio tools ───────────────────────────────────────────────────
@@ -197,9 +156,12 @@ async function run({ fetchImpl = fetch } = {}) {
         ]);
     }
 
+    // Mint the PO token while the shards boot, so the first downloads carry it.
+    pot.startPoTokenRenewal();
+
     const voiceProblems = [
         !loads('@snazzah/davey') && '@snazzah/davey (Discord voice encryption)',
-        !loads('opusscript') && 'opusscript (audio encoder)',
+        !loads('@discordjs/opus') && '@discordjs/opus (audio encoder)',
         !crypto.getCiphers().includes('aes-256-gcm') && 'aes-256-gcm support in Node.js',
     ].filter(Boolean);
     if (voiceProblems.length) {
@@ -216,8 +178,21 @@ async function run({ fetchImpl = fetch } = {}) {
         report.info('Spotify API keys not set', 'optional: large Spotify playlists load only their first 100 songs');
     }
 
+    if (supabaseModule.supabase) {
+        const health = await supabaseModule.verifyConnection();
+        if (health.ok) report.ok('Supabase', 'connection verified');
+        else report.warn('Supabase connection could not be verified', [
+            `Reason: ${health.reason}`,
+            'History, favorites and web playlists degrade until this is fixed.',
+        ]);
+    } else {
+        report.info('Supabase not configured', 'optional: play history, favorites and web playlists are disabled');
+    }
+
     if (problems) report.stop(problems);
     console.log('');
+    // Failures throw SetupError via report.stop; reaching this line always means success.
+    return { ok: true, problems: [] };
 }
 
 module.exports = { run, ensureEnvFile, validateProxy, checkToken, TOKEN };

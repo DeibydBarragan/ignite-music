@@ -6,14 +6,14 @@ const { spawn } = require('node:child_process');
 const { createHash } = require('node:crypto');
 const config = require('../config');
 const { Semaphore } = require('../core/cache');
-const { currentPoToken } = require('./pot');
+const { currentPoToken, currentPoTokenAsync } = require('./pot');
 const log = require('../core/logger').createLogger('yt-dlp');
 
 const isWindows = process.platform === 'win32';
 const binaryName = isWindows ? 'yt-dlp.exe' : 'yt-dlp';
 
 /**
- * Locate yt-dlp: YTDLP_PATH > the self-contained build in bin/ (installed by src/core/binaries.js) > yt-dlp on PATH.
+ * Locate yt-dlp: YTDLP_PATH > the self-contained build in bin/ (installed by src/core/binaries/) > yt-dlp on PATH.
  */
 function resolveBinary() {
     if (config.ytdlp.path) return config.ytdlp.path;
@@ -38,7 +38,7 @@ function proxyFor(key, proxies = config.proxies) {
 /**
  * Base arguments shared by every yt-dlp call.
  */
-function baseArgs({ proxy = null, settings = config.ytdlp } = {}) {
+function baseArgs({ proxy = null, settings = config.ytdlp, poToken = currentPoToken() } = {}) {
     const args = [
         '--ignore-config',
         '--no-warnings',
@@ -54,8 +54,8 @@ function baseArgs({ proxy = null, settings = config.ytdlp } = {}) {
 
     const extractorArgs = [];
     // Live auto-renewed token first, static env token as fallback.
-    const poToken = currentPoToken() || settings.poToken;
-    if (poToken) extractorArgs.push(`youtube:po_token=web.gvs+${poToken};player_client=web,default`);
+    const token = poToken || settings.poToken;
+    if (token) extractorArgs.push(`youtube:po_token=web.gvs+${token};player_client=web,default`);
     if (settings.extractorArgs) extractorArgs.push(settings.extractorArgs);
     for (const value of extractorArgs) args.push('--extractor-args', value);
 
@@ -88,47 +88,66 @@ function cleanError(stderr) {
 
 /**
  * Run yt-dlp and parse the JSON it prints. stdout and stderr are kept apart so warnings
- * never corrupt the JSON.
+ * never corrupt the JSON. queueTimeoutMs bounds the wait for a free slot, and signal
+ * lets callers abort before a process is spawned.
  */
-function runJson(target, extraArgs = [], { proxy = null, priority = 'high', timeoutMs = config.ytdlp.timeoutMs } = {}) {
-    const args = [...baseArgs({ proxy }), ...extraArgs, '--dump-single-json', '--', target];
+async function runJson(target, extraArgs = [], {
+    proxy = null,
+    priority = 'high',
+    timeoutMs = config.ytdlp.timeoutMs,
+    queueTimeoutMs = timeoutMs,
+    signal = null,
+} = {}) {
+    const poToken = await currentPoTokenAsync();
+    const args = [...baseArgs({ proxy, poToken }), ...extraArgs, '--dump-single-json', '--', target];
 
-    return limiter.run(() => new Promise((resolve, reject) => {
-        const started = Date.now();
-        let stdout = '';
-        let stderr = '';
-        let settled = false;
-        const child = spawn(binary, args, { windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
+    try {
+        await limiter.acquire({ priority, timeoutMs: queueTimeoutMs, signal });
+    } catch (error) {
+        throw new YtDlpError(error.message);
+    }
 
-        const finish = (error, value) => {
-            if (settled) return;
-            settled = true;
-            clearTimeout(timer);
-            if (error) reject(error);
-            else resolve(value);
-        };
+    try {
+        return await new Promise((resolve, reject) => {
+            const started = Date.now();
+            let stdout = '';
+            let stderr = '';
+            let settled = false;
+            const child = spawn(binary, args, { windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
 
-        const timer = setTimeout(() => {
-            child.kill('SIGKILL');
-            finish(new YtDlpError(`yt-dlp timed out after ${Math.round(timeoutMs / 1000)}s`));
-        }, timeoutMs);
+            const finish = (error, value) => {
+                if (settled) return;
+                settled = true;
+                clearTimeout(timer);
+                if (error) reject(error);
+                else resolve(value);
+            };
 
-        child.stdout.setEncoding('utf8').on('data', (data) => (stdout += data));
-        child.stderr.setEncoding('utf8').on('data', (data) => (stderr += data));
-        child.on('error', (error) => {
-            const hint = error.code === 'ENOENT' ? ' (yt-dlp binary not found, run "npm install" or set YTDLP_PATH)' : '';
-            finish(new YtDlpError(`${error.message}${hint}`));
+            const timer = setTimeout(() => {
+                child.kill('SIGKILL');
+                finish(new YtDlpError(`yt-dlp timed out after ${Math.round(timeoutMs / 1000)}s`));
+            }, timeoutMs);
+
+            child.stdout.setEncoding('utf8').on('data', (data) => (stdout += data));
+            child.stderr.setEncoding('utf8').on('data', (data) => (stderr += data));
+            child.on('error', (error) => {
+                const code = /** @type {NodeJS.ErrnoException} */ (error).code;
+                const hint = code === 'ENOENT' ? ' (yt-dlp binary not found, run "npm install" or set YTDLP_PATH)' : '';
+                finish(new YtDlpError(`${error.message}${hint}`));
+            });
+            child.on('close', (code) => {
+                log.debug(`${code} in ${Date.now() - started}ms: ${target}`);
+                if (code !== 0) return finish(new YtDlpError(cleanError(stderr), stderr));
+                try {
+                    finish(null, JSON.parse(stdout));
+                } catch {
+                    finish(new YtDlpError('yt-dlp returned invalid JSON', stderr));
+                }
+            });
         });
-        child.on('close', (code) => {
-            log.debug(`${code} in ${Date.now() - started}ms: ${target}`);
-            if (code !== 0) return finish(new YtDlpError(cleanError(stderr), stderr));
-            try {
-                finish(null, JSON.parse(stdout));
-            } catch {
-                finish(new YtDlpError('yt-dlp returned invalid JSON', stderr));
-            }
-        });
-    }), { priority });
+    } finally {
+        limiter.release();
+    }
 }
 
 /**
@@ -141,7 +160,10 @@ async function version() {
         let err = '';
         child.stdout.on('data', (data) => (out += data));
         child.stderr.on('data', (data) => (err += data));
-        child.on('error', (error) => resolve({ error: error.code === 'ENOENT' ? 'not found' : error.message }));
+        child.on('error', (error) => {
+            const code = /** @type {NodeJS.ErrnoException} */ (error).code;
+            resolve({ error: code === 'ENOENT' ? 'not found' : error.message });
+        });
         child.on('close', (code) => resolve(code === 0
             ? { version: out.trim() }
             : { error: (err || out).trim().split(/\r?\n/).pop() || `exit code ${code}` }));

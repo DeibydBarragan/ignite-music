@@ -110,7 +110,8 @@
     "loop_queue": "Loop: Queue",
     "autoplay_off": "Autoplay: Off",
     "autoplay_on": "Autoplay: On",
-    "lyrics": "Lyrics"
+    "lyrics": "Lyrics",
+    "favorite": "Favorite"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube blocked this request (bot detection)**\nYouTube is rejecting requests from this server's IP address.\n\n**Fix (bot owner):** export YouTube cookies to a `cookies.txt` file and set `COOKIES_FILE=./cookies.txt` in `.env`, or set `YOUTUBE_PO_TOKEN` / `PROXY_URL`. Step by step guide: README.md, section \"YouTube: Sign in to confirm you're not a bot\".",
@@ -150,6 +151,11 @@
     "moved": "Moved **{title}** to position {position}.",
     "invalid_position": "There is no song at position {position}.",
     "invite": "Invite",
-    "fallback_soundcloud": "YouTube did not work for this song, so it is playing from SoundCloud."
+    "fallback_soundcloud": "YouTube did not work for this song, so it is playing from SoundCloud.",
+    "playlists_title": "Your playlists ({count})",
+    "playlists_title_query": "Your playlists · \"{filter}\" ({count})",
+    "playlists_empty": "You have no saved playlists yet.\nUse `/new-playlist` with a Spotify or YouTube link to import your first one.",
+    "playlists_line": "{source} · {count} tracks · ~{duration}",
+    "playlists_hint": "`/playlists reproducir:<nombre>` to play one · `/new-playlist` to import"
   }
 }

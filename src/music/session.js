@@ -4,6 +4,7 @@ const path = require('node:path');
 const { Song } = require('distube');
 const config = require('../config');
 const { JsonStore } = require('../core/store');
+const { resolveRequester, requesterName } = require('../core/user');
 
 const MAX_AGE_MS = 30 * 60_000;
 
@@ -14,6 +15,8 @@ class SessionStore {
     constructor(plugins, dir = path.join(config.dataDir, 'sessions')) {
         this.store = new JsonStore(dir);
         this.plugins = plugins; // { key: pluginInstance }
+        // Warm the in-memory cache before the first restore/load during startup.
+        this.store.initialize().catch(() => undefined);
     }
 
     pluginKey(plugin) {
@@ -21,7 +24,7 @@ class SessionStore {
     }
 
     serializeSong(song) {
-        const user = song.metadata?.requesterUser || song.member?.user || song.user;
+        const user = resolveRequester(song);
         const isBot = Boolean(song.member?.user?.bot || user?.bot);
         return {
             plugin: this.pluginKey(song.plugin),
@@ -38,7 +41,7 @@ class SessionStore {
             requesterId: song.metadata?.requesterId || (isBot ? null : user?.id),
             requesterUser: song.metadata?.requesterUser || (user ? {
                 id: user.id,
-                username: song.member?.displayName || user.globalName || user.username,
+                username: requesterName(song, user),
                 avatar: typeof (song.member?.displayAvatarURL || user?.displayAvatarURL) === 'function'
                     ? (song.member?.displayAvatarURL?.() || user?.displayAvatarURL?.())
                     : (user.avatar || null),
@@ -63,9 +66,17 @@ class SessionStore {
         };
     }
 
-    save(queue) {
-        if (!queue?.songs?.length) return this.store.delete(queue.id);
-        return this.store.set(queue.id, this.serialize(queue));
+    /**
+     * Persist (or clear, when the queue is empty) the guild session.
+     * Always resolves to a boolean: true when a session was written.
+     */
+    async save(queue) {
+        if (!queue?.songs?.length) {
+            await this.store.delete(queue.id);
+            return false;
+        }
+        await this.store.set(queue.id, this.serialize(queue));
+        return true;
     }
 
     remove(guildId) {

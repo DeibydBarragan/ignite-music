@@ -45,6 +45,11 @@
       "playlist_success": "Playlist dengan **{count} lagu** ditambahkan ke antrian!",
       "track_started": "Mulai memutar **{title}**!",
       "track_queued": "**{title}** ditambahkan ke antrian! (di posisi {position})"
+    },
+    "playnext": {
+      "description": "Putar lagu tepat setelah lagu saat ini (menyerobot antrean)",
+      "query_description": "Nama lagu, artis, URL YouTube/Spotify, atau tautan langsung",
+      "track_queued": "Berikutnya: **{title}**! (posisi 1)"
     }
   },
   "youtube": {
@@ -105,7 +110,8 @@
     "loop_queue": "Ulangi: Antrian",
     "autoplay_off": "Auto: Mati",
     "autoplay_on": "Auto: Aktif",
-    "lyrics": "Lirik"
+    "lyrics": "Lirik",
+    "favorite": "Favorit"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube memblokir permintaan ini (deteksi bot)**\nYouTube menolak permintaan dari alamat IP server ini.\n\n**Solusi:** Tambahkan `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (atau firefox/edge) atau `YOUTUBE_PO_TOKEN` di file `.env`. Lihat `README.md` untuk panduan langkah demi langkah.",
@@ -116,7 +122,8 @@
     "network_error": "**Kesalahan jaringan**\nBot tidak dapat terhubung ke platform musik. Ini biasanya masalah sementara.\n\n**Solusi:** Tunggu sebentar dan coba lagi.",
     "stream_failed": "**Stream audio gagal**\nBot menemukan lagu tetapi tidak dapat memulai stream audio.\n\n**Solusi:** Coba lagi atau coba versi lain dari lagu tersebut.",
     "voice_no_permission": "**Izin saluran suara tidak ada**\nBot tidak memiliki izin untuk bergabung atau berbicara di saluran suara Anda.\n\n**Solusi:** Pengaturan saluran suara → Izin → berikan bot izin **Sambungkan** dan **Bicara**.",
-    "unknown": "**Terjadi kesalahan tak terduga**\nSesuatu yang salah terjadi saat memproses permintaan Anda.\n\n**Solusi:** Coba lagi sebentar lagi. Jika masalah berlanjut, periksa log konsol bot."
+    "unknown": "**Terjadi kesalahan tak terduga**\nSesuatu yang salah terjadi saat memproses permintaan Anda.\n\n**Solusi:** Coba lagi sebentar lagi. Jika masalah berlanjut, periksa log konsol bot.",
+    "drm_protected": "**Trek berproteksi DRM**\nTrek ini dilindungi DRM (SoundCloud Go+ atau serupa) dan tidak bisa diputar tanpa langganan berbayar. Coba cari versi alternatif atau remix."
   },
   "ui": {
     "voice_full": "Channel suara tersebut penuh.",
@@ -144,6 +151,11 @@
     "moved": "**{title}** dipindahkan ke posisi {position}.",
     "invalid_position": "Tidak ada lagu di posisi {position}.",
     "invite": "Undang",
-    "fallback_soundcloud": "YouTube tidak berfungsi untuk lagu ini, jadi lagu diputar dari SoundCloud."
+    "fallback_soundcloud": "YouTube tidak berfungsi untuk lagu ini, jadi lagu diputar dari SoundCloud.",
+    "playlists_title": "Playlist kamu ({count})",
+    "playlists_title_query": "Playlist kamu · \"{filter}\" ({count})",
+    "playlists_empty": "Kamu belum punya playlist tersimpan.\nGunakan `/new-playlist` dengan tautan Spotify atau YouTube untuk mengimpor yang pertama.",
+    "playlists_line": "{source} · {count} trek · ~{duration}",
+    "playlists_hint": "`/playlists reproducir:<nombre>` untuk memutarnya · `/new-playlist` untuk mengimpor"
   }
 }

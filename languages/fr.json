@@ -45,6 +45,11 @@
       "playlist_success": "Playlist avec **{count} chansons** ajoutée à la file!",
       "track_started": "Lecture de **{title}** commencée!",
       "track_queued": "**{title}** ajouté à la file! (à la position {position})"
+    },
+    "playnext": {
+      "description": "Jouer un titre juste après le titre actuel (passe devant la file)",
+      "query_description": "Nom du titre, artiste, URL YouTube/Spotify ou lien direct",
+      "track_queued": "Lecture suivante : **{title}** ! (position 1)"
     }
   },
   "youtube": {
@@ -105,7 +110,8 @@
     "loop_queue": "Boucle: File",
     "autoplay_off": "Lecture Auto: Désactivée",
     "autoplay_on": "Lecture Auto: Activée",
-    "lyrics": "Paroles"
+    "lyrics": "Paroles",
+    "favorite": "Favori"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube a bloqué cette requête (détection de bot)**\nYouTube refuse les requêtes depuis l'adresse IP de ce serveur.\n\n**Solution:** Ajoutez `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (ou firefox/edge) ou `YOUTUBE_PO_TOKEN` dans le fichier `.env`. Consultez `README.md` pour les instructions détaillées.",
@@ -116,7 +122,8 @@
     "network_error": "**Erreur réseau**\nLe bot n'a pas pu se connecter à la plateforme musicale. Il s'agit généralement d'un problème temporaire.\n\n**Solution:** Attendez un moment et réessayez.",
     "stream_failed": "**Échec du flux audio**\nLe bot a trouvé le titre mais n'a pas pu démarrer le flux audio.\n\n**Solution:** Réessayez ou tentez une version différente de la chanson.",
     "voice_no_permission": "**Permissions du salon vocal manquantes**\nLe bot n'a pas la permission de rejoindre ou de parler dans votre salon vocal.\n\n**Solution:** Paramètres du salon vocal → Permissions → accordez au bot les permissions **Se connecter** et **Parler**.",
-    "unknown": "**Une erreur inattendue s'est produite**\nQuelque chose s'est mal passé lors du traitement de votre requête.\n\n**Solution:** Réessayez dans un moment. Si le problème persiste, consultez les logs de la console du bot."
+    "unknown": "**Une erreur inattendue s'est produite**\nQuelque chose s'est mal passé lors du traitement de votre requête.\n\n**Solution:** Réessayez dans un moment. Si le problème persiste, consultez les logs de la console du bot.",
+    "drm_protected": "**Titre protégé par DRM**\nCe titre est protégé par DRM (SoundCloud Go+ ou similaire) et ne peut pas être lu sans abonnement payant. Essaie une autre version ou un remix."
   },
   "ui": {
     "voice_full": "Ce canal vocal est plein.",
@@ -144,6 +151,11 @@
     "moved": "**{title}** a été déplacée en position {position}.",
     "invalid_position": "Il n'y a aucune chanson en position {position}.",
     "invite": "Inviter",
-    "fallback_soundcloud": "YouTube n’a pas fonctionné pour cette chanson, elle est donc lue depuis SoundCloud."
+    "fallback_soundcloud": "YouTube n’a pas fonctionné pour cette chanson, elle est donc lue depuis SoundCloud.",
+    "playlists_title": "Tes playlists ({count})",
+    "playlists_title_query": "Tes playlists · \"{filter}\" ({count})",
+    "playlists_empty": "Tu n'as pas encore de playlist enregistrée.\nUtilise `/new-playlist` avec un lien Spotify ou YouTube pour importer la première.",
+    "playlists_line": "{source} · {count} titres · ~{duration}",
+    "playlists_hint": "`/playlists reproducir:<nombre>` pour la jouer · `/new-playlist` pour importer"
   }
 }

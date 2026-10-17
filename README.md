@@ -143,6 +143,7 @@ Only `DISCORD_TOKEN` is required. See `.env.example` for the full commented list
 | `COOKIES_FROM_BROWSER` | | Read YouTube cookies from a local browser (`chrome`, `firefox`, `edge`, `safari`, …) |
 | `YOUTUBE_PO_TOKEN` | | YouTube PO token (advanced) |
 | `YTDLP_EXTRACTOR_ARGS` | | Extra yt-dlp `--extractor-args` (advanced) |
+| `INNERTUBE_HL` / `INNERTUBE_GL` | `es` / `CO` | Language/region for direct YouTube metadata (search, related) |
 | `YTDLP_CONCURRENCY` | `4` | Simultaneous yt-dlp processes per shard |
 | `YTDLP_PATH` / `FFMPEG_PATH` | auto-downloaded | Use your own binaries |
 | `PROXY_URL` | | Proxy for YouTube/audio (comma-separated list; each guild sticks to one) |

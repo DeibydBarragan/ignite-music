@@ -2,7 +2,7 @@
 
 const { command, queueAction } = require('./_shared');
 const actions = require('../music/actions');
-const views = require('../ui/views');
+const { FILTERS, FILTER_LABELS } = require('../music/filters');
 
 module.exports = {
     category: 'playback',
@@ -11,7 +11,7 @@ module.exports = {
             .setName('name')
             .setDescription('Filter')
             .setRequired(true)
-            .addChoices({ name: 'None', value: 'none' }, ...views.FILTERS.map((name) => ({ name: views.FILTER_LABELS[name], value: name })))),
+            .addChoices({ name: 'None', value: 'none' }, ...FILTERS.map((name) => ({ name: FILTER_LABELS[name], value: name })))),
 
     execute(interaction, ctx) {
         return queueAction(interaction, ctx, (queue, t) => actions.setFilter(queue, t, interaction.options.getString('name', true)));

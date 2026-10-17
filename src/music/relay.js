@@ -15,9 +15,7 @@ const MAX_ENTRIES = 300;
 // Large parts of yt-dlp's info that are not needed to download the chosen format.
 const UNUSED_INFO_KEYS = ['automatic_captions', 'subtitles', 'thumbnails', 'heatmap', 'chapters', 'description', 'requested_subtitles'];
 
-/**
- * Keep only what yt-dlp needs to download the already chosen format (keeps the files small).
- */
+/** Keep only what yt-dlp needs to download the chosen format (keeps files small). */
 function trimInfo(info) {
     const trimmed = { ...info };
     for (const key of UNUSED_INFO_KEYS) delete trimmed[key];
@@ -28,22 +26,12 @@ function trimInfo(info) {
     return trimmed;
 }
 
-/**
- * Each process (shard) has its own folder, so shards never delete each other's files.
- */
+/** Each process (shard) has its own folder, so shards never delete each other's files. */
 const processDir = () => path.join(config.dataDir, 'relay', String(process.pid));
 
 /**
- * Local audio relay. ffmpeg never connects to the internet itself: it reads from
- * http://127.0.0.1/<id>, and yt-dlp downloads the audio and writes it into that response.
- *
- * Why: YouTube only serves its stream URLs to clients that download them the way yt-dlp does
- * (chunked range requests, matching headers, PO tokens); a plain ffmpeg request gets
- * "403 Forbidden". yt-dlp also handles proxies (including SOCKS), cookies and HLS, and
- * statically built ffmpeg binaries cannot resolve host names on Linux.
- *
- * YouTube songs reuse the info yt-dlp already extracted (--load-info-json), so starting the
- * download does not search or extract again.
+ * Local audio relay: ffmpeg reads from http://127.0.0.1/<id> while yt-dlp streams audio.
+ * Handles chunked range requests, headers, PO tokens, proxies and cookies without re-extracting info.
  */
 class StreamRelay {
     constructor({ dir = processDir(), spawnImpl = spawn, binary = ytdlp.binary } = {}) {
@@ -64,18 +52,16 @@ class StreamRelay {
             this.server = http.createServer((req, res) => this.#handle(req, res));
             this.server.on('error', reject);
             this.server.listen(0, '127.0.0.1', () => {
-                this.port = this.server.address().port;
+                this.port = /** @type {import('node:net').AddressInfo} */ (this.server.address()).port;
                 this.server.unref();
-                resolve();
+                resolve(undefined);
             });
         });
         return this.starting;
     }
 
     /**
-     * Register a stream. `info`: a full yt-dlp info dict (its chosen format is downloaded).
-     * `url`: any media URL yt-dlp can download (direct files, HLS, CDN links).
-     * Returns the local URL to give to ffmpeg.
+     * Register a stream (`info`: yt-dlp info dict, `url`: media URL). Returns local URL for ffmpeg.
      */
     async register({ info = null, url = null, proxy = null }) {
         await this.start();
@@ -126,9 +112,7 @@ class StreamRelay {
     }
 
     /**
-     * Start the download now and wait for its first bytes, so a failing source (403, bot check,
-     * removed video) is detected before playback starts instead of ffmpeg failing later.
-     * The bytes are kept until ffmpeg connects.
+     * Start download early to fail-fast on 403, bot checks or deleted videos before ffmpeg starts.
      */
     warm(relayUrl, { timeoutMs = 25_000, holdMs = 60_000 } = {}) {
         const id = this.#idOf(relayUrl);
@@ -205,19 +189,14 @@ class StreamRelay {
                 }
             });
         });
-        const kill = () => {
-            if (child.exitCode === null && !child.killed) child.kill('SIGKILL');
-        };
+        const kill = () => { if (child.exitCode === null && !child.killed) child.kill('SIGKILL'); };
         return { child, done, kill };
     }
 
     #handle(req, res) {
         const id = req.url.slice(1);
         const entry = this.entries.get(id);
-        if (!entry || req.method !== 'GET') {
-            res.writeHead(404).end();
-            return;
-        }
+        if (!entry || req.method !== 'GET') return res.writeHead(404).end();
         res.writeHead(200, { 'Content-Type': 'application/octet-stream', 'Cache-Control': 'no-store' });
 
         // Use the download started by warm() when there is one, otherwise start a new one
@@ -256,9 +235,7 @@ class StreamRelay {
         fs.rmSync(this.dir, { recursive: true, force: true });
     }
 
-    /**
-     * Remove folders left by earlier runs. Called by the sharding manager before shards start.
-     */
+    /** Remove folders left by earlier runs (called before shards start). */
     static cleanAll(dataDir = config.dataDir) {
         fs.rmSync(path.join(dataDir, 'relay'), { recursive: true, force: true });
     }

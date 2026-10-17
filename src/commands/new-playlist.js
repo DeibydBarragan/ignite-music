@@ -2,6 +2,7 @@
 
 const { command } = require('./_shared');
 const { say } = require('../handlers/guards');
+const { isSoundCloudUrl } = require('../core/youtube-guards');
 const { resolvePlaylist, upsertUserPlaylist, deriveName } = require('../music/playlists');
 const log = require('../core/logger').createLogger('new-playlist-cmd');
 
@@ -32,7 +33,7 @@ module.exports = {
             return say(interaction, 'Pega un enlace válido de Spotify o YouTube.');
         }
 
-        if (url.toLowerCase().includes('soundcloud.com')) {
+        if (isSoundCloudUrl(url)) {
             return say(interaction, 'SoundCloud ya no está soportado. Usa un enlace de Spotify o YouTube.');
         }
 

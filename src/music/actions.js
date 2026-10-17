@@ -3,7 +3,7 @@
 const { RepeatMode, DisTubeError } = require('distube');
 const config = require('../config');
 const { formatDuration } = require('../core/format');
-const views = require('../ui/views');
+const { FILTERS, FILTER_LABELS } = require('./filters');
 
 /**
  * Playback actions shared by slash commands and panel controls.
@@ -11,6 +11,19 @@ const views = require('../ui/views');
  */
 
 const result = (ok, message) => ({ ok, message });
+
+/**
+ * Resume a paused queue after a track change, ignoring DisTube state errors
+ * (e.g. the queue already resumed itself). Was inlined in 4 call sites.
+ */
+async function ensureResumed(queue) {
+    if (!queue?.paused) return;
+    try {
+        await queue.resume();
+    } catch {
+        // Nothing to resume: the queue moved on already.
+    }
+}
 
 async function togglePause(queue, t) {
     if (queue.paused) {
@@ -37,22 +50,14 @@ async function skip(queue, t) {
     if (queue.songs.length <= 1 && !queue.autoplay) return result(false, t('buttonhandler.no_songs_to_skip'));
     const current = queue.songs[0];
     await queue.skip();
-    if (queue.paused) {
-        try {
-            await queue.resume();
-        } catch (_) {}
-    }
+    await ensureResumed(queue);
     return result(true, `${t('buttonhandler.song_skipped_title')}: **${current?.name ?? ''}**`);
 }
 
 async function previous(queue, t) {
     if (!queue.previousSongs.length) return result(false, t('buttonhandler.no_previous_song'));
     await queue.previous();
-    if (queue.paused) {
-        try {
-            await queue.resume();
-        } catch (_) {}
-    }
+    await ensureResumed(queue);
     return result(true, t('buttonhandler.moved_to_previous'));
 }
 
@@ -100,9 +105,9 @@ function setFilter(queue, t, name) {
         if (queue.filters.size) queue.filters.clear();
         return result(true, t('ui.filter', { filter: t('ui.filter_none') }));
     }
-    if (!views.FILTERS.includes(name)) return result(false, t('errors.unknown'));
+    if (!FILTERS.includes(name)) return result(false, t('errors.unknown'));
     if (queue.filters.names.length !== 1 || queue.filters.names[0] !== name) queue.filters.set([name]);
-    return result(true, t('ui.filter', { filter: views.FILTER_LABELS[name] }));
+    return result(true, t('ui.filter', { filter: FILTER_LABELS[name] }));
 }
 
 async function seek(queue, t, seconds) {
@@ -135,11 +140,7 @@ async function jump(queue, t, position) {
         return result(false, t('ui.invalid_position', { position }));
     }
     const song = await queue.jump(position);
-    if (queue.paused) {
-        try {
-            await queue.resume();
-        } catch (_) {}
-    }
+    await ensureResumed(queue);
     return result(true, t('ui.jumped', { title: song.name }));
 }
 
@@ -148,6 +149,39 @@ function clear(queue, t) {
     if (count < 1) return result(false, t('buttonhandler.no_songs_in_queue'));
     queue.songs.splice(1);
     return result(true, t('buttonhandler.songs_cleared', { count }));
+}
+
+const CONTROL_ACTIONS = new Set([
+    'pause', 'resume', 'toggle', 'skip', 'previous', 'stop', 'shuffle',
+    'autoplay', 'filter', 'volume', 'seek', 'loop',
+]);
+
+/**
+ * Dispatch a REST API control action to the matching domain action.
+ * Returns null for unknown actions so the caller can reject them.
+ */
+function applyControl(queue, t, action, value, manager) {
+    switch (action) {
+        case 'pause': return pause(queue, t);
+        case 'resume': return resume(queue, t);
+        case 'toggle': return togglePause(queue, t);
+        case 'skip': return skip(queue, t);
+        case 'previous': return previous(queue, t);
+        case 'stop': return stop(queue, t, manager);
+        case 'shuffle': return shuffle(queue, t);
+        case 'autoplay': return toggleAutoplay(queue, t);
+        case 'filter': return setFilter(queue, t, value);
+        case 'volume': return setVolume(queue, t, value);
+        case 'seek': return seek(queue, t, Number(value));
+        case 'loop': {
+            let mode = value;
+            if (value === 'off') mode = RepeatMode.DISABLED;
+            else if (value === 'track') mode = RepeatMode.SONG;
+            else if (value === 'queue') mode = RepeatMode.QUEUE;
+            return setLoop(queue, t, mode);
+        }
+        default: return null;
+    }
 }
 
 /**
@@ -174,5 +208,6 @@ async function safely(action, t) {
 
 module.exports = {
     togglePause, pause, resume, skip, previous, stop, shuffle, setLoop, toggleAutoplay,
-    setVolume, setFilter, seek, remove, move, jump, clear, safely,
+    setVolume, setFilter, seek, remove, move, jump, clear, safely, ensureResumed,
+    applyControl, CONTROL_ACTIONS,
 };

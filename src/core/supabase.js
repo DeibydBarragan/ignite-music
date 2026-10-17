@@ -1,27 +1,68 @@
 'use strict';
 
 const { createClient } = require('@supabase/supabase-js');
+const config = require('../config');
 const logger = require('./logger');
 
 const log = logger.createLogger('supabase');
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://qzedjwrpvcgmfqgsvxyi.supabase.co';
-const SUPABASE_KEY =
-    process.env.SUPABASE_KEY ||
-    process.env.SUPABASE_ANON_KEY ||
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF6ZWRqd3JwdmNnbWZxZ3N2eHlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMzI3MDAsImV4cCI6MjEwNjYwODcwMH0.0XJ6R25ZXcS31Et6ugu-dCWSh0JsJeAIKiKh1XGuEIg';
+// Credentials come exclusively from the environment (never committed).
+// The service role key is preferred: with the strict RLS from
+// 20261016_lockdown_rls.sql the anon key can no longer write play history,
+// favorites or playlists.
+const SUPABASE_URL = String(config.supabase.url || '').trim();
+const SUPABASE_KEY = String(config.supabase.serviceRoleKey || config.supabase.key || '').trim();
 
 let supabase = null;
+let initError = null;
 
-try {
-    if (SUPABASE_URL && SUPABASE_KEY) {
-        supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-        log.ok('Supabase client initialized successfully');
-    } else {
-        log.warn('Missing SUPABASE_URL or SUPABASE_KEY');
+if (SUPABASE_URL && SUPABASE_KEY) {
+    try {
+        supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+            auth: { persistSession: false, autoRefreshToken: false },
+        });
+    } catch (err) {
+        initError = err;
+        log.error('Failed to create Supabase client:', err.message);
     }
-} catch (err) {
-    log.error('Failed to initialize Supabase client:', err.message);
+} else if (SUPABASE_URL || SUPABASE_KEY) {
+    log.warn('Supabase is partially configured (SUPABASE_URL / SUPABASE_KEY): disabled until both are set');
 }
 
-module.exports = { supabase };
+/**
+ * Verify URL + key against the project before anything logs a success.
+ * Never throws: returns { ok: true } or { ok: false, reason }.
+ */
+async function verifyConnection(timeoutMs = 8000) {
+    if (!supabase) {
+        return {
+            ok: false,
+            reason: initError
+                ? `client init failed: ${initError.message}`
+                : 'SUPABASE_URL and SUPABASE_KEY are not set',
+        };
+    }
+
+    try {
+        const timeout = new Promise((resolve) => {
+            const timer = setTimeout(() => {
+                resolve({ error: { message: `timed out after ${timeoutMs} ms` } });
+            }, timeoutMs);
+            if (timer.unref) timer.unref();
+        });
+
+        const { error } = await Promise.race([
+            supabase.from('song_plays').select('id').limit(1),
+            timeout,
+        ]);
+
+        if (error) return { ok: false, reason: error.message };
+
+        log.ok('Supabase connection verified');
+        return { ok: true };
+    } catch (err) {
+        return { ok: false, reason: err.message };
+    }
+}
+
+module.exports = { supabase, verifyConnection };

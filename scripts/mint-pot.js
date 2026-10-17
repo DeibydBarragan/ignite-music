@@ -7,8 +7,8 @@ const fs = require('node:fs');
 const { spawn } = require('node:child_process');
 
 const CANDIDATES = [
+    process.env.POT_GENERATOR_PATH,
     process.env.POT_GENERATOR,
-    '/home/ubuntu/bgutil-ytdlp-pot-provider/server/build/generate_once.js',
 ].filter(Boolean);
 
 const generator = CANDIDATES.find((p) => {

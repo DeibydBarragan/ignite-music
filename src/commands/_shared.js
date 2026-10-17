@@ -18,12 +18,13 @@ function command(name, description) {
 
 /**
  * Run a playback action on the guild queue after the voice checks, then reply.
+ * `run` receives `(queue, t, manager)` so command handlers share one signature.
  */
 async function queueAction(interaction, ctx, run) {
     const { t, manager } = ctx;
     const check = checkVoice(interaction, manager, t);
     if (check.error) return say(interaction, check.error);
-    const outcome = await actions.safely(() => run(check.queue, t), t);
+    const outcome = await actions.safely(() => run(check.queue, t, manager), t);
     if (outcome.ok) manager.changed(check.queue);
     return say(interaction, outcome.message);
 }

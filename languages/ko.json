@@ -45,6 +45,11 @@
       "playlist_success": "**{count}개의 노래**가 포함된 재생목록이 대기열에 추가되었습니다!",
       "track_started": "**{title}** 재생을 시작했습니다!",
       "track_queued": "**{title}**가 대기열에 추가되었습니다! ({position}번째 위치)"
+    },
+    "playnext": {
+      "description": "현재 곡 바로 다음에 재생 (대기열 건너뛰기)",
+      "query_description": "곡 이름, 아티스트, YouTube/Spotify URL 또는 직접 링크",
+      "track_queued": "다음 재생: **{title}**! (1번 위치)"
     }
   },
   "youtube": {
@@ -105,7 +110,8 @@
     "loop_queue": "반복: 대기열",
     "autoplay_off": "자동 재생: 꺼짐",
     "autoplay_on": "자동 재생: 켜짐",
-    "lyrics": "가사"
+    "lyrics": "가사",
+    "favorite": "즐겨찾기"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube가 이 요청을 차단했습니다 (봇 감지)**\nYouTube가 이 서버의 IP 주소에서 오는 요청을 거부하고 있습니다.\n\n**해결 방법:** `.env` 파일에 `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (또는 firefox/edge) 또는 `YOUTUBE_PO_TOKEN`을 추가하세요. 단계별 안내는 `README.md`를 참조하세요.",
@@ -116,7 +122,8 @@
     "network_error": "**네트워크 오류**\n봇이 음악 플랫폼에 연결할 수 없었습니다. 보통 일시적인 문제입니다.\n\n**해결 방법:** 잠시 기다렸다가 다시 시도하세요.",
     "stream_failed": "**오디오 스트림 실패**\n봇이 트랙을 찾았지만 오디오 스트림을 시작할 수 없었습니다.\n\n**해결 방법:** 다시 시도하거나 다른 버전의 곡을 시도해 보세요.",
     "voice_no_permission": "**음성 채널 권한 없음**\n봇이 음성 채널에 참여하거나 말할 권한이 없습니다.\n\n**해결 방법:** 음성 채널 설정 → 권한 → 봇에게 **연결** 및 **말하기** 권한을 부여하세요.",
-    "unknown": "**예상치 못한 오류가 발생했습니다**\n요청을 처리하는 중 문제가 발생했습니다.\n\n**해결 방법:** 잠시 후 다시 시도하세요. 문제가 계속되면 봇 콘솔 로그를 확인하세요."
+    "unknown": "**예상치 못한 오류가 발생했습니다**\n요청을 처리하는 중 문제가 발생했습니다.\n\n**해결 방법:** 잠시 후 다시 시도하세요. 문제가 계속되면 봇 콘솔 로그를 확인하세요.",
+    "drm_protected": "**DRM 보호 트랙**\n이 트랙은 DRM 보호(SoundCloud Go+ 등)가 적용되어 유료 구독 없이는 재생할 수 없습니다. 다른 버전이나 리믹스를 검색해 보세요."
   },
   "ui": {
     "voice_full": "해당 음성 채널이 가득 찼습니다.",
@@ -144,6 +151,11 @@
     "moved": "**{title}**을(를) {position}번으로 옮겼습니다.",
     "invalid_position": "{position}번에 노래가 없습니다.",
     "invite": "초대하기",
-    "fallback_soundcloud": "이 노래는 YouTube에서 재생되지 않아 SoundCloud에서 재생합니다."
+    "fallback_soundcloud": "이 노래는 YouTube에서 재생되지 않아 SoundCloud에서 재생합니다.",
+    "playlists_title": "내 플레이리스트 ({count})",
+    "playlists_title_query": "내 플레이리스트 · \"{filter}\" ({count})",
+    "playlists_empty": "아직 저장된 플레이리스트가 없습니다.\nSpotify 또는 YouTube 링크와 함께 `/new-playlist`로 첫 플레이리스트를 가져오세요.",
+    "playlists_line": "{source} · {count}곡 · ~{duration}",
+    "playlists_hint": "재생은 `/playlists reproducir:<nombre>` · 가져오기는 `/new-playlist`"
   }
 }

@@ -110,7 +110,8 @@
     "loop_queue": "Repetir: Cola",
     "autoplay_off": "Reproducción Automática: Desactivada",
     "autoplay_on": "Reproducción Automática: Activada",
-    "lyrics": "Letra"
+    "lyrics": "Letra",
+    "favorite": "Favoritos"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube bloqueó esta solicitud (detección de bot)**\nYouTube rechaza solicitudes desde la IP de este servidor.\n\n**Solución:** Añade `COOKIES_FILE=./cookies.txt` / `COOKIES_FROM_BROWSER=chrome` (o firefox/edge) o `YOUTUBE_PO_TOKEN` en el archivo `.env`. Consulta `README.md` para instrucciones paso a paso.",
@@ -150,6 +151,11 @@
     "moved": "Se movió **{title}** a la posición {position}.",
     "invalid_position": "No hay ninguna canción en la posición {position}.",
     "invite": "Invitar",
-    "fallback_soundcloud": "YouTube no funcionó con esta canción, así que se está reproduciendo desde SoundCloud."
+    "fallback_soundcloud": "YouTube no funcionó con esta canción, así que se está reproduciendo desde SoundCloud.",
+    "playlists_title": "Tus playlists ({count})",
+    "playlists_title_query": "Tus playlists · \"{filter}\" ({count})",
+    "playlists_empty": "Aún no tienes playlists guardadas.\nUsa `/new-playlist` con un enlace de Spotify o YouTube para importar la primera.",
+    "playlists_line": "{source} · {count} temas · ~{duration}",
+    "playlists_hint": "`/playlists reproducir:<nombre>` para sonarla · `/new-playlist` para importar"
   }
 }

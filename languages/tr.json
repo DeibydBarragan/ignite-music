@@ -45,6 +45,11 @@
       "playlist_success": "**{count} şarkılık playlist** sıraya eklendi!",
       "track_started": "**{title}** çalmaya başladı!",
       "track_queued": "**{title}** sıraya eklendi! ({position}. sırada)"
+    },
+    "playnext": {
+      "description": "Şarkıyı mevcut şarkıdan hemen sonra çal (sırayı atlar)",
+      "query_description": "Şarkı adı, sanatçı, YouTube/Spotify URL'si veya doğrudan bağlantı",
+      "track_queued": "Sıradaki: **{title}**! (1. sırada)"
     }
   },
   "youtube": {
@@ -105,7 +110,8 @@
     "loop_queue": "Döngü: Sıra",
     "autoplay_off": "Otomatik Çalma: Kapalı",
     "autoplay_on": "Otomatik Çalma: Açık",
-    "lyrics": "Şarkı Sözleri"
+    "lyrics": "Şarkı Sözleri",
+    "favorite": "Favori"
   },
   "errors": {
     "youtube_bot_detection": "**YouTube bu isteği engelledi (bot tespiti)**\nYouTube, bu sunucunun IP adresinden gelen istekleri reddediyor.\n\n**Çözüm (bot sahibi):** YouTube çerezlerini `cookies.txt` dosyasına aktarın ve `.env` dosyasına `COOKIES_FILE=./cookies.txt` ekleyin; alternatif olarak `YOUTUBE_PO_TOKEN` veya `PROXY_URL` kullanın. Adım adım rehber: README.md, \"YouTube: Sign in to confirm you're not a bot\" bölümü.",
@@ -116,7 +122,8 @@
     "network_error": "**Ağ hatası**\nBot, müzik platformuna bağlanamadı. Bu genellikle geçici bir sorundur.\n\n**Çözüm:** Bir süre bekleyip tekrar deneyin. Sorun devam ederse sunucunun internet bağlantısını kontrol edin.",
     "stream_failed": "**Ses akışı başarısız**\nBot şarkı bilgisini buldu ancak ses akışını başlatamadı.\n\n**Çözüm:** Tekrar deneyin. Sorun devam ederse şarkının farklı bir versiyonunu deneyin.",
     "voice_no_permission": "**Ses kanalı izni eksik**\nBotun ses kanalınıza katılma veya konuşma izni yok.\n\n**Çözüm:** Ses kanalı ayarları → İzinler → Bota **Bağlan** ve **Konuş** izinleri verin.",
-    "unknown": "**Beklenmeyen bir hata oluştu**\nİsteğiniz işlenirken bir şeyler ters gitti.\n\n**Çözüm:** Bir an sonra tekrar deneyin. Sorun devam ederse bot konsolundaki tam hata günlüğünü kontrol edin."
+    "unknown": "**Beklenmeyen bir hata oluştu**\nİsteğiniz işlenirken bir şeyler ters gitti.\n\n**Çözüm:** Bir an sonra tekrar deneyin. Sorun devam ederse bot konsolundaki tam hata günlüğünü kontrol edin.",
+    "drm_protected": "**DRM korumalı parça**\nBu parça DRM korumalıdır (SoundCloud Go+ vb.) ve ücretli abonelik olmadan çalınamaz. Alternatif bir sürüm veya remix aramayı dene."
   },
   "ui": {
     "voice_full": "Bu ses kanalı dolu.",
@@ -144,6 +151,11 @@
     "moved": "**{title}** {position}. sıraya taşındı.",
     "invalid_position": "{position}. sırada şarkı yok.",
     "invite": "Davet Et",
-    "fallback_soundcloud": "YouTube bu şarkı için çalışmadı, bu yüzden SoundCloud üzerinden çalınıyor."
+    "fallback_soundcloud": "YouTube bu şarkı için çalışmadı, bu yüzden SoundCloud üzerinden çalınıyor.",
+    "playlists_title": "Çalma listelerin ({count})",
+    "playlists_title_query": "Çalma listelerin · \"{filter}\" ({count})",
+    "playlists_empty": "Henüz kayıtlı çalma listen yok.\nİlkini içe aktarmak için bir Spotify veya YouTube bağlantısıyla `/new-playlist` kullan.",
+    "playlists_line": "{source} · {count} parça · ~{duration}",
+    "playlists_hint": "Çalmak için `/playlists reproducir:<nombre>` · İçe aktarmak için `/new-playlist`"
   }
 }
