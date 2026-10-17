@@ -16,6 +16,8 @@ const log = logger.createLogger('api-ops');
 
 // Same payload as the legacy /search route: 15 minutes per query+limit.
 const searchVideosCache = new TTLCache({ ttlMs: 15 * 60_000, maxSize: 500 });
+// Cache contextual radio recommendations per guild:song for 20 minutes.
+const radioRecommendationsCache = new TTLCache({ ttlMs: 20 * 60_000, maxSize: 500 });
 
 async function suggest(music, { q = '' }) {
     const query = String(q).trim();
@@ -56,30 +58,44 @@ async function search(music, { q = '', limit = 6 }) {
     }
 }
 
-async function recommendations(music, { guildId }) {
+async function recommendations(music, { guildId, force = false }) {
     const queue = music.distube.getQueue(guildId);
     const currentSong = queue?.songs?.[0];
 
     if (currentSong) {
+        const songKey = String(currentSong.id || currentSong.url || '');
+        const cacheKey = `${guildId}:${songKey}`;
+
+        if (force) {
+            radioRecommendationsCache.delete(cacheKey);
+        }
+
         try {
-            let related = [];
-            if (typeof music.youtube?.getRelatedSongs === 'function') {
-                related = await music.youtube.getRelatedSongs(currentSong);
-            }
-            if (!related || related.length === 0) {
-                const query = `${currentSong.uploader?.name || ''} ${currentSong.name || ''}`.trim();
-                if (query && typeof music.youtube?.search === 'function') {
-                    const results = await music.youtube.search(query, 12, guildId);
-                    related = results.filter((song) => song && song.id !== currentSong.id);
+            const cachedResult = await radioRecommendationsCache.wrap(cacheKey, async () => {
+                let related = [];
+                if (typeof music.youtube?.getRelatedSongs === 'function') {
+                    related = await music.youtube.getRelatedSongs(currentSong);
                 }
-            }
-            if (related && related.length > 0) {
-                return {
-                    success: true,
-                    source: 'radio',
-                    basedOn: serializeTrack(currentSong),
-                    songs: related.slice(0, 15).map((song) => serializeTrack(song)).filter(Boolean),
-                };
+                if (!related || related.length === 0) {
+                    const query = `${currentSong.uploader?.name || ''} ${currentSong.name || ''}`.trim();
+                    if (query && typeof music.youtube?.search === 'function') {
+                        const results = await music.youtube.search(query, 12, guildId);
+                        related = results.filter((song) => song && song.id !== currentSong.id);
+                    }
+                }
+                if (related && related.length > 0) {
+                    return {
+                        success: true,
+                        source: 'radio',
+                        basedOn: serializeTrack(currentSong),
+                        songs: related.slice(0, 15).map((song) => serializeTrack(song)).filter(Boolean),
+                    };
+                }
+                return null;
+            });
+
+            if (cachedResult && cachedResult.songs?.length > 0) {
+                return cachedResult;
             }
         } catch (error) {
             log.warn(`Contextual radio error: ${error.message}`);

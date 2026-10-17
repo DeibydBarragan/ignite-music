@@ -60,7 +60,8 @@ function register(router, { client, proxy }) {
 
     router.get('/guilds/:guildId/recommendations', snowflakeParams(), async (req, res) => {
         const { guildId } = req.params;
-        const result = await proxy.run(guildId, 'discovery.recommendations', { guildId });
+        const force = req.query.force === 'true' || req.query.refresh === 'true';
+        const result = await proxy.run(guildId, 'discovery.recommendations', { guildId, force });
         return sendOpResult(res, result);
     });
 
