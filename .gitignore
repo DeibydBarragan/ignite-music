@@ -7,7 +7,7 @@ database/
 audio_cache/
 bin/
 cookies.txt
-MierdaBot.exe
+*.exe
 *.log
 *.bak
 .DS_Store

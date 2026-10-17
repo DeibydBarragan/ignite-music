@@ -102,7 +102,7 @@ All of these start the bot:
 
 | Platform | Method | Notes |
 | --- | --- | --- |
-| **Windows (Recommended)** | Double-click **`MierdaBot.exe`** | Native launcher with custom bot icon, automatic Node.js check & friendly alert, and console logs |
+| **Windows (Desktop)** | Run **Ignite Music Desktop** | Native companion launcher with Discord Gatekeeper, Cloudflare tunnel and automatic updates |
 | Windows | Double-click **`start.bat`** (or `start-shard.bat`) | Standard batch script launcher |
 | Any system | `npm start` | Standard npm start script |
 | Any system | `node .` or `node index.js` | Direct execution |
