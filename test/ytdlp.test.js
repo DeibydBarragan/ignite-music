@@ -14,6 +14,7 @@ const skip = process.platform === 'win32' ? 'shebang scripts need a POSIX shell'
 
 test('baseArgs adds the node JS runtime, auth and proxy options', () => {
     const plain = ytdlp.baseArgs({ settings: {} });
+    assert.ok(plain.includes('--force-ipv4'));
     assert.ok(plain.includes('--js-runtimes'));
     assert.equal(plain[plain.indexOf('--js-runtimes') + 1], `node:${process.execPath}`);
     assert.ok(!plain.includes('--proxy'));
