@@ -153,7 +153,7 @@ function clear(queue, t) {
 
 const CONTROL_ACTIONS = new Set([
     'pause', 'resume', 'toggle', 'skip', 'previous', 'stop', 'shuffle',
-    'autoplay', 'filter', 'volume', 'seek', 'loop',
+    'autoplay', 'filter', 'volume', 'seek', 'loop', 'deafen', 'undeafen',
 ]);
 
 /**
@@ -179,6 +179,22 @@ function applyControl(queue, t, action, value, manager) {
             else if (value === 'track') mode = RepeatMode.SONG;
             else if (value === 'queue') mode = RepeatMode.QUEUE;
             return setLoop(queue, t, mode);
+        }
+        case 'deafen': {
+            if (queue.voice && typeof queue.voice.setSelfDeaf === 'function') {
+                queue.voice.setSelfDeaf(true);
+            } else if (queue.voice?.connection?.rejoin) {
+                queue.voice.connection.rejoin({ ...queue.voice.connection.joinConfig, selfDeaf: true });
+            }
+            return result(true, 'Bot ensordecido');
+        }
+        case 'undeafen': {
+            if (queue.voice && typeof queue.voice.setSelfDeaf === 'function') {
+                queue.voice.setSelfDeaf(false);
+            } else if (queue.voice?.connection?.rejoin) {
+                queue.voice.connection.rejoin({ ...queue.voice.connection.joinConfig, selfDeaf: false });
+            }
+            return result(true, 'Bot des-ensordecido');
         }
         default: return null;
     }

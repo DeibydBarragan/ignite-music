@@ -82,11 +82,16 @@ async function resolveVoiceChannel(music, guild, { voiceChannelId, userId }) {
     if (userId) {
         member = guild.members.cache.get(userId) || await guild.members.fetch(userId).catch(() => null);
         const userVoice = member?.voice?.channel;
-        if (!userVoice) throw notInVoice();
-        if (botVoiceChannel && botVoiceChannel.id !== userVoice.id) throw wrongChannel();
-        channel = userVoice;
+        if (userVoice) {
+            if (botVoiceChannel && botVoiceChannel.id !== userVoice.id) throw wrongChannel();
+            channel = userVoice;
+        } else if (voiceChannelId) {
+            channel = guild.channels.cache.get(voiceChannelId) || await guild.channels.fetch(voiceChannelId).catch(() => null);
+        } else {
+            throw notInVoice();
+        }
     } else if (voiceChannelId) {
-        channel = guild.channels.cache.get(voiceChannelId);
+        channel = guild.channels.cache.get(voiceChannelId) || await guild.channels.fetch(voiceChannelId).catch(() => null);
         if (botVoiceChannel && channel && botVoiceChannel.id !== channel.id) throw wrongChannel();
     }
 

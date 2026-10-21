@@ -8,6 +8,7 @@ const history = require('./history');
 const panel = require('./panel');
 const presence = require('./presence');
 const log = require('../core/logger').createLogger('music');
+const { voiceReceiver, dispatchVoiceCommand } = require('../voice');
 
 /**
  * ffmpeg: FFMPEG_PATH > ffmpeg-static (if installed) > ffmpeg on PATH.
@@ -28,10 +29,57 @@ function resolveFfmpeg() {
  */
 function bindDisTubeEvents(manager) {
     const d = manager.distube;
+    voiceReceiver.setCommandHandler((payload) => dispatchVoiceCommand(manager, payload));
+    voiceReceiver.setClient(manager.client);
+    voiceReceiver.on('error', (err) => log.warn({ err }, 'Voice receiver error'));
+
+    const undeafenVoice = async (voice, connection, guildId) => {
+        try {
+            if (voice && typeof voice.setSelfDeaf === 'function') {
+                voice.setSelfDeaf(false);
+            } else if (connection && typeof connection.rejoin === 'function') {
+                connection.rejoin({ ...connection.joinConfig, selfDeaf: false });
+            }
+        } catch (err) {
+            log.warn({ err: err.message }, 'Failed to undeafen voice connection');
+        }
+
+        try {
+            const guild = manager.client.guilds.cache.get(guildId);
+            const me = guild?.members?.me;
+            if (me?.voice?.serverDeaf && typeof me.voice.setDeaf === 'function') {
+                await me.voice.setDeaf(false, 'Voice commands enabled');
+                log.info({ guildId }, 'Removed server deafen from bot member');
+            }
+        } catch (err) {
+            log.warn({ err: err.message, guildId }, 'Could not remove server deafen (might lack DEAFEN_MEMBERS permission)');
+        }
+    };
+
+    const attachVoice = (guildId, voice) => {
+        const distubeVoice = voice || manager.distube.voices.get(guildId);
+        const connection = distubeVoice?.connection;
+        if (connection) {
+            if (connection.state?.status === 'ready') {
+                void undeafenVoice(distubeVoice, connection, guildId);
+            } else if (typeof connection.on === 'function') {
+                const onStateChange = (_oldState, newState) => {
+                    if (newState?.status === 'ready') {
+                        connection.removeListener?.('stateChange', onStateChange);
+                        void undeafenVoice(distubeVoice, connection, guildId);
+                    }
+                };
+                connection.on('stateChange', onStateChange);
+            }
+
+            voiceReceiver.attach(guildId, connection, { client: manager.client });
+        }
+    };
 
     d.on(DisTubeEvents.INIT_QUEUE, (queue) => {
         queue.volume = config.bot.defaultVolume;
         presence.clearLeave(manager.state(queue.id));
+        attachVoice(queue.id, queue.voice);
     });
 
     d.on(DisTubeEvents.PLAY_SONG, (queue, song) => {
@@ -48,6 +96,8 @@ function bindDisTubeEvents(manager) {
         if (!manager.shuttingDown) manager.sessions.save(queue).catch((error) => log.warn(`Could not save session ${queue.id}: ${error.message}`));
         manager.publishSync(queue.id);
         history.recordPlay(queue.id, song).catch((err) => log.debug(`History record error: ${err.message}`));
+
+        attachVoice(queue.id, queue.voice);
     });
 
     const onQueueChange = (queue) => manager.changed(queue);
@@ -61,11 +111,13 @@ function bindDisTubeEvents(manager) {
     });
 
     d.on(DisTubeEvents.DISCONNECT, (queue) => {
+        voiceReceiver.detach(queue.id);
         manager.endPanel(queue.id, { titleKey: 'musicmanager.playback_ended' });
         manager.publishSync(queue.id);
     });
 
     d.on(DisTubeEvents.DELETE_QUEUE, (queue) => {
+        voiceReceiver.detach(queue.id);
         const state = manager.state(queue.id);
         clearTimeout(state.empty);
         state.empty = null;

@@ -11,6 +11,7 @@ const { ShardProxy } = require('../shard-proxy');
 const playerRoutes = require('./player.routes');
 const queueRoutes = require('./queue.routes');
 const discoveryRoutes = require('./discovery.routes');
+const voiceRoutes = require('./voice.routes');
 
 function createRouter(client) {
     const router = express.Router();
@@ -23,6 +24,7 @@ function createRouter(client) {
     playerRoutes.register(router, context);
     queueRoutes.register(router, context);
     discoveryRoutes.register(router, context);
+    voiceRoutes.register(router, context);
 
     return router;
 }

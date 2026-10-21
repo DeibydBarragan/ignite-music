@@ -32,8 +32,13 @@ function scheduleLeave(manager, guildId) {
  */
 function listenerCount(manager, guild, channelId = guild.members.me?.voice?.channelId) {
     if (!channelId) return 0;
-    return guild.voiceStates.cache.filter((voiceState) =>
-        voiceState.channelId === channelId && voiceState.id !== manager.client.user.id && !voiceState.member?.user?.bot).size;
+    const soundBotId = config.voice?.soundBotId;
+    const allowBot = config.voice?.allowBotInput && soundBotId;
+    return guild.voiceStates.cache.filter((voiceState) => {
+        if (voiceState.channelId !== channelId || voiceState.id === manager.client.user.id) return false;
+        if (allowBot && String(voiceState.id) === String(soundBotId)) return true;
+        return !voiceState.member?.user?.bot;
+    }).size;
 }
 
 /**

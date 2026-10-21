@@ -53,6 +53,17 @@ const schemas = {
             trackId,
             to: z.coerce.number().int().min(1),
         }),
+        voiceUpdate: z.object({
+            enabled: z.boolean().optional(),
+            wake_word: z.string().trim().min(1).max(32).optional(),
+            language: z.string().trim().min(2).max(10).optional(),
+            tts_feedback_enabled: z.boolean().optional(),
+            tts_templates: z.record(z.string(), z.string().max(200)).optional(),
+            bindings: z.array(z.object({
+                phrase: z.string().trim().min(1).max(64),
+                command_id: z.string().trim().min(1).max(32),
+            })).max(100).optional(),
+        }),
     },
     query: {
         voiceStatus: z.object({ userId: optionalSnowflake }),

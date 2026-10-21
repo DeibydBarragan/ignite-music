@@ -122,7 +122,15 @@ async function voiceStatus(music, { guildId, userId = null }) {
     const guild = music.client.guilds.cache.get(guildId);
     if (!guild) throw new ApiError(404, 'guild_not_found', 'Guild not found');
 
-    const botChannel = guild.members.me?.voice?.channel;
+    const botVoice = guild.members.me?.voice;
+    if (botVoice?.serverDeaf && typeof botVoice.setDeaf === 'function') {
+        try {
+            await botVoice.setDeaf(false, 'Auto undeafen for voice commands');
+        } catch {
+            // lacks DEAFEN_MEMBERS permission
+        }
+    }
+    const botChannel = botVoice?.channel;
     let userChannel = null;
     if (userId) {
         try {
@@ -134,7 +142,13 @@ async function voiceStatus(music, { guildId, userId = null }) {
     }
 
     return {
-        bot: botChannel ? { id: botChannel.id, name: botChannel.name } : null,
+        bot: botChannel ? {
+            id: botChannel.id,
+            name: botChannel.name,
+            deaf: Boolean(botVoice?.deaf),
+            selfDeaf: Boolean(botVoice?.selfDeaf),
+            serverDeaf: Boolean(botVoice?.serverDeaf),
+        } : null,
         user: userChannel ? { id: userChannel.id, name: userChannel.name } : null,
         canControl: Boolean(botChannel && userChannel && botChannel.id === userChannel.id),
     };

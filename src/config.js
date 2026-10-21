@@ -162,6 +162,20 @@ const config = {
         // Automatically start cloudflared quick tunnel and announce URL to Supabase
         autoTunnel: bool('AUTO_TUNNEL', false),
     },
+
+    voice: {
+        enabled: bool('VOICE_ENABLED', true),
+        defaultWakeWord: env('VOICE_DEFAULT_WAKE_WORD', 'ignite').toLowerCase(),
+        groqApiKey: env('GROQ_API_KEY'),
+        silenceDurationMs: int('VOICE_SILENCE_DURATION_MS', 1000, { min: 400, max: 3000 }),
+        model: env('GROQ_VOICE_MODEL', 'whisper-large-v3-turbo'),
+        offlineGating: bool('VOICE_OFFLINE_GATING', false),
+        soundApiUrl: env('IGNITE_SOUND_API_URL', 'http://localhost:3002'),
+        soundApiSecret: env('IGNITE_SOUND_API_SECRET'),
+        ttsFeedbackEnabled: bool('VOICE_TTS_FEEDBACK_ENABLED', false),
+        allowBotInput: bool('VOICE_ALLOW_BOT_INPUT', true),
+        soundBotId: env('IGNITE_SOUND_BOT_ID', '1558180312050180317'),
+    },
 };
 
 config.parseColor = parseColor;
