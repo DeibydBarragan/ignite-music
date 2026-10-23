@@ -100,6 +100,20 @@ async function dispatchVoiceCommand(manager, payload, options = {}) {
                 if (!voiceChannel) {
                     return { executed: false, reason: 'user_not_in_voice' };
                 }
+                // Trigger auditory TTS confirmation immediately before resolving song
+                const voiceChannelId = voiceChannel?.id || channelId;
+                if (voiceChannelId) {
+                    sendTtsFeedback({
+                        guildId,
+                        channelId: voiceChannelId,
+                        userId,
+                        commandId,
+                        params: { query },
+                    }, {
+                        enabled: settings?.tts_feedback_enabled,
+                        templates: settings?.tts_templates,
+                    }).catch(() => undefined);
+                }
                 const textChannel = queue?.textChannel || null;
                 executionResult = await manager.play({
                     voiceChannel,
@@ -138,19 +152,21 @@ async function dispatchVoiceCommand(manager, payload, options = {}) {
                 return { executed: false, reason: 'unsupported_command', commandId };
         }
 
-        // 3. Trigger auditory TTS confirmation via ignite-sound
-        const voiceChannelId = voiceChannel?.id || channelId;
-        if (voiceChannelId) {
-            sendTtsFeedback({
-                guildId,
-                channelId: voiceChannelId,
-                userId,
-                commandId,
-                params: { query },
-            }, {
-                enabled: settings?.tts_feedback_enabled,
-                templates: settings?.tts_templates,
-            }).catch(() => undefined);
+        // 3. Trigger auditory TTS confirmation via ignite-sound (for non-play commands)
+        if (commandId !== 'play' && commandId !== 'enqueue') {
+            const voiceChannelId = voiceChannel?.id || channelId;
+            if (voiceChannelId) {
+                sendTtsFeedback({
+                    guildId,
+                    channelId: voiceChannelId,
+                    userId,
+                    commandId,
+                    params: { query },
+                }, {
+                    enabled: settings?.tts_feedback_enabled,
+                    templates: settings?.tts_templates,
+                }).catch(() => undefined);
+            }
         }
 
         return {

@@ -120,7 +120,7 @@ class VoiceReceiverManager extends EventEmitter {
                 });
 
                 const wavBuffer = await opusStreamToWav(opusStream, {
-                    minDurationMs: 400,
+                    minDurationMs: 650,
                     maxDurationMs: 12000,
                 });
 
@@ -202,8 +202,9 @@ class VoiceReceiverManager extends EventEmitter {
                     }
                 }
 
-                if (!text) {
-                    log.info({ guildId, userId }, 'Empty transcription produced from audio stream');
+                const cleanText = (text || '').toLowerCase().trim().replace(/[.,!?;:]/g, '');
+                if (!text || cleanText === 'gracias' || cleanText === 'muchas gracias' || cleanText === 'thank you') {
+                    log.debug({ guildId, userId, text }, 'Empty or hallucination transcription discarded');
                     return;
                 }
 
