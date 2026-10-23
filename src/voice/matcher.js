@@ -12,8 +12,8 @@ const config = require('../config');
  * Standard default voice command bindings.
  */
 const DEFAULT_COMMAND_BINDINGS = Object.freeze({
-    play: ['reproduce', 'reproducir', 'pon', 'poner', 'toca', 'tocar', 'play'],
-    enqueue: ['agrega', 'agregar', 'añade', 'añadir', 'encola', 'encolar'],
+    play: ['reproduce', 'reproducir', 'reproduceme', 'reproduced', 'pon', 'poner', 'ponme', 'toca', 'tocar', 'tocame', 'play'],
+    enqueue: ['agrega', 'agregar', 'agregame', 'añade', 'añadir', 'añademe', 'encola', 'encolar'],
     skip: ['siguiente', 'salta', 'saltar', 'pasa', 'pasar', 'skip', 'next'],
     pause: ['pausa', 'pausar', 'para', 'espera'],
     resume: ['continua', 'continuar', 'reanuda', 'reanudar', 'sigue', 'dale', 'resume'],
@@ -86,7 +86,11 @@ const WAKE_WORD_PHONETIC_VARIANTS = Object.freeze({
         'y n hay', 'ynhay', 'y n ay', 'ynay',
         'y ahí', 'y ahi', 'y hay', 'y ay', 'y ai', 'y a i', 'y a y', 'y aid', 'y ait',
         'iahi', 'iahí', 'yahi', 'yahí',
-        'ignayt', 'inite', 'ignete', 'ig nite'
+        'ignayt', 'inite', 'ignete', 'ig nite',
+        'ignaic', 'inaic', 'ynayc', 'ignayc', 'ignack', 'inaik', 'ignaik'
+    ],
+    bot: [
+        'vot', 'both', 'voth', 'but', 'bod', 'vod', 'bo'
     ],
 });
 
@@ -196,7 +200,8 @@ function buildPhraseList(customBindings = null) {
  */
 function matchVoiceCommand(rawText, options = {}) {
     const text = normalizeText(rawText);
-    const candidateWakeWords = parseWakeWords(options.wakeWord || config.voice.defaultWakeWord || 'ignite');
+    const configured = parseWakeWords(options.wakeWord || config.voice.defaultWakeWord || 'ignite');
+    const candidateWakeWords = Array.from(new Set([...configured, 'ignite', 'bot']));
 
     if (!text) {
         return { matched: false, reason: 'empty_text', raw: rawText };
