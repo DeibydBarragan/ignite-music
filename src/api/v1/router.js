@@ -12,6 +12,7 @@ const playerRoutes = require('./player.routes');
 const queueRoutes = require('./queue.routes');
 const discoveryRoutes = require('./discovery.routes');
 const voiceRoutes = require('./voice.routes');
+const devRoutes = require('./dev.routes');
 
 function createRouter(client) {
     const router = express.Router();
@@ -25,6 +26,7 @@ function createRouter(client) {
     queueRoutes.register(router, context);
     discoveryRoutes.register(router, context);
     voiceRoutes.register(router, context);
+    devRoutes.register(router, context);
 
     return router;
 }

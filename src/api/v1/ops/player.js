@@ -115,7 +115,7 @@ async function resolveVoiceChannel(music, guild, { voiceChannelId, userId }) {
     return { channel, member };
 }
 
-async function play(music, { guildId, query, voiceChannelId = null, userId = null, next = false, skip = false }) {
+async function play(music, { guildId, query, voiceChannelId = null, userId = null, next = false, skip = false, devMode = false }) {
     const guild = music.client.guilds.cache.get(guildId);
     if (!guild) throw new ApiError(404, 'guild_not_found', 'Guild not found');
     const unsupported = unsupportedUrlReason(query);
@@ -129,6 +129,7 @@ async function play(music, { guildId, query, voiceChannelId = null, userId = nul
         query,
         position: next ? 1 : 0,
         skip: Boolean(skip),
+        devMode: Boolean(devMode),
     });
 
     const queue = music.distube.getQueue(guildId);

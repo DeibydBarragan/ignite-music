@@ -9,6 +9,7 @@
 const { sendOpResult, sendProblem } = require('../contracts');
 const { getSseHub } = require('../sse');
 const { snowflakeParams, validateBody, schemas, inspectTarget } = require('../middleware/validate');
+const { isDevMode } = require('../../core/dev-mode');
 
 function register(router, { proxy }) {
     router.get('/guilds/:guildId/player', snowflakeParams(), async (req, res) => {
@@ -32,6 +33,7 @@ function register(router, { proxy }) {
             userId: req.discordUserId || body.userId || null,
             next: Boolean(body.next),
             skip: Boolean(body.skip),
+            devMode: req.headers['x-dev-mode'] === 'true' || Boolean(body.devMode) || Boolean(req.discordUserId && isDevMode(req.discordUserId)),
         });
         return sendOpResult(res, result);
     });

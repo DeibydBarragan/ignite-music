@@ -7,6 +7,7 @@ const config = require('../config');
 const { JsonStore } = require('../core/store');
 const { supabase } = require('../core/supabase');
 const { resolveRequester, requesterName } = require('../core/user');
+const { isDevMode } = require('../core/dev-mode');
 const logger = require('../core/logger');
 
 const log = logger.createLogger('history');
@@ -76,6 +77,11 @@ async function recordPlay(guildId, song) {
     if (!guildId || !song) return;
 
     const user = resolveRequester(song);
+    const devActive = Boolean(song.metadata?.devMode) || (user?.id && isDevMode(user.id));
+    if (devActive) {
+        log.info(`[Dev Mode] Skipping database save for song "${song.name || 'Desconocido'}" requested by ${user?.id || 'unknown'}`);
+        return;
+    }
 
     const record = {
         guild_id: String(guildId),

@@ -35,14 +35,19 @@ function requesterUserOf(member) {
  * Resolve a query/URL and add it to the queue. Joining the voice channel and resolving the
  * song run in parallel, so the first song starts as early as possible.
  */
-async function play(manager, { voiceChannel, textChannel, member, query, position = 0, onQueued = null, skip = false }) {
+async function play(manager, { voiceChannel, textChannel, member, query, position = 0, onQueued = null, skip = false, devMode = false }) {
     const guildId = voiceChannel.guild.id;
     manager.state(guildId).disconnectReason = null;
 
     assertSupportedUrl(query);
 
     const requestedAt = Date.now();
-    const metadata = { requesterId: member?.id, requesterUser: requesterUserOf(member), guildId };
+    const metadata = {
+        requesterId: member?.id,
+        requesterUser: requesterUserOf(member),
+        guildId,
+        devMode: Boolean(devMode),
+    };
     const existing = manager.getQueue(guildId);
     const joining = existing ? null : manager.distube.voices.join(voiceChannel).then(() => null, (error) => error);
 
