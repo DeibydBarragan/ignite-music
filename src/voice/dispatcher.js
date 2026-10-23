@@ -82,13 +82,14 @@ async function dispatchVoiceCommand(manager, payload, options = {}) {
         return { executed: false, reason: 'guild_not_found' };
     }
 
+    const queue = manager.getQueue(guildId);
+    const t = manager.translator(guildId);
+
     const member = guild.members.cache.get(userId)
         || await guild.members.fetch(userId).catch(() => null);
     const voiceChannel = member?.voice?.channel
+        || queue?.voiceChannel
         || (channelId ? guild.channels.cache.get(channelId) : null);
-
-    const queue = manager.getQueue(guildId);
-    const t = manager.translator(guildId);
 
     let executionResult = null;
 
