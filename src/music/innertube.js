@@ -103,7 +103,76 @@ async function searchVideosDirect(query, limit = 6, { timeoutMs = 3500 } = {}) {
 }
 
 /**
- * 2. Recomendaciones de canciones / YouTube Mix (Punto B: Radio y Autoplay).
+ * 2. Búsqueda de playlists en YouTube mediante Innertube (EgIQAw%3D%3D = filtro Playlist).
+ */
+async function searchPlaylistsDirect(query, limit = 6, { timeoutMs = 3500 } = {}) {
+    const raw = String(query || '').trim();
+    if (!raw || raw.length < 2) return [];
+
+    const data = /** @type {any} */ (await postInnertube('search', { query: raw, params: 'EgIQAw%3D%3D' }, timeoutMs));
+    const sections = data?.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents || [];
+    const playlists = [];
+
+    for (const section of sections) {
+        const items = section?.itemSectionRenderer?.contents || [];
+        for (const item of items) {
+            if (item.lockupViewModel && (item.lockupViewModel.contentType === 'LOCKUP_CONTENT_TYPE_PLAYLIST' || item.lockupViewModel.contentId?.startsWith('PL'))) {
+                const p = item.lockupViewModel;
+                const id = p.contentId;
+                if (!id) continue;
+
+                const title = p.metadata?.lockupMetadataViewModel?.title?.content || 'Unknown Playlist';
+                const uploader = p.metadata?.lockupMetadataViewModel?.metadata?.contentMetadataViewModel?.metadataRows?.[0]?.metadataParts?.[0]?.text?.content || 'YouTube';
+                const thumb = p.contentImage?.collectionThumbnailViewModel?.primaryThumbnail?.thumbnailViewModel?.image?.sources?.[0]?.url || `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+                const badge = p.contentImage?.collectionThumbnailViewModel?.primaryThumbnail?.thumbnailViewModel?.overlays?.[0]?.thumbnailOverlayBadgeViewModel?.thumbnailBadges?.[0]?.thumbnailBadgeViewModel?.text || '';
+                const trackCount = parseInt(badge.replace(/[^\d]/g, ''), 10) || 0;
+
+                playlists.push({
+                    id,
+                    title,
+                    name: title,
+                    uploader,
+                    author: uploader,
+                    thumbnail: thumb,
+                    cover: thumb,
+                    trackCount,
+                    url: `https://www.youtube.com/playlist?list=${id}`,
+                    source: 'youtube',
+                });
+            } else if (item.playlistRenderer) {
+                const p = item.playlistRenderer;
+                const id = p.playlistId;
+                if (!id) continue;
+
+                const title = p.title?.simpleText || p.title?.runs?.[0]?.text || 'Unknown Playlist';
+                const uploader = p.shortBylineText?.runs?.[0]?.text || 'YouTube';
+                const thumb = p.thumbnails?.[0]?.thumbnails?.[0]?.url || p.thumbnailRenderer?.playlistVideoThumbnailRenderer?.thumbnail?.thumbnails?.[0]?.url || `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+                const trackCount = parseInt(String(p.videoCount || '').replace(/[^\d]/g, ''), 10) || 0;
+
+                playlists.push({
+                    id,
+                    title,
+                    name: title,
+                    uploader,
+                    author: uploader,
+                    thumbnail: thumb,
+                    cover: thumb,
+                    trackCount,
+                    url: `https://www.youtube.com/playlist?list=${id}`,
+                    source: 'youtube',
+                });
+            }
+
+            if (playlists.length >= limit) break;
+        }
+        if (playlists.length >= limit) break;
+    }
+
+    return playlists;
+}
+
+/**
+ * 3. Recomendaciones de canciones / YouTube Mix (Punto B: Radio y Autoplay).
  */
 async function getRelatedMixDirect(videoId, limit = 15, { timeoutMs = 3500 } = {}) {
     if (!videoId || typeof videoId !== 'string') return [];
@@ -236,6 +305,7 @@ async function getPlaylistVideosDirect(playlistId, limit = 200, { timeoutMs = 50
 module.exports = {
     postInnertube,
     searchVideosDirect,
+    searchPlaylistsDirect,
     getRelatedMixDirect,
     getPlaylistVideosDirect,
     RELATED_MIN_SECONDS,

@@ -98,6 +98,29 @@ function serializeTrack(song, { extended = true } = {}) {
 }
 
 /**
+ * Normalizes a playlist entry from Innertube, yt-dlp or DB to the frontend contract.
+ */
+function serializePlaylist(entry) {
+    if (!entry) return null;
+    const id = entry.id;
+    const title = entry.title || entry.name || 'Unknown Playlist';
+    const author = entry.uploader || entry.author || entry.channel || 'YouTube';
+    const cover = entry.thumbnail || entry.cover || FALLBACK_COVER;
+    return {
+        id,
+        title,
+        name: title,
+        uploader: author,
+        author,
+        thumbnail: cover,
+        cover,
+        trackCount: Number(entry.trackCount || entry.count || entry.playlist_count || 0) || 0,
+        url: entry.url || `https://www.youtube.com/playlist?list=${id}`,
+        source: 'youtube',
+    };
+}
+
+/**
  * Operational error thrown by API operations; the shard proxy transports
  * status/code/message and routes render them as RFC 7807 documents.
  */
@@ -172,6 +195,7 @@ module.exports = {
     ERROR_TITLES,
     ApiError,
     serializeTrack,
+    serializePlaylist,
     ensureTrackId,
     formatDuration,
     getAvatarUrl,

@@ -73,6 +73,7 @@ const schemas = {
         search: z.object({
             q: z.string().trim().max(500).optional(),
             limit: z.coerce.number().int().min(1).max(15).optional(),
+            type: z.enum(['video', 'playlist']).optional(),
         }),
         suggestions: z.object({ q: z.string().trim().max(500).optional() }),
         topSongs: z.object({

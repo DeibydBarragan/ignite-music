@@ -7,6 +7,7 @@ const { ids, makeSong } = require('./helpers');
 const {
     ApiError,
     serializeTrack,
+    serializePlaylist,
     ensureTrackId,
     formatDuration,
     getAvatarUrl,
@@ -81,6 +82,25 @@ test('serializeTrack never leaks non-spotify sources or crashes without url', ()
     assert.equal(serializeTrack(null), null);
     const out = serializeTrack(makeSong(7));
     assert.equal(out.isLive, false);
+});
+
+test('serializePlaylist formats title, author, trackCount and fallback cover', () => {
+    assert.equal(serializePlaylist(null), null);
+    const out = serializePlaylist({
+        id: 'PLabc123',
+        title: 'Éxitos 2026',
+        uploader: 'Mi Canal',
+        trackCount: 42,
+    });
+    assert.equal(out.id, 'PLabc123');
+    assert.equal(out.title, 'Éxitos 2026');
+    assert.equal(out.name, 'Éxitos 2026');
+    assert.equal(out.author, 'Mi Canal');
+    assert.equal(out.uploader, 'Mi Canal');
+    assert.equal(out.trackCount, 42);
+    assert.equal(out.thumbnail, FALLBACK_COVER);
+    assert.equal(out.cover, FALLBACK_COVER);
+    assert.equal(out.url, 'https://www.youtube.com/playlist?list=PLabc123');
 });
 
 test('ensureTrackId assigns once and reuses', () => {

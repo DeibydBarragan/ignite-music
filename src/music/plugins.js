@@ -8,7 +8,7 @@ const { TTLCache } = require('../core/cache');
 const { isBotCheck } = require('../core/youtube-guards');
 const { setTimeout: sleep } = require('node:timers/promises');
 const log = require('../core/logger').createLogger('extractor');
-const { searchVideosDirect, getRelatedMixDirect } = require('./innertube');
+const { searchVideosDirect, searchPlaylistsDirect, getRelatedMixDirect } = require('./innertube');
 const {
     AUDIO_FORMAT,
     INNERTUBE_TIMEOUT_MS,
@@ -37,6 +37,7 @@ class YouTubePlugin extends ExtractorPlugin {
         this.base = new YtDlpBase(runner, relay);
         this.direct = {
             search: direct.search || searchVideosDirect,
+            playlists: direct.playlists || searchPlaylistsDirect,
             related: direct.related || getRelatedMixDirect,
         };
         this.searches = new TTLCache({ ttlMs: 30 * 60_000, maxSize: 1000 });
@@ -158,6 +159,32 @@ class YouTubePlugin extends ExtractorPlugin {
 
         const result = await this.run(`ytsearch${limit}:${query}`, ['--flat-playlist'], { proxy: ytdlp.proxyFor(guildId) });
         return (result?.entries || []).filter((entry) => entry?.id && VIDEO_ID.test(entry.id)).map(youtubeInfo);
+    }
+
+    /**
+     * Search public playlists on YouTube with Innertube-first flow and yt-dlp fallback.
+     */
+    async searchPlaylists(query, limit = 6, guildId = null) {
+        const direct = await this.directEntries(
+            () => this.direct.playlists(query, limit, { timeoutMs: INNERTUBE_TIMEOUT_MS }),
+            (entry) => entry?.id && entry.url,
+            `playlist search for "${query}"`
+        );
+        if (direct) return direct;
+
+        const result = await this.run(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}&sp=EgIQAw%253D%253D`, ['--flat-playlist'], { proxy: ytdlp.proxyFor(guildId) });
+        return (result?.entries || []).filter((entry) => entry?.id).map((entry) => ({
+            id: entry.id,
+            title: entry.title || 'Unknown Playlist',
+            name: entry.title || 'Unknown Playlist',
+            uploader: entry.uploader || entry.channel || 'YouTube',
+            author: entry.uploader || entry.channel || 'YouTube',
+            thumbnail: entry.thumbnails?.[0]?.url || entry.thumbnail || '',
+            cover: entry.thumbnails?.[0]?.url || entry.thumbnail || '',
+            trackCount: Number(entry.playlist_count || entry.n_entries || 0) || 0,
+            url: `https://www.youtube.com/playlist?list=${entry.id}`,
+            source: 'youtube',
+        }));
     }
 
     async getStreamURL(song) {

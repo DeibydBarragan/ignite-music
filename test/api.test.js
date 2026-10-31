@@ -225,3 +225,24 @@ test('GET events streams the initial snapshot and later published syncs', async 
         await api.close();
     }
 });
+
+test('GET search/playlists and GET search?type=playlist dispatch to discovery.searchPlaylists', async () => {
+    const api = await startApi(async () => ({ query: 'reggaeton', results: [{ id: 'PL123', title: 'Top Hits' }] }));
+    try {
+        const res1 = await fetch(`${api.base}/api/v1/search/playlists?q=reggaeton&limit=5`, { headers: authHeaders });
+        assert.equal(res1.status, 200);
+        assert.equal(api.calls.length, 1);
+        assert.equal(api.calls[0].op, 'discovery.searchPlaylists');
+        assert.equal(api.calls[0].payload.q, 'reggaeton');
+        assert.equal(api.calls[0].payload.limit, 5);
+
+        const res2 = await fetch(`${api.base}/api/v1/search?q=rock&type=playlist&limit=8`, { headers: authHeaders });
+        assert.equal(res2.status, 200);
+        assert.equal(api.calls.length, 2);
+        assert.equal(api.calls[1].op, 'discovery.searchPlaylists');
+        assert.equal(api.calls[1].payload.q, 'rock');
+        assert.equal(api.calls[1].payload.limit, 8);
+    } finally {
+        await api.close();
+    }
+});

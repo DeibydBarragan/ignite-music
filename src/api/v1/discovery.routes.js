@@ -34,11 +34,24 @@ function register(router, { client, proxy }) {
         }
     });
 
-    router.get('/search', validateQuery(schemas.query.search), async (req, res) => {
+    router.get('/search/playlists', validateQuery(schemas.query.search), async (req, res) => {
         const q = req.validated.query.q || '';
         const limit = req.validated.query.limit || 6;
         try {
-            const data = await client.music.apiOps.run('discovery.search', { q, limit });
+            const data = await client.music.apiOps.run('discovery.searchPlaylists', { q, limit });
+            return res.json(data);
+        } catch {
+            return res.json({ query: q, results: [] });
+        }
+    });
+
+    router.get('/search', validateQuery(schemas.query.search), async (req, res) => {
+        const q = req.validated.query.q || '';
+        const limit = req.validated.query.limit || 6;
+        const type = req.validated.query.type;
+        try {
+            const op = type === 'playlist' ? 'discovery.searchPlaylists' : 'discovery.search';
+            const data = await client.music.apiOps.run(op, { q, limit });
             return res.json(data);
         } catch {
             return res.json({ query: q, results: [] });

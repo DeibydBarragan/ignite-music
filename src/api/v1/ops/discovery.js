@@ -9,13 +9,14 @@
 const logger = require('../../../core/logger');
 const { TTLCache } = require('../../../core/cache');
 const { unsupportedUrlReason } = require('../../../core/youtube-guards');
-const { searchVideosDirect } = require('../../../music/innertube');
-const { ApiError, serializeTrack } = require('../../contracts');
+const { searchVideosDirect, searchPlaylistsDirect } = require('../../../music/innertube');
+const { ApiError, serializeTrack, serializePlaylist } = require('../../contracts');
 
 const log = logger.createLogger('api-ops');
 
 // Same payload as the legacy /search route: 15 minutes per query+limit.
 const searchVideosCache = new TTLCache({ ttlMs: 15 * 60_000, maxSize: 500 });
+const searchPlaylistsCache = new TTLCache({ ttlMs: 15 * 60_000, maxSize: 500 });
 // Cache contextual radio recommendations per guild:song for 20 minutes.
 const radioRecommendationsCache = new TTLCache({ ttlMs: 20 * 60_000, maxSize: 500 });
 
@@ -54,6 +55,35 @@ async function search(music, { q = '', limit = 6 }) {
         return { query, results };
     } catch (error) {
         log.warn(`Search error: ${error.message}`);
+        return { query, results: [] };
+    }
+}
+
+
+async function searchPlaylists(music, { q = '', limit = 6 }) {
+    const query = String(q).trim();
+    const capped = Math.min(Math.max(Number(limit) || 6, 1), 15);
+    if (query.length < 2 || query.length > 100 || /^https?:\/\//i.test(query)) {
+        return { query, results: [] };
+    }
+    const cacheKey = `${capped}|${query.toLowerCase()}`;
+    try {
+        const results = await searchPlaylistsCache.wrap(cacheKey, async () => {
+            try {
+                const direct = await searchPlaylistsDirect(query, capped);
+                if (direct && direct.length > 0) return direct.map((pl) => serializePlaylist(pl)).filter(Boolean);
+            } catch (innertubeError) {
+                log.debug(`Direct Innertube playlist search failed, falling back to yt-dlp: ${innertubeError.message}`);
+            }
+            if (typeof music.youtube?.searchPlaylists === 'function') {
+                const searchResults = await music.youtube.searchPlaylists(query, capped);
+                return searchResults.map((pl) => serializePlaylist(pl)).filter(Boolean);
+            }
+            return [];
+        });
+        return { query, results };
+    } catch (error) {
+        log.warn(`Search playlists error: ${error.message}`);
         return { query, results: [] };
     }
 }
@@ -210,6 +240,7 @@ async function resolvePlaylist(music, { guildId, url }) {
 function register(apiOps) {
     apiOps.register('discovery.suggest', suggest);
     apiOps.register('discovery.search', search);
+    apiOps.register('discovery.searchPlaylists', searchPlaylists);
     apiOps.register('discovery.recommendations', recommendations);
     apiOps.register('discovery.topSongs', topSongs);
     apiOps.register('guild.voiceStatus', voiceStatus);
@@ -217,4 +248,4 @@ function register(apiOps) {
     apiOps.register('playlist.resolve', resolvePlaylist);
 }
 
-module.exports = { register, suggest, search, recommendations, topSongs, voiceStatus, channels, resolvePlaylist };
+module.exports = { register, suggest, search, searchPlaylists, recommendations, topSongs, voiceStatus, channels, resolvePlaylist };
