@@ -150,6 +150,21 @@ test('matcher: normalizes and matches default voice commands', () => {
     assert.equal(customMatch.commandId, 'play');
     assert.equal(customMatch.phrase, 'tocate');
     assert.equal(customMatch.query, 'something about us');
+
+    // Speech with words preceding the wake word (e.g. conversational prelude)
+    const preludeMatch1 = matchVoiceCommand('Creo que se hace un poco más rápido. Bot, pausa.', { wakeWord: 'bot' });
+    assert.equal(preludeMatch1.matched, true);
+    assert.equal(preludeMatch1.commandId, 'pause');
+
+    const preludeMatch2 = matchVoiceCommand('No, no funcionó. Otra vez. Bot, pausa.', { wakeWord: 'bot' });
+    assert.equal(preludeMatch2.matched, true);
+    assert.equal(preludeMatch2.commandId, 'pause');
+
+    // Conversational filler between wake word and command
+    const fillerMatch = matchVoiceCommand('bot por favor puedes reproducir Starboy', { wakeWord: 'bot' });
+    assert.equal(fillerMatch.matched, true);
+    assert.equal(fillerMatch.commandId, 'play');
+    assert.equal(fillerMatch.query, 'starboy');
 });
 
 test('ttsFeedback: interpolates templates and formats messages', () => {
@@ -249,6 +264,8 @@ test('dispatcher: dispatches play and control commands to manager', async () => 
     const { dispatchVoiceCommand } = require('../src/voice');
 
     let playedQuery = null;
+    let playedSkip = null;
+    let playedPosition = null;
     let controlCalled = null;
 
     const mockManager = {
@@ -268,25 +285,44 @@ test('dispatcher: dispatches play and control commands to manager', async () => 
             pause: async () => { controlCalled = 'pause'; },
         }),
         translator: () => (k) => k,
-        play: async ({ query }) => {
+        play: async ({ query, skip, position }) => {
             playedQuery = query;
+            playedSkip = skip;
+            playedPosition = position;
             return { ok: true };
         },
     };
 
-    // Test dispatch play
+    // Test dispatch play (skip = true)
     const playResult = await dispatchVoiceCommand(mockManager, {
             guildId: 'g1',
             userId: 'u1',
             text: 'ignite reproduce starboy',
             channelId: 'c1',
         }, {
-            settings: { wake_word: 'ignite' },
+            settings: { wake_word: 'ignite', tts_feedback_enabled: false },
         });
 
         assert.equal(playResult.executed, true);
         assert.equal(playResult.commandId, 'play');
         assert.equal(playedQuery, 'starboy');
+        assert.equal(playedSkip, true);
+
+    // Test dispatch play_next (position = 1, skip = false)
+    const nextResult = await dispatchVoiceCommand(mockManager, {
+            guildId: 'g1',
+            userId: 'u1',
+            text: 'bot pon despues bohemian rhapsody',
+            channelId: 'c1',
+        }, {
+            settings: { wake_word: 'bot', tts_feedback_enabled: false },
+        });
+
+        assert.equal(nextResult.executed, true);
+        assert.equal(nextResult.commandId, 'play_next');
+        assert.equal(playedQuery, 'bohemian rhapsody');
+        assert.equal(playedSkip, false);
+        assert.equal(playedPosition, 1);
 
         // Test dispatch pause
         const pauseResult = await dispatchVoiceCommand(mockManager, {
@@ -295,10 +331,67 @@ test('dispatcher: dispatches play and control commands to manager', async () => 
             text: 'ignite pausa',
             channelId: 'c1',
         }, {
-            settings: { wake_word: 'ignite' },
+            settings: { wake_word: 'ignite', tts_feedback_enabled: false },
         });
 
         assert.equal(pauseResult.executed, true);
         assert.equal(pauseResult.commandId, 'pause');
         assert.equal(controlCalled, 'pause');
+});
+
+test('dispatcher: autoplay on/off sets an explicit state (idempotent)', async () => {
+    const { dispatchVoiceCommand, matchVoiceCommand } = require('../src/voice');
+
+    // Matcher: variants Whisper may write, plus the off/stop collision ("apaga")
+    const cases = [
+        ['ignite activa el autoplay', 'autoplay_on'],
+        ['ignite enciende el modo auto play por favor', 'autoplay_on'],
+        ['ignite activa la reproducción automática', 'autoplay_on'],
+        ['ignite desactiva el autoplay', 'autoplay_off'],
+        ['ignite apaga el autoplay', 'autoplay_off'],
+        ['ignite apaga', 'stop'],
+    ];
+    for (const [text, expected] of cases) {
+        const m = matchVoiceCommand(text, { wakeWord: 'ignite' });
+        assert.equal(m.commandId, expected, text);
+    }
+    assert.equal(matchVoiceCommand('ignite activa el autoplay de la fiesta', { wakeWord: 'ignite' }).matched, false);
+
+    let toggles = 0;
+    let refreshed = 0;
+    const queue = {
+        autoplay: false,
+        songs: [{ name: 'Track 1' }],
+        toggleAutoplay() { toggles += 1; this.autoplay = !this.autoplay; return this.autoplay; },
+    };
+    const mockManager = {
+        client: {
+            guilds: {
+                cache: new Map([['g1', {
+                    channels: { cache: new Map() },
+                    members: { cache: new Map([['u1', { id: 'u1', voice: { channel: { id: 'c1' } } }]]) },
+                }]]),
+            },
+        },
+        getQueue: () => queue,
+        translator: () => (k) => k,
+        refreshPanel: () => { refreshed += 1; },
+    };
+    const run = (text) => dispatchVoiceCommand(mockManager, { guildId: 'g1', userId: 'u1', text, channelId: 'c1' }, {
+        settings: { wake_word: 'ignite', tts_feedback_enabled: false },
+    });
+
+    const on = await run('ignite activa el autoplay');
+    assert.equal(on.executed, true);
+    assert.equal(queue.autoplay, true);
+
+    // Already on: saying "on" again must not turn it off
+    await run('ignite activa el autoplay');
+    assert.equal(queue.autoplay, true);
+    assert.equal(toggles, 1);
+
+    const off = await run('ignite desactiva el autoplay');
+    assert.equal(off.executed, true);
+    assert.equal(queue.autoplay, false);
+    assert.equal(refreshed, 3);
 });

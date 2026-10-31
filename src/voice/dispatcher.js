@@ -7,9 +7,9 @@
  */
 
 const log = require('../core/logger').createLogger('voice-dispatcher');
-const { applyControl } = require('../music/actions');
+const { applyControl, setAutoplay } = require('../music/actions');
 const { matchVoiceCommand } = require('./matcher');
-const { sendTtsFeedback } = require('./tts-feedback');
+const { sendTtsFeedback, resolveFeedbackMessage } = require('./tts-feedback');
 const { voiceSettingsStore } = require('./settings-store');
 
 /**
@@ -28,6 +28,9 @@ const { voiceSettingsStore } = require('./settings-store');
 async function dispatchVoiceCommand(manager, payload, options = {}) {
     const { guildId, userId, text, channelId } = payload;
     const settings = options.settings || await voiceSettingsStore.getGuildSettings(guildId);
+    const ttsVoice = settings?.tts_voice || settings?.tts_templates?._voice || 'es-MX-DaliaNeural';
+    const ttsRate = settings?.tts_rate || settings?.tts_templates?._rate || 1.0;
+    const ttsPitch = settings?.tts_pitch || settings?.tts_templates?._pitch || 1.0;
 
     if (settings && settings.enabled === false) {
         log.debug({ guildId }, 'Voice commands are disabled for this guild');
@@ -65,6 +68,9 @@ async function dispatchVoiceCommand(manager, payload, options = {}) {
                 }, {
                     enabled: settings?.tts_feedback_enabled,
                     templates: settings?.tts_templates,
+                    voice: ttsVoice,
+                    rate: ttsRate,
+                    pitch: ttsPitch,
                 }).catch(() => undefined);
             }
             return { executed: result.ok, commandId: 'resume', result };
@@ -95,12 +101,10 @@ async function dispatchVoiceCommand(manager, payload, options = {}) {
 
     try {
         switch (commandId) {
-            case 'play':
-            case 'enqueue': {
+            case 'play': {
                 if (!voiceChannel) {
                     return { executed: false, reason: 'user_not_in_voice' };
                 }
-                // Trigger auditory TTS confirmation immediately before resolving song
                 const voiceChannelId = voiceChannel?.id || channelId;
                 if (voiceChannelId) {
                     sendTtsFeedback({
@@ -112,7 +116,41 @@ async function dispatchVoiceCommand(manager, payload, options = {}) {
                     }, {
                         enabled: settings?.tts_feedback_enabled,
                         templates: settings?.tts_templates,
-                    }).catch(() => undefined);
+                    voice: ttsVoice,
+                    rate: ttsRate,
+                    pitch: ttsPitch,
+                }).catch(() => undefined);
+                }
+                const textChannel = queue?.textChannel || null;
+                executionResult = await manager.play({
+                    voiceChannel,
+                    textChannel,
+                    member,
+                    query,
+                    skip: true,
+                });
+                break;
+            }
+
+            case 'play_next': {
+                if (!voiceChannel) {
+                    return { executed: false, reason: 'user_not_in_voice' };
+                }
+                const voiceChannelId = voiceChannel?.id || channelId;
+                if (voiceChannelId) {
+                    sendTtsFeedback({
+                        guildId,
+                        channelId: voiceChannelId,
+                        userId,
+                        commandId,
+                        params: { query },
+                    }, {
+                        enabled: settings?.tts_feedback_enabled,
+                        templates: settings?.tts_templates,
+                    voice: ttsVoice,
+                    rate: ttsRate,
+                    pitch: ttsPitch,
+                }).catch(() => undefined);
                 }
                 const textChannel = queue?.textChannel || null;
                 executionResult = await manager.play({
@@ -121,6 +159,39 @@ async function dispatchVoiceCommand(manager, payload, options = {}) {
                     member,
                     query,
                     skip: false,
+                    position: 1,
+                });
+                break;
+            }
+
+            case 'enqueue': {
+                if (!voiceChannel) {
+                    return { executed: false, reason: 'user_not_in_voice' };
+                }
+                const voiceChannelId = voiceChannel?.id || channelId;
+                if (voiceChannelId) {
+                    sendTtsFeedback({
+                        guildId,
+                        channelId: voiceChannelId,
+                        userId,
+                        commandId,
+                        params: { query },
+                    }, {
+                        enabled: settings?.tts_feedback_enabled,
+                        templates: settings?.tts_templates,
+                    voice: ttsVoice,
+                    rate: ttsRate,
+                    pitch: ttsPitch,
+                }).catch(() => undefined);
+                }
+                const textChannel = queue?.textChannel || null;
+                executionResult = await manager.play({
+                    voiceChannel,
+                    textChannel,
+                    member,
+                    query,
+                    skip: false,
+                    position: 0,
                 });
                 break;
             }
@@ -140,6 +211,16 @@ async function dispatchVoiceCommand(manager, payload, options = {}) {
                 break;
             }
 
+            case 'autoplay_on':
+            case 'autoplay_off': {
+                if (!queue) {
+                    return { executed: false, reason: 'no_active_queue' };
+                }
+                executionResult = setAutoplay(queue, t, commandId === 'autoplay_on');
+                if (typeof manager.refreshPanel === 'function') manager.refreshPanel(guildId);
+                break;
+            }
+
             case 'queue': {
                 if (!queue) {
                     return { executed: false, reason: 'no_active_queue' };
@@ -153,7 +234,9 @@ async function dispatchVoiceCommand(manager, payload, options = {}) {
         }
 
         // 3. Trigger auditory TTS confirmation via ignite-sound (for non-play commands)
-        if (commandId !== 'play' && commandId !== 'enqueue') {
+        let ttsMessage = null;
+        if (commandId !== 'play' && commandId !== 'enqueue' && commandId !== 'play_next') {
+            ttsMessage = resolveFeedbackMessage(commandId, { query }, settings?.tts_templates);
             const voiceChannelId = voiceChannel?.id || channelId;
             if (voiceChannelId) {
                 sendTtsFeedback({
@@ -165,8 +248,13 @@ async function dispatchVoiceCommand(manager, payload, options = {}) {
                 }, {
                     enabled: settings?.tts_feedback_enabled,
                     templates: settings?.tts_templates,
+                    voice: ttsVoice,
+                    rate: ttsRate,
+                    pitch: ttsPitch,
                 }).catch(() => undefined);
             }
+        } else {
+            ttsMessage = resolveFeedbackMessage(commandId, { title: query, query }, settings?.tts_templates);
         }
 
         return {
@@ -174,6 +262,7 @@ async function dispatchVoiceCommand(manager, payload, options = {}) {
             commandId,
             query,
             result: executionResult,
+            ttsMessage,
         };
     } catch (err) {
         log.error({ err, guildId, commandId }, 'Failed to execute matched voice command');

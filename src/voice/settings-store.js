@@ -13,6 +13,17 @@ const { DEFAULT_TTS_TEMPLATES } = require('./tts-feedback');
 
 const CACHE_TTL_MS = 60_000;
 
+function extractCleanTemplates(rawTemplates) {
+    if (!rawTemplates || typeof rawTemplates !== 'object') return {};
+    const clean = {};
+    for (const [key, value] of Object.entries(rawTemplates)) {
+        if (!key.startsWith('_') && typeof value === 'string') {
+            clean[key] = value;
+        }
+    }
+    return clean;
+}
+
 class VoiceSettingsStore {
     constructor({ supabase: injectedSupabase } = {}) {
         this.supabase = injectedSupabase !== undefined ? injectedSupabase : supabase;
@@ -29,6 +40,9 @@ class VoiceSettingsStore {
             wake_word: config.voice.defaultWakeWord || 'ignite',
             language: 'es',
             tts_feedback_enabled: config.voice.ttsFeedbackEnabled,
+            tts_voice: 'es-MX-DaliaNeural',
+            tts_pitch: 1.0,
+            tts_rate: 1.0,
             tts_templates: { ...DEFAULT_TTS_TEMPLATES },
             bindings: [],
         };
@@ -77,16 +91,22 @@ class VoiceSettingsStore {
                 command_id: b.command_id,
             }));
 
+            const rawTemplates = rawSettings?.tts_templates || {};
+            const cleanTemplates = extractCleanTemplates(rawTemplates);
+
             const result = {
                 enabled: rawSettings?.enabled !== undefined ? rawSettings.enabled : config.voice.enabled,
                 wake_word: (rawSettings?.wake_word || config.voice.defaultWakeWord || 'ignite').toLowerCase(),
                 language: rawSettings?.language || 'es',
+                tts_voice: rawTemplates._voice || 'es-MX-DaliaNeural',
+                tts_pitch: rawTemplates._pitch !== undefined ? Number(rawTemplates._pitch) : 1.0,
+                tts_rate: rawTemplates._rate !== undefined ? Number(rawTemplates._rate) : 1.0,
                 tts_feedback_enabled: rawSettings?.tts_feedback_enabled !== undefined
                     ? rawSettings.tts_feedback_enabled
                     : config.voice.ttsFeedbackEnabled,
                 tts_templates: {
                     ...DEFAULT_TTS_TEMPLATES,
-                    ...(rawSettings?.tts_templates || {}),
+                    ...cleanTemplates,
                 },
                 bindings,
             };
@@ -114,18 +134,27 @@ class VoiceSettingsStore {
         const defaults = this.getDefaultSettings();
         const current = await this.getGuildSettings(guildId);
 
+        const tts_voice = payload.tts_voice || current.tts_voice || 'es-MX-DaliaNeural';
+        const tts_pitch = payload.tts_pitch !== undefined ? Number(payload.tts_pitch) : (current.tts_pitch !== undefined ? current.tts_pitch : 1.0);
+        const tts_rate = payload.tts_rate !== undefined ? Number(payload.tts_rate) : (current.tts_rate !== undefined ? current.tts_rate : 1.0);
+
+        const cleanTemplates = {
+            ...defaults.tts_templates,
+            ...extractCleanTemplates(current.tts_templates),
+            ...extractCleanTemplates(payload.tts_templates),
+        };
+
         const updated = {
+            tts_voice,
+            tts_pitch,
+            tts_rate,
             enabled: payload.enabled !== undefined ? Boolean(payload.enabled) : current.enabled,
             wake_word: payload.wake_word ? payload.wake_word.trim().toLowerCase() : current.wake_word,
             language: payload.language || current.language,
             tts_feedback_enabled: payload.tts_feedback_enabled !== undefined
                 ? Boolean(payload.tts_feedback_enabled)
                 : current.tts_feedback_enabled,
-            tts_templates: {
-                ...defaults.tts_templates,
-                ...current.tts_templates,
-                ...(payload.tts_templates || {}),
-            },
+            tts_templates: cleanTemplates,
             bindings: payload.bindings !== undefined ? payload.bindings : current.bindings,
         };
 
@@ -140,7 +169,12 @@ class VoiceSettingsStore {
                         wake_word: updated.wake_word,
                         language: updated.language,
                         tts_feedback_enabled: updated.tts_feedback_enabled,
-                        tts_templates: updated.tts_templates,
+                        tts_templates: {
+                            ...cleanTemplates,
+                            _voice: tts_voice,
+                            _pitch: tts_pitch,
+                            _rate: tts_rate,
+                        },
                         updated_at: new Date().toISOString(),
                     });
 

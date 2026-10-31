@@ -49,7 +49,9 @@ async function play(manager, { voiceChannel, textChannel, member, query, positio
         devMode: Boolean(devMode),
     };
     const existing = manager.getQueue(guildId);
-    const joining = existing ? null : manager.distube.voices.join(voiceChannel).then(() => null, (error) => error);
+    const currentVoice = manager.distube.voices.get(guildId);
+    const isAlreadyConnected = currentVoice && currentVoice.channel?.id === voiceChannel.id && currentVoice.connection?.state?.status === 'ready';
+    const joining = (existing || isAlreadyConnected) ? null : manager.distube.voices.join(voiceChannel).then(() => null, (error) => error);
 
     let resolved;
     try {
@@ -76,7 +78,15 @@ async function play(manager, { voiceChannel, textChannel, member, query, positio
     const resolvedAt = Date.now();
     if (joining) {
         const joinError = await joining;
-        if (joinError) throw joinError;
+        if (joinError) {
+            try { manager.distube.voices.leave(guildId); } catch {}
+            const isTimeout = joinError.errorCode === 'VOICE_CONNECT_FAILED' || (joinError.message && joinError.message.includes('voice channel'));
+            if (isTimeout) {
+                const { ApiError } = require('../api/contracts');
+                throw new ApiError(504, 'VOICE_CONNECT_FAILED', 'No se pudo conectar al canal de voz de Discord tras 30 segundos.');
+            }
+            throw joinError;
+        }
     }
 
     // Adding to the queue is serialized per guild: two /play commands at the same moment

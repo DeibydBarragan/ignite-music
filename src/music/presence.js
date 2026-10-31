@@ -46,25 +46,29 @@ function listenerCount(manager, guild, channelId = guild.members.me?.voice?.chan
  */
 async function handleVoiceStateUpdate(manager, oldState, newState) {
     const guild = newState.guild || oldState.guild;
+    const botChannelId = guild.members.me?.voice?.channelId;
+    if (!botChannelId) return;
+
     const queue = manager.getQueue(guild.id);
-    if (!queue) return;
     const state = manager.state(guild.id);
-    const listeners = listenerCount(manager, guild);
+    const listeners = listenerCount(manager, guild, botChannelId);
 
     if (listeners === 0 && !state.empty && config.bot.leaveOnEmptyMs) {
         // Arm the timer before any await so concurrent voice updates can't start a second one.
         state.empty = setTimeout(async () => {
             state.empty = null;
+            if (listenerCount(manager, guild, botChannelId) > 0) return;
             const current = manager.getQueue(guild.id);
-            if (!current || listenerCount(manager, guild) > 0) return;
-            state.pausedForEmpty = false;
-            await manager.endPanel(guild.id, { titleKey: 'musicmanager.playback_ended', descriptionKey: 'ui.left_empty' });
-            await current.stop().catch(() => undefined);
+            if (current) {
+                state.pausedForEmpty = false;
+                await manager.endPanel(guild.id, { titleKey: 'musicmanager.playback_ended', descriptionKey: 'ui.left_empty' });
+                await current.stop().catch(() => undefined);
+            }
             state.disconnectReason = 'inactivity_empty';
             manager.distube.voices.leave(guild.id);
         }, config.bot.leaveOnEmptyMs);
         state.empty.unref?.();
-        if (!queue.paused) {
+        if (queue && !queue.paused) {
             state.pausedForEmpty = true;
             await queue.pause().catch(() => undefined);
             manager.refreshPanel(guild.id);
@@ -72,7 +76,7 @@ async function handleVoiceStateUpdate(manager, oldState, newState) {
     } else if (listeners > 0 && state.empty) {
         clearTimeout(state.empty);
         state.empty = null;
-        if (state.pausedForEmpty && queue.paused) {
+        if (queue && state.pausedForEmpty && queue.paused) {
             await queue.resume().catch(() => undefined);
             manager.refreshPanel(guild.id);
         }

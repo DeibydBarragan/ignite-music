@@ -47,14 +47,13 @@ dns.lookup = /** @type {any} */ (function (host, options, callback) {
         done = true;
         args.callback(err, address, family);
     };
-    const timer = setTimeout(() => {
-        // System resolver timed out: answer from public DNS instead.
+    const fallbackResolve = (initialErr) => {
         const family = args.options.family;
         const resolve = family === 6 ? resolve6 : resolve4;
         resolve(args.host).then(
             (addresses) => {
                 if (!addresses || !addresses.length) {
-                    finish(Object.assign(new Error(`queryA ETIMEOUT ${args.host}`), { code: 'ETIMEOUT' }));
+                    finish(initialErr || Object.assign(new Error(`queryA ETIMEOUT ${args.host}`), { code: 'ETIMEOUT' }));
                     return;
                 }
                 if (args.options.all) {
@@ -63,17 +62,27 @@ dns.lookup = /** @type {any} */ (function (host, options, callback) {
                     finish(null, addresses[0], family);
                 }
             },
-            (err) => finish(err)
+            (err) => finish(initialErr || err)
         );
+    };
+
+    const timer = setTimeout(() => {
+        // System resolver timed out: answer from public DNS instead.
+        fallbackResolve();
     }, LOOKUP_TIMEOUT_MS);
     if (timer.unref) timer.unref();
     try {
         origLookup.call(this, args.host, args.options, (err, address, family) => {
             clearTimeout(timer);
+            if (err) {
+                // System resolver failed (e.g. EAI_FAIL on Windows): fall back to public DNS immediately.
+                fallbackResolve(err);
+                return;
+            }
             finish(err, address, family);
         });
     } catch (err) {
         clearTimeout(timer);
-        finish(err);
+        fallbackResolve(err);
     }
 });

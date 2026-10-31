@@ -10,7 +10,19 @@
 const log = require('../core/logger').createLogger('vosk-model');
 const { ensureVoskBinary, ensureVoskModel } = require('./model-downloader');
 const { VoskWrapper } = require('./vosk-binding');
-const { parseWakeWords } = require('./matcher');
+const { parseWakeWords, WAKE_WORD_PHONETIC_VARIANTS } = require('./matcher');
+
+const BASELINE_CONVERSATIONAL_WORDS = Object.freeze([
+    'hola', 'oye', 'hey', 'buenos', 'dias', 'tardes', 'noches',
+    'amigos', 'amigo', 'gente', 'todos', 'canal', 'video', 'youtube', 'discord',
+    'el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas',
+    'de', 'del', 'al', 'en', 'para', 'por', 'con', 'sin', 'sobre', 'a',
+    'que', 'como', 'cuando', 'donde', 'quien', 'cual', 'porque',
+    'si', 'no', 'ya', 'bien', 'mal', 'muy', 'mas', 'pero', 'aunque',
+    'este', 'esta', 'esto', 'ese', 'esa', 'eso', 'aqui', 'ahi', 'alli',
+    'yo', 'tu', 'ella', 'nosotros', 'ustedes', 'ellos',
+    'gracias', 'favor', 'saludos', 'bienvenidos', 'musica', 'cancion',
+]);
 
 class VoskModelManager {
     constructor() {
@@ -112,13 +124,31 @@ class VoskModelManager {
         const grammarSet = new Set(['[unk]']);
 
         for (const word of wakeWords) {
-            grammarSet.add(word);
+            const clean = String(word).toLowerCase().trim();
+            if (this.wrapper.hasWord(this.model, clean)) {
+                grammarSet.add(clean);
+            }
+            const variants = WAKE_WORD_PHONETIC_VARIANTS[clean] || [];
+            for (const v of variants) {
+                for (const part of v.split(' ')) {
+                    const cleanPart = part.toLowerCase().trim();
+                    if (cleanPart && this.wrapper.hasWord(this.model, cleanPart)) {
+                        grammarSet.add(cleanPart);
+                    }
+                }
+            }
         }
 
         for (const cmd of extraCommands) {
             const clean = String(cmd).toLowerCase().trim();
             if (clean && this.wrapper.hasWord(this.model, clean)) {
                 grammarSet.add(clean);
+            }
+        }
+
+        for (const filler of BASELINE_CONVERSATIONAL_WORDS) {
+            if (this.wrapper.hasWord(this.model, filler)) {
+                grammarSet.add(filler);
             }
         }
 

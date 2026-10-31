@@ -55,10 +55,13 @@ const schemas = {
         }),
         voiceUpdate: z.object({
             enabled: z.boolean().optional(),
-            wake_word: z.string().trim().min(1).max(32).optional(),
+            wake_word: z.string().trim().min(1).max(256).optional(),
+            tts_voice: z.string().trim().max(100).optional(),
+            tts_pitch: z.number().min(0.4).max(2.5).optional(),
+            tts_rate: z.number().min(0.4).max(2.5).optional(),
             language: z.string().trim().min(2).max(10).optional(),
             tts_feedback_enabled: z.boolean().optional(),
-            tts_templates: z.record(z.string(), z.string().max(200)).optional(),
+            tts_templates: z.record(z.string(), z.union([z.string().max(200), z.number()])).optional(),
             bindings: z.array(z.object({
                 phrase: z.string().trim().min(1).max(64),
                 command_id: z.string().trim().min(1).max(32),

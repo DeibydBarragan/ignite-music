@@ -169,11 +169,16 @@ const config = {
         groqApiKey: env('GROQ_API_KEY'),
         silenceDurationMs: int('VOICE_SILENCE_DURATION_MS', 1000, { min: 400, max: 3000 }),
         model: env('GROQ_VOICE_MODEL', 'whisper-large-v3-turbo'),
-        offlineGating: bool('VOICE_OFFLINE_GATING', false),
-        soundApiUrl: env('IGNITE_SOUND_API_URL', 'http://localhost:3002'),
+        offlineGating: bool('VOICE_OFFLINE_GATING', true),
+        // Audio quieter than this (RMS, 0-32768) is dropped before any recognition
+        minRms: int('VOICE_MIN_RMS', 200, { min: 0, max: 5000 }),
+        // Minimum time between Groq requests from the same user
+        groqCooldownMs: int('VOICE_GROQ_COOLDOWN_MS', 2000, { min: 0, max: 30000 }),
+        soundApiUrl: env('IGNITE_SOUND_API_URL', 'https://wsnbbnbdc7.execute-api.us-east-2.amazonaws.com/sound'),
         soundApiSecret: env('IGNITE_SOUND_API_SECRET'),
-        ttsFeedbackEnabled: bool('VOICE_TTS_FEEDBACK_ENABLED', false),
-        allowBotInput: bool('VOICE_ALLOW_BOT_INPUT', true),
+        ttsFeedbackEnabled: bool('VOICE_TTS_FEEDBACK_ENABLED', true),
+        // Off by default: other bots (music, TTS) must not trigger commands. Enable only for tests.
+        allowBotInput: bool('VOICE_ALLOW_BOT_INPUT', false),
         soundBotId: env('IGNITE_SOUND_BOT_ID', '1558180312050180317'),
     },
 };

@@ -91,6 +91,12 @@ function toggleAutoplay(queue, t) {
     return result(true, enabled ? t('buttons.autoplay_on') : t('buttons.autoplay_off'));
 }
 
+/** Set autoplay to an explicit state (idempotent, unlike toggleAutoplay). */
+function setAutoplay(queue, t, enabled) {
+    if (Boolean(queue.autoplay) !== Boolean(enabled)) queue.toggleAutoplay();
+    return result(true, queue.autoplay ? t('buttons.autoplay_on') : t('buttons.autoplay_off'));
+}
+
 function setVolume(queue, t, value) {
     const volume = Number(value);
     if (!Number.isInteger(volume) || volume < 0 || volume > config.bot.maxVolume) {
@@ -223,7 +229,7 @@ async function safely(action, t) {
 }
 
 module.exports = {
-    togglePause, pause, resume, skip, previous, stop, shuffle, setLoop, toggleAutoplay,
+    togglePause, pause, resume, skip, previous, stop, shuffle, setLoop, toggleAutoplay, setAutoplay,
     setVolume, setFilter, seek, remove, move, jump, clear, safely, ensureResumed,
     applyControl, CONTROL_ACTIONS,
 };

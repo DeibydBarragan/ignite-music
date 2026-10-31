@@ -10,6 +10,26 @@
 const prism = require('prism-media');
 
 /**
+ * Resilient Opus Decoder that gracefully drops corrupted, padded, or malformed
+ * Opus frames without aborting or destroying the audio stream.
+ */
+class SafeOpusDecoder extends prism.opus.Decoder {
+    _transform(chunk, encoding, done) {
+        try {
+            super._transform(chunk, encoding, (err) => {
+                if (err) {
+                    // Suppress frame decode error (e.g. corrupted packet) and continue streaming
+                    return done();
+                }
+                return done();
+            });
+        } catch {
+            return done();
+        }
+    }
+}
+
+/**
  * Downsamples 48,000 Hz 16-bit stereo PCM to 16,000 Hz 16-bit mono PCM.
  * Ratio: 48000 / 16000 = 3:1.
  * Each input frame is 4 bytes (2 bytes L, 2 bytes R).
@@ -84,7 +104,7 @@ function pcmToWav(pcmBuffer, sampleRate = 16000, numChannels = 1, bitDepth = 16)
  */
 function opusStreamToWav(opusStream, { minDurationMs = 400, maxDurationMs = 12000 } = {}) {
     return new Promise((resolve, reject) => {
-        const decoder = new prism.opus.Decoder({ rate: 48000, channels: 2, frameSize: 960 });
+        const decoder = new SafeOpusDecoder({ rate: 48000, channels: 2, frameSize: 960 });
         const pcmChunks = [];
         let totalBytes = 0;
         let finished = false;
@@ -141,23 +161,52 @@ function opusStreamToWav(opusStream, { minDurationMs = 400, maxDurationMs = 1200
 
         decoder.once('end', onStreamEnd);
         decoder.once('error', (err) => {
-            cleanup();
-            clearTimeout(timeout);
-            reject(err);
+            // If we already accumulated sufficient audio, salvage it instead of rejecting
+            if (totalBytes >= minBytes) {
+                cleanup();
+                onStreamEnd();
+            } else {
+                cleanup();
+                clearTimeout(timeout);
+                reject(err);
+            }
         });
 
         opusStream.once('error', (err) => {
-            cleanup();
-            clearTimeout(timeout);
-            reject(err);
+            if (totalBytes >= minBytes) {
+                cleanup();
+                onStreamEnd();
+            } else {
+                cleanup();
+                clearTimeout(timeout);
+                reject(err);
+            }
         });
 
         opusStream.pipe(decoder);
     });
 }
 
+/**
+ * Root-mean-square level of 16-bit mono PCM (0 = silence, 32768 = full scale).
+ *
+ * @param {Buffer} pcm16k - Raw 16-bit little-endian mono PCM.
+ * @returns {number}
+ */
+function pcmRms(pcm16k) {
+    const samples = Math.floor((pcm16k?.length || 0) / 2);
+    if (samples === 0) return 0;
+    let sumSquares = 0;
+    for (let i = 0; i < samples; i++) {
+        const s = pcm16k.readInt16LE(i * 2);
+        sumSquares += s * s;
+    }
+    return Math.sqrt(sumSquares / samples);
+}
+
 module.exports = {
     downsample48kStereoTo16kMono,
     pcmToWav,
     opusStreamToWav,
+    pcmRms,
 };

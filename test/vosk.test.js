@@ -179,4 +179,33 @@ test('Matcher with Option A and conversational fillers', () => {
     const onlyWake = matchVoiceCommand('ignite', { wakeWord: 'ignite, bot' });
     assert.equal(onlyWake.matched, false);
     assert.equal(onlyWake.reason, 'only_wake_word');
+
+    // 6. Real words that sound like "bot" must NOT act as wake words (they caused false alarms)
+    for (const word of ['bote', 'box', 'bok', 'but', 'book']) {
+        const noMatch = matchVoiceCommand(`${word} pausa`, { wakeWord: 'ignite' });
+        assert.equal(noMatch.matched, false, `"${word}" must not be a wake word`);
+        assert.equal(noMatch.reason, 'wake_word_missing');
+    }
+
+    // "bot" is not added automatically anymore; it only works when the guild configures it
+    assert.equal(matchVoiceCommand('bot pausa', { wakeWord: 'ignite' }).matched, false);
+    assert.equal(matchVoiceCommand('bot pausa', { wakeWord: 'bot' }).matched, true);
+
+    // Real words that sound like "ignite" must NOT act as wake words either
+    assert.equal(matchVoiceCommand('good night pon algo', { wakeWord: 'ignite' }).matched, false);
+    assert.equal(matchVoiceCommand('ignait siguiente', { wakeWord: 'ignite' }).matched, true);
+
+    // 7. Strict command placement: command must follow directly or after courtesy prefix
+    const matchCourtesy = matchVoiceCommand('bot por favor pon starboy', { wakeWord: 'bot' });
+    assert.equal(matchCourtesy.matched, true);
+    assert.equal(matchCourtesy.commandId, 'play');
+    assert.equal(matchCourtesy.query, 'starboy');
+
+    // Rejects casual conversation mentioning bot
+    const casualChat = matchVoiceCommand('Va a tocar meterle ahí al bot para hacerle preguntas', { wakeWord: 'bot' });
+    assert.equal(casualChat.matched, false);
+
+    // Rejects arbitrary conversation between bot and command
+    const delayedCommand = matchVoiceCommand('bot un dia de estos pon musica', { wakeWord: 'bot' });
+    assert.equal(delayedCommand.matched, false);
 });

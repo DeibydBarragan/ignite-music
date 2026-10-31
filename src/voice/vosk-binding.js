@@ -36,6 +36,7 @@ function initVoskApi(libraryPath) {
         vosk_recognizer_partial_result: lib.func('const char *vosk_recognizer_partial_result(VoskRecognizer *recognizer)'),
         vosk_recognizer_final_result: lib.func('const char *vosk_recognizer_final_result(VoskRecognizer *recognizer)'),
         vosk_recognizer_reset: lib.func('void vosk_recognizer_reset(VoskRecognizer *recognizer)'),
+        vosk_recognizer_set_words: lib.func('void vosk_recognizer_set_words(VoskRecognizer *recognizer, int words)'),
     };
 
     // Suppress verbose kaldi engine logs
@@ -129,6 +130,17 @@ class VoskWrapper {
     reset(recognizer) {
         if (recognizer) {
             this.api.vosk_recognizer_reset(recognizer);
+        }
+    }
+
+    /**
+     * Enables per-word timing and confidence in recognizer results.
+     * @param {object} recognizer
+     * @param {boolean} [enabled=true]
+     */
+    setWords(recognizer, enabled = true) {
+        if (recognizer) {
+            this.api.vosk_recognizer_set_words(recognizer, enabled ? 1 : 0);
         }
     }
 }

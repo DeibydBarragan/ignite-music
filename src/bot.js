@@ -71,6 +71,11 @@ function createClient() {
                 client.apiServer.closeAllConnections?.();
             }
             await client.music.shutdown().catch((error) => log.error('Music shutdown failed:', error));
+            try {
+                require('./voice/csv-exporter').voiceCsvExporter.flushAll();
+            } catch (error) {
+                log.warn('Could not flush voice CSV logs on shutdown:', error.message);
+            }
             await client.destroy();
             return true;
         })();

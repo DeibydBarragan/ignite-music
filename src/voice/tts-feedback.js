@@ -11,6 +11,7 @@ const log = require('../core/logger').createLogger('voice-tts');
 
 const DEFAULT_TTS_TEMPLATES = Object.freeze({
     play: 'Reproduciendo {query}',
+    play_next: 'Añadida {query} a continuación',
     enqueue: 'Añadida {query} a la lista',
     skip: 'Saltando canción',
     pause: 'Música pausada',
@@ -18,6 +19,8 @@ const DEFAULT_TTS_TEMPLATES = Object.freeze({
     stop: 'Reproducción detenida',
     previous: 'Canción anterior',
     shuffle: 'Lista en modo aleatorio',
+    autoplay_on: 'Autoplay activado',
+    autoplay_off: 'Autoplay desactivado',
     volume: 'Volumen ajustado al {query}',
     queue: 'Mostrando la lista',
 });
@@ -118,6 +121,12 @@ async function sendTtsFeedback(payload, options = {}) {
         }
         if (options.voice) {
             body.voice = options.voice;
+        }
+        if (options.rate !== undefined) {
+            body.rate = options.rate;
+        }
+        if (options.pitch !== undefined) {
+            body.pitch = options.pitch;
         }
 
         const res = await fetch(endpoint, {

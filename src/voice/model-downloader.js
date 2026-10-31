@@ -122,6 +122,16 @@ async function ensureVoskModel() {
         }
     }
 
+    return ensureEnglishModel();
+}
+
+/**
+ * Ensures the small English model is present. It knows the word "ignite",
+ * which the Spanish model does not, so the wake-word gate always uses it.
+ * @returns {Promise<string|null>} Path to the model directory or null on failure.
+ */
+async function ensureEnglishModel() {
+    await fsp.mkdir(MODELS_DIR, { recursive: true });
     const modelDir = path.join(MODELS_DIR, 'vosk-model-small-en-us-0.15');
     const modelMarker = path.join(modelDir, 'am', 'final.mdl');
 
@@ -158,6 +168,7 @@ async function ensureVoskModel() {
 module.exports = {
     ensureVoskBinary,
     ensureVoskModel,
+    ensureEnglishModel,
     getPlatformBinaryInfo,
     BIN_VOSK_DIR,
     MODELS_DIR,
