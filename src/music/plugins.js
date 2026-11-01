@@ -30,7 +30,7 @@ const { GenericPlugin, RelayedDirectLinkPlugin } = require('./plugins-generic');
 
 class YouTubePlugin extends ExtractorPlugin {
     /**
-     * @param {{ runner?: any, relay?: any, direct?: { search?: any, related?: any } }} [options]
+     * @param {{ runner?: any, relay?: any, direct?: { search?: any, playlists?: any, related?: any } }} [options]
      */
     constructor({ runner = ytdlp.runJson, relay = getRelay(), direct = {} } = {}) {
         super();
