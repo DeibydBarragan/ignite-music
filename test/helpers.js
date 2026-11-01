@@ -7,6 +7,16 @@ const fs = require('node:fs');
 // Isolated data dir for every test process.
 process.env.DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'musicbot-test-'));
 
+// Ensure test fixtures have executable permissions on POSIX systems.
+try {
+    const fakeYtdlp = path.join(__dirname, 'fixtures', 'fake-ytdlp.js');
+    if (fs.existsSync(fakeYtdlp)) {
+        fs.chmodSync(fakeYtdlp, 0o755);
+    }
+} catch {
+    // Ignore when running on environments without chmod support.
+}
+
 // ─── Global @supabase/supabase-js mock ─────────────────────────────────────
 // .env may point at the production project, and src/core/supabase.js creates
 // its client eagerly. Intercept the package so `npm test` can never read or
