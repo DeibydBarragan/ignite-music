@@ -37,12 +37,39 @@ const VOSK_BINARIES = {
 
 const MODEL_EN_URL = 'https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip';
 
+let voskBinaryPromise = null;
+let englishModelPromise = null;
+
 /**
  * Returns the expected native binary filename for the current platform.
  * @returns {string|null}
  */
 function getPlatformBinaryInfo() {
     return VOSK_BINARIES[process.platform]?.[process.arch] || null;
+}
+
+/**
+ * Helper to recursively search for a file in a directory.
+ * @param {string} dir
+ * @param {string} targetName
+ * @returns {Promise<string|null>}
+ */
+async function findFile(dir, targetName) {
+    try {
+        const entries = await fsp.readdir(dir, { withFileTypes: true });
+        for (const entry of entries) {
+            const full = path.join(dir, entry.name);
+            if (entry.isDirectory()) {
+                const found = await findFile(full, targetName);
+                if (found) return found;
+            } else if (entry.name === targetName) {
+                return full;
+            }
+        }
+    } catch {
+        // ignore
+    }
+    return null;
 }
 
 /**
@@ -66,43 +93,80 @@ async function ensureVoskBinary() {
         return libraryPath;
     }
 
-    log.info(`Downloading Vosk C library for ${binaryInfo.label} (~14 MB)...`);
-    const tempZip = path.join(BIN_VOSK_DIR, `.vosk-${process.platform}-${process.pid}.zip`);
+    if (voskBinaryPromise) return voskBinaryPromise;
 
-    try {
-        await downloadToFile(binaryInfo.url, tempZip, { minBytes: 5 * 1024 * 1024 });
-
-        log.info('Extracting Vosk C library binaries using native safe unzip...');
-        const zipBuffer = await fsp.readFile(tempZip);
-        await extractZip(zipBuffer, BIN_VOSK_DIR);
-
-        // The archive extracts to a subfolder like vosk-win64-0.3.45 or vosk-linux-x86_64-0.3.45
-        const entries = await fsp.readdir(BIN_VOSK_DIR);
-        for (const entry of entries) {
-            const sub = path.join(BIN_VOSK_DIR, entry);
-            const stat = await fsp.stat(sub);
-            if (stat.isDirectory() && entry.startsWith('vosk-')) {
-                const subFiles = await fsp.readdir(sub);
-                for (const subFile of subFiles) {
-                    await fsp.copyFile(path.join(sub, subFile), path.join(BIN_VOSK_DIR, subFile));
-                }
-                await fsp.rm(sub, { recursive: true, force: true });
-            }
-        }
-
+    voskBinaryPromise = (async () => {
         if (fs.existsSync(libraryPath)) {
-            log.info(`Vosk C library (${binaryInfo.file}) installed successfully`);
             return libraryPath;
         }
 
-        throw new Error(`${binaryInfo.file} not found after archive extraction`);
-    } catch (err) {
-        log.error({ err: err.message }, 'Failed to download or extract Vosk C library');
-        return null;
-    } finally {
-        if (fs.existsSync(tempZip)) {
-            try { await fsp.rm(tempZip, { force: true }); } catch { /* ignore */ }
+        log.info(`Downloading Vosk C library for ${binaryInfo.label}...`);
+        const uniqueId = `${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const tempZip = path.join(BIN_VOSK_DIR, `.vosk-${process.platform}-${uniqueId}.zip`);
+        const tempExtractDir = path.join(BIN_VOSK_DIR, `.extract-${uniqueId}`);
+
+        try {
+            await downloadToFile(binaryInfo.url, tempZip, { minBytes: 5 * 1024 * 1024 });
+
+            log.info('Extracting Vosk C library binaries using native safe unzip...');
+            const zipBuffer = await fsp.readFile(tempZip);
+            await extractZip(zipBuffer, tempExtractDir);
+
+            const foundBinary = await findFile(tempExtractDir, binaryInfo.file);
+            if (!foundBinary) {
+                throw new Error(`${binaryInfo.file} not found after archive extraction`);
+            }
+
+            const entries = await fsp.readdir(tempExtractDir, { withFileTypes: true });
+            for (const entry of entries) {
+                const srcPath = path.join(tempExtractDir, entry.name);
+                if (entry.isDirectory()) {
+                    const subEntries = await fsp.readdir(srcPath);
+                    for (const subFile of subEntries) {
+                        const targetFile = path.join(BIN_VOSK_DIR, subFile);
+                        if (!fs.existsSync(targetFile)) {
+                            await fsp.copyFile(path.join(srcPath, subFile), targetFile);
+                        }
+                    }
+                } else {
+                    const targetFile = path.join(BIN_VOSK_DIR, entry.name);
+                    if (!fs.existsSync(targetFile)) {
+                        await fsp.copyFile(srcPath, targetFile);
+                    }
+                }
+            }
+
+            if (process.platform !== 'win32') {
+                try {
+                    await fsp.chmod(libraryPath, 0o755);
+                } catch {
+                    // ignore
+                }
+            }
+
+            if (fs.existsSync(libraryPath)) {
+                log.info(`Vosk C library (${binaryInfo.file}) installed successfully`);
+                return libraryPath;
+            }
+
+            throw new Error(`${binaryInfo.file} not found after archive extraction`);
+        } catch (err) {
+            log.error({ err: err.message }, 'Failed to download or extract Vosk C library');
+            return null;
+        } finally {
+            if (fs.existsSync(tempZip)) {
+                try { await fsp.rm(tempZip, { force: true }); } catch { /* ignore */ }
+            }
+            if (fs.existsSync(tempExtractDir)) {
+                try { await fsp.rm(tempExtractDir, { recursive: true, force: true }); } catch { /* ignore */ }
+            }
         }
+    })();
+
+    try {
+        return await voskBinaryPromise;
+    } finally {
+        voskBinaryPromise = null;
     }
 }
 
@@ -133,35 +197,66 @@ async function ensureVoskModel() {
 async function ensureEnglishModel() {
     await fsp.mkdir(MODELS_DIR, { recursive: true });
     const modelDir = path.join(MODELS_DIR, 'vosk-model-small-en-us-0.15');
+    const readyMarker = path.join(modelDir, '.ready');
     const modelMarker = path.join(modelDir, 'am', 'final.mdl');
 
-    if (fs.existsSync(modelMarker)) {
+    if (fs.existsSync(readyMarker) || fs.existsSync(modelMarker)) {
         return modelDir;
     }
 
-    log.info('Downloading Vosk acoustic model (~39 MB)...');
-    const tempZip = path.join(MODELS_DIR, `.vosk-model-${process.pid}.zip`);
+    if (englishModelPromise) return englishModelPromise;
 
-    try {
-        await downloadToFile(MODEL_EN_URL, tempZip, { minBytes: 20 * 1024 * 1024 });
-
-        log.info('Extracting Vosk acoustic model using native safe unzip...');
-        const zipBuffer = await fsp.readFile(tempZip);
-        await extractZip(zipBuffer, MODELS_DIR);
-
-        if (fs.existsSync(modelMarker)) {
-            log.info('Vosk acoustic model installed successfully');
+    englishModelPromise = (async () => {
+        if (fs.existsSync(readyMarker) || fs.existsSync(modelMarker)) {
             return modelDir;
         }
 
-        throw new Error('Model marker final.mdl not found after archive extraction');
-    } catch (err) {
-        log.error({ err: err.message }, 'Failed to download or extract Vosk model');
-        return null;
-    } finally {
-        if (fs.existsSync(tempZip)) {
-            try { await fsp.rm(tempZip, { force: true }); } catch { /* ignore */ }
+        log.info('Downloading Vosk acoustic model (~39 MB)...');
+        const uniqueId = `${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const tempZip = path.join(MODELS_DIR, `.vosk-model-${uniqueId}.zip`);
+        const tempExtractDir = path.join(MODELS_DIR, `.extract-model-${uniqueId}`);
+
+        try {
+            await downloadToFile(MODEL_EN_URL, tempZip, { minBytes: 20 * 1024 * 1024 });
+
+            log.info('Extracting Vosk acoustic model using native safe unzip...');
+            const zipBuffer = await fsp.readFile(tempZip);
+            await extractZip(zipBuffer, tempExtractDir);
+
+            const extractedSub = path.join(tempExtractDir, 'vosk-model-small-en-us-0.15');
+            const sourceDir = fs.existsSync(extractedSub) ? extractedSub : tempExtractDir;
+
+            if (fs.existsSync(path.join(sourceDir, 'am', 'final.mdl'))) {
+                if (!fs.existsSync(modelDir)) {
+                    try {
+                        await fsp.rename(sourceDir, modelDir);
+                    } catch {
+                        await fsp.cp(sourceDir, modelDir, { recursive: true });
+                    }
+                }
+                await fsp.writeFile(readyMarker, '1').catch(() => {});
+                log.info('Vosk acoustic model installed successfully');
+                return modelDir;
+            }
+
+            throw new Error('Model marker final.mdl not found after archive extraction');
+        } catch (err) {
+            log.error({ err: err.message }, 'Failed to download or extract Vosk model');
+            return null;
+        } finally {
+            if (fs.existsSync(tempZip)) {
+                try { await fsp.rm(tempZip, { force: true }); } catch { /* ignore */ }
+            }
+            if (fs.existsSync(tempExtractDir)) {
+                try { await fsp.rm(tempExtractDir, { recursive: true, force: true }); } catch { /* ignore */ }
+            }
         }
+    })();
+
+    try {
+        return await englishModelPromise;
+    } finally {
+        englishModelPromise = null;
     }
 }
 

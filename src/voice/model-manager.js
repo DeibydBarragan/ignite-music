@@ -69,7 +69,14 @@ class VoskModelManager {
                 }
 
                 this.wrapper = new VoskWrapper(binaryPath);
-                this.model = this.wrapper.createModel(modelDir);
+                let model = null;
+                try {
+                    model = this.wrapper.createModel(modelDir);
+                } catch {
+                    await new Promise((resolve) => setTimeout(resolve, 200));
+                    model = this.wrapper.createModel(modelDir);
+                }
+                this.model = model;
                 this.modelPath = modelDir;
                 this.ready = true;
 
