@@ -5,7 +5,7 @@
  * Coordinates audio capture, PCM transcoding, and Groq Whisper STT.
  */
 
-const { downsample48kStereoTo16kMono, pcmToWav, opusStreamToWav, pcmRms } = require('./audio-transcoder');
+const { downsample48kStereoTo16kMono, pcmToWav, opusStreamToWav, pcmRms, slicePcmWav } = require('./audio-transcoder');
 const { transcribeAudio, isLikelyHallucination, GROQ_API_URL } = require('./groq-client');
 const { WakeGate, wakeGate } = require('./wake-gate');
 const { VoiceReceiverManager, voiceReceiver } = require('./receiver');
@@ -22,6 +22,7 @@ module.exports = {
     pcmToWav,
     opusStreamToWav,
     pcmRms,
+    slicePcmWav,
     transcribeAudio,
     isLikelyHallucination,
     WakeGate,

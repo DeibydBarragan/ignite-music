@@ -26,6 +26,35 @@ function trimInfo(info) {
     return trimmed;
 }
 
+function parseRange(header, total = null) {
+    if (!header || typeof header !== 'string' || !header.startsWith('bytes=')) return null;
+    const eq = header.indexOf('=');
+    const parts = header.slice(eq + 1).split('-');
+    if (parts.length !== 2) return null;
+
+    const s = parts[0].trim();
+    const e = parts[1].trim();
+
+    let start = s ? parseInt(s, 10) : null;
+    let end = e ? parseInt(e, 10) : null;
+
+    if (start === null && end !== null) {
+        if (total === null) return null;
+        start = Math.max(0, total - end);
+        end = total - 1;
+    } else if (start !== null) {
+        if (end === null && total !== null) {
+            end = total - 1;
+        }
+    } else {
+        return null;
+    }
+
+    if (isNaN(start) || start < 0) return null;
+    if (end !== null && (isNaN(end) || end < start)) return null;
+    return { start, end };
+}
+
 /** Each process (shard) has its own folder, so shards never delete each other's files. */
 const processDir = () => path.join(config.dataDir, 'relay', String(process.pid));
 
@@ -66,7 +95,7 @@ class StreamRelay {
     async register({ info = null, url = null, proxy = null }) {
         await this.start();
         const id = crypto.randomBytes(12).toString('hex');
-        const entry = { proxy, url, infoFile: null, format: null, timer: null, pending: null };
+        const entry = { proxy, url, infoFile: null, format: null, timer: null, pending: null, activeDownload: null };
         if (info) {
             entry.infoFile = path.join(this.dir, `${id}.json`);
             entry.format = info.format_id || 'bestaudio/best';
@@ -122,7 +151,7 @@ class StreamRelay {
 
         return new Promise((resolve, reject) => {
             const download = this.#download(id, entry);
-            const pending = { download, chunks: [], size: 0, settled: false, holdTimer: null };
+            const pending = { download, settled: false, holdTimer: null };
             entry.pending = pending;
 
             const settle = (error) => {
@@ -141,15 +170,10 @@ class StreamRelay {
             };
 
             const startTimer = setTimeout(() => settle(new Error(`No audio received within ${Math.round(timeoutMs / 1000)}s`)), timeoutMs);
-            download.child.stdout.on('data', pending.collect = (chunk) => {
-                pending.chunks.push(chunk);
-                pending.size += chunk.length;
-                if (pending.size > 8 * 1024 * 1024) download.child.stdout.pause();
-                settle(null);
-            });
+            download.onFirstChunk(() => settle(null));
             download.done.then((error) => {
                 if (error) settle(error);
-                else settle(pending.size ? null : new Error('The source returned no audio'));
+                else settle(download.size ? null : new Error('The source returned no audio'));
             });
         });
     }
@@ -164,58 +188,243 @@ class StreamRelay {
 
     /**
      * Spawn yt-dlp for an entry. `done` resolves with an Error on failure, null on success.
+     * Decouples the download from playback consumption rate so yt-dlp never stalls on YouTube TCP window.
      */
     #download(id, entry) {
         const child = this.spawn(this.binary, this.args(entry), { windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
         let stderr = '';
         let received = false;
+        const chunks = [];
+        let totalSize = 0;
+        let error = null;
+        let closed = false;
+        let activeRes = null;
+        let killTimer = null;
+        let clientStart = 0;
+        let clientEnd = null;
+        let remainingToSkip = 0;
+        let chunkIndex = 0;
+        let bytesSent = 0;
+        let pumping = false;
+        let waitingDrain = false;
+        const firstChunkCallbacks = [];
+
         child.stderr.setEncoding('utf8').on('data', (data) => (stderr += data));
-        child.stdout.once('data', () => (received = true));
+
+        const kill = () => {
+            clearTimeout(killTimer);
+            if (child.exitCode === null && !child.killed) child.kill('SIGKILL');
+        };
+
+        const onDrain = () => {
+            waitingDrain = false;
+            pump();
+        };
+
+        const pump = () => {
+            if (pumping || waitingDrain || !activeRes || activeRes.destroyed || activeRes.writableEnded) return;
+            pumping = true;
+            try {
+                while (chunkIndex < chunks.length && remainingToSkip > 0) {
+                    const chunk = chunks[chunkIndex];
+                    if (remainingToSkip >= chunk.length) {
+                        remainingToSkip -= chunk.length;
+                        chunkIndex++;
+                    } else {
+                        break;
+                    }
+                }
+
+                while (chunkIndex < chunks.length) {
+                    let chunk = chunks[chunkIndex];
+                    if (remainingToSkip > 0) {
+                        chunk = chunk.subarray(remainingToSkip);
+                        remainingToSkip = 0;
+                    }
+
+                    if (clientEnd !== null) {
+                        const maxAllowed = (clientEnd - clientStart + 1) - bytesSent;
+                        if (maxAllowed <= 0) {
+                            activeRes.end();
+                            return;
+                        }
+                        if (chunk.length > maxAllowed) {
+                            chunk = chunk.subarray(0, maxAllowed);
+                        }
+                    }
+
+                    bytesSent += chunk.length;
+                    chunkIndex++;
+                    const ok = activeRes.write(chunk);
+                    if (!ok) {
+                        waitingDrain = true;
+                        activeRes.once('drain', onDrain);
+                        return;
+                    }
+
+                    if (clientEnd !== null && bytesSent >= (clientEnd - clientStart + 1)) {
+                        activeRes.end();
+                        return;
+                    }
+                }
+
+                if (closed) {
+                    if (error) {
+                        activeRes.destroy(error);
+                    } else {
+                        activeRes.end();
+                    }
+                }
+            } finally {
+                pumping = false;
+            }
+        };
+
+        child.stdout.on('data', (chunk) => {
+            received = true;
+            chunks.push(chunk);
+            totalSize += chunk.length;
+            while (firstChunkCallbacks.length) firstChunkCallbacks.shift()();
+            pump();
+        });
+
         const done = new Promise((resolve) => {
-            child.on('error', (error) => {
-                const failure = Object.assign(new Error(error.message), { stderr: error.message });
+            child.on('error', (err) => {
+                const failure = Object.assign(new Error(err.message), { stderr: err.message });
                 this.errors.set(id, failure);
+                error = failure;
+                closed = true;
+                if (activeRes && !activeRes.destroyed && !activeRes.writableEnded) {
+                    activeRes.destroy(failure);
+                }
                 resolve(failure);
             });
             child.on('close', (code, signal) => {
-                if (code && !signal) {
-                    const failure = Object.assign(new Error(ytdlp.cleanError(stderr)), { stderr });
+                closed = true;
+                if ((code && !signal) || (!received && !signal)) {
+                    const failure = Object.assign(
+                        new Error(received ? ytdlp.cleanError(stderr) : (ytdlp.cleanError(stderr) || 'The source returned no audio')),
+                        { stderr }
+                    );
                     this.errors.set(id, failure);
                     log.warn(`Download ${received ? 'interrupted' : 'failed'}: ${failure.message}`);
+                    error = failure;
+                    if (activeRes && !activeRes.destroyed && !activeRes.writableEnded) {
+                        activeRes.destroy(failure);
+                    }
                     resolve(failure);
                 } else {
                     if (received) this.errors.delete(id);
+                    pump();
                     resolve(null);
                 }
             });
         });
-        const kill = () => { if (child.exitCode === null && !child.killed) child.kill('SIGKILL'); };
-        return { child, done, kill };
+
+        const onFirstChunk = (fn) => {
+            if (received) fn();
+            else firstChunkCallbacks.push(fn);
+        };
+
+        const attach = (res, options = {}) => {
+            clearTimeout(killTimer);
+            activeRes = res;
+            clientStart = options.start || 0;
+            clientEnd = options.end ?? null;
+            remainingToSkip = clientStart;
+            chunkIndex = 0;
+            bytesSent = 0;
+            waitingDrain = false;
+
+            res.on('close', () => {
+                if (activeRes === res) {
+                    activeRes = null;
+                    clearTimeout(killTimer);
+                    // Retain download in memory for 5s to allow ffmpeg reconnection with Range header
+                    killTimer = setTimeout(() => {
+                        if (!activeRes && !closed) kill();
+                    }, 5000);
+                    killTimer.unref?.();
+                }
+            });
+            res.on('error', (err) => {
+                log.debug(`Relay response error: ${err.message}`);
+            });
+            pump();
+        };
+
+        return {
+            child,
+            done,
+            kill,
+            attach,
+            onFirstChunk,
+            get size() { return totalSize; },
+            get closed() { return closed; },
+            get error() { return error; },
+        };
     }
 
     #handle(req, res) {
-        const id = req.url.slice(1);
+        const id = req.url.slice(1).split('?')[0];
         const entry = this.entries.get(id);
         if (!entry || req.method !== 'GET') return res.writeHead(404).end();
-        res.writeHead(200, { 'Content-Type': 'application/octet-stream', 'Cache-Control': 'no-store' });
 
-        // Use the download started by warm() when there is one, otherwise start a new one
-        // (e.g. the same song again with loop enabled).
         const pending = entry.pending;
         entry.pending = null;
         let download;
         if (pending) {
             clearTimeout(pending.holdTimer);
             download = pending.download;
-            download.child.stdout.off('data', pending.collect);
-            for (const chunk of pending.chunks) res.write(chunk);
-            // pipe() resumes the stream if it was paused at the buffer limit.
+            entry.activeDownload = download;
         } else {
-            download = this.#download(id, entry);
+            const rawRange = parseRange(req.headers.range);
+            // Reconnection request: reuse existing active download if valid
+            if (rawRange && rawRange.start > 0 && entry.activeDownload && !entry.activeDownload.error) {
+                download = entry.activeDownload;
+            } else {
+                download = this.#download(id, entry);
+                entry.activeDownload = download;
+            }
         }
-        download.child.stdout.pipe(res);
-        res.on('close', download.kill);
-        download.done.then(() => res.end());
+
+        const total = download.closed ? download.size : null;
+        const range = parseRange(req.headers.range, total);
+
+        if (range) {
+            if (total !== null && range.start >= total) {
+                return res.writeHead(416, {
+                    'Content-Range': `bytes */${total}`,
+                    'Accept-Ranges': 'bytes',
+                    'Cache-Control': 'no-store',
+                }).end();
+            }
+
+            const end = range.end !== null ? range.end : (total ? total - 1 : null);
+            const contentRange = `bytes ${range.start}-${end !== null ? end : '*'}/${total !== null ? total : '*'}`;
+            const headers = {
+                'Content-Type': 'application/octet-stream',
+                'Content-Range': contentRange,
+                'Accept-Ranges': 'bytes',
+                'Cache-Control': 'no-store',
+            };
+            if (end !== null && range.start !== null) {
+                headers['Content-Length'] = String(end - range.start + 1);
+            }
+            res.writeHead(206, headers);
+            download.attach(res, { start: range.start, end });
+        } else {
+            const headers = {
+                'Content-Type': 'application/octet-stream',
+                'Accept-Ranges': 'bytes',
+                'Cache-Control': 'no-store',
+            };
+            if (download.closed) {
+                headers['Content-Length'] = String(download.size);
+            }
+            res.writeHead(200, headers);
+            download.attach(res, { start: 0, end: null });
+        }
     }
 
     #forget(id) {
@@ -223,6 +432,10 @@ class StreamRelay {
         if (!entry) return;
         clearTimeout(entry.timer);
         this.#dropPending(entry);
+        if (entry.activeDownload) {
+            entry.activeDownload.kill();
+            entry.activeDownload = null;
+        }
         this.entries.delete(id);
         this.errors.delete(id);
         if (entry.infoFile) fsp.rm(entry.infoFile, { force: true }).catch(() => undefined);
@@ -244,4 +457,4 @@ class StreamRelay {
 let shared = null;
 const getRelay = () => (shared ??= new StreamRelay());
 
-module.exports = { StreamRelay, getRelay, trimInfo };
+module.exports = { StreamRelay, getRelay, trimInfo, parseRange };

@@ -83,6 +83,10 @@ function bindDisTubeEvents(manager) {
     });
 
     d.on(DisTubeEvents.PLAY_SONG, (queue, song) => {
+        if (song?._originalRepeatMode !== undefined) {
+            queue.repeatMode = song._originalRepeatMode;
+            delete song._originalRepeatMode;
+        }
         if (song?.timing) {
             const { requestedAt, resolvedAt } = song.timing;
             delete song.timing;
@@ -98,6 +102,32 @@ function bindDisTubeEvents(manager) {
         history.recordPlay(queue.id, song).catch((err) => log.debug(`History record error: ${err.message}`));
 
         attachVoice(queue.id, queue.voice);
+    });
+
+    d.on(DisTubeEvents.FINISH_SONG, (queue, song) => {
+        if (!song || !queue || queue.stopped) return;
+        const playedSeconds = Math.floor(queue.currentTime || 0);
+        const totalSeconds = Number(song.duration) || 0;
+        const wasPremature = totalSeconds > 30 && playedSeconds >= 5 && playedSeconds < (totalSeconds - 12);
+        const retryCount = song._cutRetries || 0;
+
+        if (wasPremature && retryCount < 1) {
+            song._cutRetries = retryCount + 1;
+            const seekTarget = Math.max(0, playedSeconds - 2);
+            log.warn(`[${queue.id}] "${song.name}" finished prematurely at ${playedSeconds}s of ${totalSeconds}s. Auto-recovering with seek to ${seekTarget}s...`);
+
+            // Temporarily set repeatMode to SONG (1) so DisTube keeps this song at index 0
+            song._originalRepeatMode = queue.repeatMode;
+            queue.repeatMode = 1;
+            queue._beginTime = seekTarget;
+
+            if (queue.textChannel && !manager.shuttingDown) {
+                const t = manager.translator(queue.id);
+                const isEs = t?.lang === 'es';
+                const msg = isEs ? `⚠️ La reproducción de **${song.name}** se interrumpió a los ${playedSeconds}s. Reanudando automáticamente...` : `⚠️ Playback of **${song.name}** was interrupted at ${playedSeconds}s. Resuming automatically...`;
+                queue.textChannel.send(views.notice(msg, { ephemeral: false })).catch(() => undefined);
+            }
+        }
     });
 
     const onQueueChange = (queue) => manager.changed(queue);

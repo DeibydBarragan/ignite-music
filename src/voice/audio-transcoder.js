@@ -193,6 +193,45 @@ function opusStreamToWav(opusStream, { minDurationMs = 400, maxDurationMs = 1200
  * @param {Buffer} pcm16k - Raw 16-bit little-endian mono PCM.
  * @returns {number}
  */
+
+/**
+ * Trims leading audio from a 16kHz mono 16-bit PCM buffer up to a given start time,
+ * preserving a pre-roll buffer so the beginning of the wake word is not clipped.
+ * Returns the sliced PCM and its formatted WAV container.
+ *
+ * @param {Buffer} pcm16k - 16kHz mono 16-bit PCM buffer.
+ * @param {number} [startMs=0] - Millisecond offset where speech of interest begins.
+ * @param {number} [preRollMs=250] - Extra audio before startMs to preserve acoustic onset.
+ * @returns {{ pcm16k: Buffer, wavBuffer: Buffer }}
+ */
+function slicePcmWav(pcm16k, startMs = 0, preRollMs = 250) {
+    if (!Buffer.isBuffer(pcm16k) || pcm16k.length === 0) {
+        const empty = Buffer.alloc(0);
+        return { pcm16k: empty, wavBuffer: pcmToWav(empty) };
+    }
+
+    if (!startMs || startMs <= 0) {
+        return { pcm16k, wavBuffer: pcmToWav(pcm16k) };
+    }
+
+    const effectiveStartMs = Math.max(0, startMs - preRollMs);
+    // 16kHz * 2 bytes/sample / 1000 ms = 32 bytes per ms
+    const byteOffset = Math.floor(effectiveStartMs * 32);
+    // Ensure 2-byte alignment for 16-bit PCM samples
+    const alignedOffset = byteOffset - (byteOffset % 2);
+
+    // Keep at least 400ms (12,800 bytes) of tail audio; otherwise don't over-slice
+    if (alignedOffset >= pcm16k.length - 12800) {
+        return { pcm16k, wavBuffer: pcmToWav(pcm16k) };
+    }
+
+    const slicedPcm = pcm16k.subarray(alignedOffset);
+    return {
+        pcm16k: slicedPcm,
+        wavBuffer: pcmToWav(slicedPcm),
+    };
+}
+
 function pcmRms(pcm16k) {
     const samples = Math.floor((pcm16k?.length || 0) / 2);
     if (samples === 0) return 0;
@@ -209,4 +248,5 @@ module.exports = {
     pcmToWav,
     opusStreamToWav,
     pcmRms,
+    slicePcmWav,
 };

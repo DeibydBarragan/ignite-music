@@ -44,8 +44,11 @@ function baseArgs({ proxy = null, settings = config.ytdlp, poToken = currentPoTo
         '--no-warnings',
         '--no-progress',
         '--no-check-certificates',
-        '--socket-timeout', '10',
-        '--retries', '2',
+        '--socket-timeout', '30',
+        '--retries', '10',
+        '--fragment-retries', '10',
+        '--retry-sleep', 'fragment:1',
+        '--buffer-size', '16M',
         '--force-ipv4',
         '--js-runtimes', `node:${process.execPath}`,
     ];

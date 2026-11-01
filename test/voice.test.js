@@ -6,6 +6,7 @@ const { EventEmitter } = require('node:events');
 const {
     downsample48kStereoTo16kMono,
     pcmToWav,
+    slicePcmWav,
     transcribeAudio,
     GROQ_API_URL,
     VoiceReceiverManager,
@@ -53,6 +54,31 @@ test('pcmToWav: generates a valid 44-byte RIFF/WAVE container', () => {
     assert.equal(wav.subarray(36, 40).toString(), 'data');
     assert.equal(wav.readUInt32LE(40), 16000 ? 1600 : 0); // DataSize
 });
+test('slicePcmWav: trims audio before wake word with pre-roll and generates valid WAV', () => {
+    // 2 seconds of 16kHz 16-bit mono = 64,000 bytes
+    const pcm2s = Buffer.alloc(64000);
+    // Wake word starts at 1,000 ms (1s)
+    // Pre-roll = 250 ms -> effective start = 750 ms
+    // 750 ms * 32 bytes/ms = 24,000 bytes offset
+    // Remaining bytes: 64,000 - 24,000 = 40,000 bytes
+    const sliced = slicePcmWav(pcm2s, 1000, 250);
+    assert.equal(sliced.pcm16k.length, 40000);
+    assert.equal(sliced.wavBuffer.length, 44 + 40000);
+    assert.equal(sliced.wavBuffer.subarray(0, 4).toString(), 'RIFF');
+
+    // Edge case 1: startMs <= 0 returns full audio
+    const full = slicePcmWav(pcm2s, 0);
+    assert.equal(full.pcm16k.length, 64000);
+
+    // Edge case 2: startMs with pre-roll <= 0 starts at 0
+    const early = slicePcmWav(pcm2s, 200, 250);
+    assert.equal(early.pcm16k.length, 64000);
+
+    // Edge case 3: over-slicing protection (wake word too close to end)
+    const late = slicePcmWav(pcm2s, 1900, 250);
+    assert.equal(late.pcm16k.length, 64000);
+});
+
 
 test('groqClient: transcribeAudio requires API key and handles empty audio', async () => {
     await assert.rejects(

@@ -17,6 +17,19 @@ if (out !== -1 && args[out + 1] === '-') {
         process.stderr.write('ERROR: unable to download video data: HTTP Error 403: Forbidden\n');
         process.exit(1);
     }
+    if (String(info.url).includes('cutoff')) {
+        process.stdout.write(Buffer.alloc(10_000, 7));
+        setTimeout(() => {
+            process.stderr.write('ERROR: [youtube] Connection reset by peer\n');
+            process.exit(1);
+        }, 50);
+        return;
+    }
+    if (String(info.url).includes('large')) {
+        const chunk = Buffer.alloc(1024 * 1024, 7);
+        for (let i = 0; i < 10; i++) process.stdout.write(chunk);
+        return;
+    }
     const delay = String(info.url).includes('slow') ? 10_000 : 0;
     setTimeout(() => process.stdout.write(Buffer.alloc(50_000, 7)), delay);
     return;

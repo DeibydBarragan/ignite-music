@@ -5,7 +5,10 @@
  * Groq Whisper first, local Vosk (full vocabulary) as an offline fallback.
  */
 
+const config = require('../config');
 const log = require('../core/logger').createLogger('voice-stt');
+
+const DEFAULT_PROMPT = 'Ignite, mierdabot, bot mierda, reproduce, pon, toca, pausa, salta, siguiente, anterior, agrega, añade, cola, lista, volumen, activa autoplay, desactiva autoplay, autoplay on, autoplay off.';
 const { transcribeAudio } = require('./groq-client');
 const { voskModelManager } = require('./model-manager');
 
@@ -19,14 +22,15 @@ const { voskModelManager } = require('./model-manager');
  * @param {string} params.userId
  * @returns {Promise<{ text: string, elapsedMs: number, segments: object[] }>}
  */
-async function transcribeUtterance({ wavBuffer, pcm16k, apiKey, language = 'es', guildId, userId }) {
+async function transcribeUtterance({ wavBuffer, pcm16k, apiKey, language = 'es', prompt, guildId, userId }) {
     let text = '';
     let elapsedMs = 0;
     let segments = [];
 
     if (apiKey) {
         try {
-            const groqRes = await transcribeAudio(wavBuffer, { apiKey, language });
+            const promptToUse = prompt !== undefined ? prompt : (config.voice?.prompt || DEFAULT_PROMPT);
+            const groqRes = await transcribeAudio(wavBuffer, { apiKey, language, prompt: promptToUse });
             if (groqRes?.text) {
                 text = groqRes.text;
                 elapsedMs = groqRes.elapsedMs;

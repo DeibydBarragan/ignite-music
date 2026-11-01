@@ -47,7 +47,7 @@ class MusicManager {
             joinNewVoiceChannel: false,
             ffmpeg: {
                 path: resolveFfmpeg(),
-                args: { input: { reconnect: 0, reconnect_streamed: 0, reconnect_delay_max: null } },
+                args: { input: { reconnect: 1, reconnect_streamed: 1, reconnect_delay_max: 5 } },
             },
         });
 

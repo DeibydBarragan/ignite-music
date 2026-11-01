@@ -10,7 +10,7 @@ const { EventEmitter } = require('node:events');
 const { EndBehaviorType } = require('@discordjs/voice');
 const config = require('../config');
 const log = require('../core/logger').createLogger('voice-receiver');
-const { opusStreamToWav } = require('./audio-transcoder');
+const { opusStreamToWav, slicePcmWav } = require('./audio-transcoder');
 const { isLikelyHallucination } = require('./groq-client');
 const { transcribeUtterance } = require('./stt');
 const { admitAudio } = require('./admission');
@@ -123,9 +123,26 @@ class VoiceReceiverManager extends EventEmitter {
                 });
                 if (!admitted) return;
 
+                // Audio Slicing: trim leading chatter before the wake word to accelerate Groq inference
+                let groqWav = wavBuffer;
+                let groqPcm = pcm16k;
+                if (gate?.startMs && gate.startMs > 0) {
+                    const sliced = slicePcmWav(pcm16k, gate.startMs, 250);
+                    groqWav = sliced.wavBuffer;
+                    groqPcm = sliced.pcm16k;
+                    log.info({
+                        guildId,
+                        userId,
+                        startMs: gate.startMs,
+                        originalBytes: wavBuffer.length,
+                        slicedBytes: groqWav.length,
+                        savedMs: Math.round((wavBuffer.length - groqWav.length) / 32),
+                    }, 'Trimmed audio before wake word for faster Groq transcription');
+                }
+
                 // Stage 3: speech-to-text (Groq Whisper, local Vosk fallback)
                 const { text, elapsedMs, segments: groqSegments } = await transcribeUtterance({
-                    wavBuffer, pcm16k, apiKey, language, guildId, userId,
+                    wavBuffer: groqWav, pcm16k: groqPcm, apiKey, language, prompt: options.prompt, guildId, userId,
                 });
 
                 if (!text || isLikelyHallucination(text, groqSegments)) {
@@ -134,7 +151,7 @@ class VoiceReceiverManager extends EventEmitter {
                         voiceEventLogStore.record({
                             guildId,
                             userId,
-                            audioBytes: wavBuffer.length,
+                            audioBytes: groqWav.length,
                             voskHeard: gate?.heard || '',
                             wakeWordSpotted: Boolean(gate?.passed),
                             matchedWakeWord: gate?.wakeWord || null,
@@ -165,7 +182,7 @@ class VoiceReceiverManager extends EventEmitter {
                 voiceEventLogStore.record({
                     guildId,
                     userId,
-                    audioBytes: wavBuffer.length,
+                    audioBytes: groqWav.length,
                     voskHeard: gate?.heard || '',
                     wakeWordSpotted: Boolean(gate?.passed),
                     matchedWakeWord: gate?.wakeWord || null,

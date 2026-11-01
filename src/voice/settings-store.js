@@ -13,6 +13,24 @@ const { DEFAULT_TTS_TEMPLATES } = require('./tts-feedback');
 
 const CACHE_TTL_MS = 60_000;
 
+
+/**
+ * Normalizes wake words, filtering out unsafe standalone monosyllables like 'bot'
+ * that cause excessive false positives in offline acoustic models.
+ * Compounds (e.g. 'mierdabot') and multi-word phrases (e.g. 'bot mierda') are preserved.
+ *
+ * @param {string} [raw]
+ * @returns {string}
+ */
+function sanitizeWakeWord(raw) {
+    if (!raw) return 'ignite';
+    const words = String(raw)
+        .split(',')
+        .map((w) => w.trim().toLowerCase())
+        .filter((w) => w && w !== 'bot');
+    return words.length > 0 ? words.join(', ') : 'ignite';
+}
+
 function extractCleanTemplates(rawTemplates) {
     if (!rawTemplates || typeof rawTemplates !== 'object') return {};
     const clean = {};
@@ -37,7 +55,7 @@ class VoiceSettingsStore {
     getDefaultSettings() {
         return {
             enabled: config.voice.enabled,
-            wake_word: config.voice.defaultWakeWord || 'ignite',
+            wake_word: sanitizeWakeWord(config.voice.defaultWakeWord || 'ignite'),
             language: 'es',
             tts_feedback_enabled: config.voice.ttsFeedbackEnabled,
             tts_voice: 'es-MX-DaliaNeural',
@@ -96,7 +114,7 @@ class VoiceSettingsStore {
 
             const result = {
                 enabled: rawSettings?.enabled !== undefined ? rawSettings.enabled : config.voice.enabled,
-                wake_word: (rawSettings?.wake_word || config.voice.defaultWakeWord || 'ignite').toLowerCase(),
+                wake_word: sanitizeWakeWord(rawSettings?.wake_word || config.voice.defaultWakeWord || 'ignite'),
                 language: rawSettings?.language || 'es',
                 tts_voice: rawTemplates._voice || 'es-MX-DaliaNeural',
                 tts_pitch: rawTemplates._pitch !== undefined ? Number(rawTemplates._pitch) : 1.0,
@@ -149,7 +167,7 @@ class VoiceSettingsStore {
             tts_pitch,
             tts_rate,
             enabled: payload.enabled !== undefined ? Boolean(payload.enabled) : current.enabled,
-            wake_word: payload.wake_word ? payload.wake_word.trim().toLowerCase() : current.wake_word,
+            wake_word: payload.wake_word ? sanitizeWakeWord(payload.wake_word) : current.wake_word,
             language: payload.language || current.language,
             tts_feedback_enabled: payload.tts_feedback_enabled !== undefined
                 ? Boolean(payload.tts_feedback_enabled)

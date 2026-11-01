@@ -18,6 +18,11 @@ test('baseArgs adds the node JS runtime, auth and proxy options', () => {
     assert.ok(plain.includes('--js-runtimes'));
     assert.equal(plain[plain.indexOf('--js-runtimes') + 1], `node:${process.execPath}`);
     assert.ok(!plain.includes('--proxy'));
+    assert.equal(plain[plain.indexOf('--socket-timeout') + 1], '30');
+    assert.equal(plain[plain.indexOf('--retries') + 1], '10');
+    assert.equal(plain[plain.indexOf('--fragment-retries') + 1], '10');
+    assert.equal(plain[plain.indexOf('--retry-sleep') + 1], 'fragment:1');
+    assert.equal(plain[plain.indexOf('--buffer-size') + 1], '16M');
 
     const cookies = ytdlp.baseArgs({ proxy: 'http://p:1', settings: { cookiesFile: 'c.txt', cookiesFromBrowser: 'chrome' } });
     assert.deepEqual(cookies.slice(cookies.indexOf('--cookies'), cookies.indexOf('--cookies') + 2), ['--cookies', 'c.txt']);

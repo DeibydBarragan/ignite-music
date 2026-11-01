@@ -167,8 +167,9 @@ const config = {
         enabled: bool('VOICE_ENABLED', true),
         defaultWakeWord: env('VOICE_DEFAULT_WAKE_WORD', 'ignite').toLowerCase(),
         groqApiKey: env('GROQ_API_KEY'),
-        silenceDurationMs: int('VOICE_SILENCE_DURATION_MS', 1000, { min: 400, max: 3000 }),
+        silenceDurationMs: int('VOICE_SILENCE_DURATION_MS', 500, { min: 400, max: 3000 }),
         model: env('GROQ_VOICE_MODEL', 'whisper-large-v3-turbo'),
+        prompt: env('VOICE_PROMPT', 'Ignite, mierdabot, bot mierda, reproduce, pon, toca, pausa, salta, siguiente, anterior, agrega, añade, cola, lista, volumen, activa autoplay, desactiva autoplay, autoplay on, autoplay off.'),
         offlineGating: bool('VOICE_OFFLINE_GATING', true),
         // Audio quieter than this (RMS, 0-32768) is dropped before any recognition
         minRms: int('VOICE_MIN_RMS', 200, { min: 0, max: 5000 }),

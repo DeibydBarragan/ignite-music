@@ -316,3 +316,51 @@ test('simultaneous /play calls are added one after another (no duplicate queues)
     assert.deepEqual(results.map((r) => r.started), [true, false, false]);
     assert.deepEqual(results.map((r) => r.position), [0, 1, 2]);
 });
+
+test('premature song finish triggers auto-recovery with seek and preserves queue order', async () => {
+    const { manager } = setup();
+    const song = makeSong(1);
+    song.duration = 200; // 3m20s track
+    const channel = fakeChannel();
+    const queue = fakeQueue([song], channel);
+    queue.repeatMode = 0; // Off
+    queue.currentTime = 35; // Cut off at 35s (> 5s, < 188s)
+
+    // Trigger FINISH_SONG event
+    manager.distube.emit('finishSong', queue, song);
+
+    // Verify recovery properties were configured
+    assert.equal(queue.repeatMode, 1, 'repeatMode temporarily set to SONG (1)');
+    assert.equal(queue._beginTime, 33, 'seek target calculated with 2s overlap (35 - 2 = 33)');
+    assert.equal(song._cutRetries, 1, 'retry counter incremented');
+    assert.equal(song._originalRepeatMode, 0, 'original repeatMode preserved');
+    assert.equal(channel.sent.length, 1, 'notice sent to text channel');
+
+    // Simulate subsequent PLAY_SONG event after seek
+    manager.distube.emit('playSong', queue, song);
+    assert.equal(queue.repeatMode, 0, 'original repeatMode restored on playback');
+    assert.equal(song._originalRepeatMode, undefined);
+
+    // If it cuts AGAIN prematurely:
+    queue.currentTime = 40;
+    channel.sent = [];
+    manager.distube.emit('finishSong', queue, song);
+    assert.equal(queue.repeatMode, 0, 'does not retry again (exceeded max 1 retry)');
+    assert.equal(channel.sent.length, 0);
+});
+
+test('normal song finish (near end of track) does NOT trigger auto-recovery', async () => {
+    const { manager } = setup();
+    const song = makeSong(1);
+    song.duration = 200;
+    const channel = fakeChannel();
+    const queue = fakeQueue([song], channel);
+    queue.repeatMode = 0;
+    queue.currentTime = 195; // Finished naturally within 12s of end (195 >= 188)
+
+    manager.distube.emit('finishSong', queue, song);
+
+    assert.equal(queue.repeatMode, 0, 'repeatMode unchanged');
+    assert.equal(song._cutRetries, undefined, 'no retry registered');
+    assert.equal(channel.sent.length, 0, 'no recovery notice sent');
+});
