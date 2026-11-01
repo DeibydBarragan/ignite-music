@@ -73,7 +73,7 @@ async function startTunnel(port = 3001, timeoutMs = 25_000) {
 
         try {
             log.info(`Starting Cloudflare tunnel for http://localhost:${port}...`);
-            child = spawn(binary, ['tunnel', '--url', `http://localhost:${port}`], {
+            child = spawn(binary, ['tunnel', '--protocol', 'http2', '--url', `http://localhost:${port}`], {
                 stdio: ['ignore', 'pipe', 'pipe'],
                 windowsHide: true,
             });

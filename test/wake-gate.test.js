@@ -86,7 +86,7 @@ test('wakeGate: wake words missing from the model dictionary are reported, not g
     const botOnly = gate.buildGrammar('ignite').plans[0].grammar;
     assert.equal(botOnly.includes('bot'), false);
     assert.equal(botOnly.includes('[unk]'), true);
-    assert.equal(botOnly.includes('night'), true, 'decoys must be part of the grammar');
+    assert.equal(botOnly.includes('ignore'), true, 'decoys must be part of the grammar');
     gate.destroy();
 });
 

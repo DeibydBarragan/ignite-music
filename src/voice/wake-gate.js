@@ -19,14 +19,14 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const log = require('../core/logger').createLogger('wake-gate');
-const { ensureVoskBinary, ensureEnglishModel, MODELS_DIR } = require('./model-downloader');
+const { ensureVoskBinary, ensureEnglishModel, ensureSpanishModel, MODELS_DIR } = require('./model-downloader');
 const { VoskWrapper } = require('./vosk-binding');
 const { parseWakeWords } = require('./matcher');
 const { pcmRms } = require('./audio-transcoder');
 
 /** Words that sound like a wake word. They absorb near-misses. */
 const WAKE_DECOYS = Object.freeze({
-    ignite: ['night', 'knight', 'ignore', 'ignored', 'ignores', 'excite', 'invite'],
+    ignite: ['ignore', 'ignored', 'ignores', 'excite', 'invite'],
 });
 
 /** Words people say before the wake word. Without them "oye ignite" is often missed. */
@@ -83,14 +83,16 @@ class WakeGate {
             try {
                 const binaryPath = await ensureVoskBinary();
                 const englishDir = binaryPath ? await ensureEnglishModel() : null;
+                const spanishDir = binaryPath ? await ensureSpanishModel().catch(() => null) : null;
                 if (!binaryPath || !englishDir) {
                     log.warn('Wake-word gate unavailable: Vosk binary or English model missing');
                     return false;
                 }
                 this.wrapper = new VoskWrapper(binaryPath);
                 this.models.set('en', this.wrapper.createModel(englishDir));
-                if (fs.existsSync(path.join(SPANISH_MODEL_DIR, 'am', 'final.mdl'))) {
-                    this.models.set('es', this.wrapper.createModel(SPANISH_MODEL_DIR));
+                const esDir = spanishDir || SPANISH_MODEL_DIR;
+                if (fs.existsSync(path.join(esDir, 'am', 'final.mdl'))) {
+                    this.models.set('es', this.wrapper.createModel(esDir));
                 }
                 this.ready = true;
                 log.info({ models: [...this.models.keys()] }, 'Wake-word gate ready');
@@ -137,7 +139,24 @@ class WakeGate {
         const unsupported = [];
 
         for (const wakeWord of parseWakeWords(wakeWordInput)) {
-            const modelId = MODEL_ORDER.find((id) => this.models.has(id) && this.tokensFor(wakeWord, id));
+            let chosenModelId = null;
+            let fallbackModelId = null;
+
+            for (const modelId of MODEL_ORDER) {
+                if (!this.models.has(modelId)) continue;
+                const tokens = this.tokensFor(wakeWord, modelId);
+                if (!tokens) continue;
+
+                const model = this.models.get(modelId);
+                const allDirect = wakeWord.split(' ').filter(Boolean).every((part) => this.wrapper.hasWord(model, part));
+                if (allDirect) {
+                    chosenModelId = modelId;
+                    break;
+                }
+                if (!fallbackModelId) fallbackModelId = modelId;
+            }
+
+            const modelId = chosenModelId || fallbackModelId;
             if (!modelId) {
                 unsupported.push(wakeWord);
                 continue;

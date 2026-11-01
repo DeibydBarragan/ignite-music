@@ -36,9 +36,11 @@ const VOSK_BINARIES = {
 };
 
 const MODEL_EN_URL = 'https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip';
+const MODEL_ES_URL = 'https://alphacephei.com/vosk/models/vosk-model-small-es-0.42.zip';
 
 let voskBinaryPromise = null;
 let englishModelPromise = null;
+let spanishModelPromise = null;
 
 /**
  * Returns the expected native binary filename for the current platform.
@@ -260,10 +262,87 @@ async function ensureEnglishModel() {
     }
 }
 
+/**
+ * Ensures the small Spanish model is present for Spanish wake words ("mierda bot", etc.).
+ * @returns {Promise<string|null>} Path to the model directory or null on failure.
+ */
+async function ensureSpanishModel() {
+    await fsp.mkdir(MODELS_DIR, { recursive: true });
+    const modelDir = path.join(MODELS_DIR, 'vosk-model-small-es');
+    const readyMarker = path.join(modelDir, '.ready');
+    const modelMarker = path.join(modelDir, 'am', 'final.mdl');
+
+    if (fs.existsSync(readyMarker) || fs.existsSync(modelMarker)) {
+        return modelDir;
+    }
+
+    if (spanishModelPromise) return spanishModelPromise;
+
+    spanishModelPromise = (async () => {
+        if (fs.existsSync(readyMarker) || fs.existsSync(modelMarker)) {
+            return modelDir;
+        }
+
+        log.info('Downloading Vosk Spanish acoustic model (~45 MB)...');
+        const uniqueId = `${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const tempZip = path.join(MODELS_DIR, `.vosk-model-es-${uniqueId}.zip`);
+        const tempExtractDir = path.join(MODELS_DIR, `.extract-model-es-${uniqueId}`);
+
+        try {
+            await downloadToFile(MODEL_ES_URL, tempZip, { minBytes: 20 * 1024 * 1024 });
+
+            log.info('Extracting Vosk Spanish acoustic model using native safe unzip...');
+            const zipBuffer = await fsp.readFile(tempZip);
+            await extractZip(zipBuffer, tempExtractDir);
+
+            const entries = await fsp.readdir(tempExtractDir, { withFileTypes: true });
+            let sourceDir = tempExtractDir;
+            for (const entry of entries) {
+                if (entry.isDirectory() && entry.name.startsWith('vosk-model')) {
+                    sourceDir = path.join(tempExtractDir, entry.name);
+                    break;
+                }
+            }
+
+            if (fs.existsSync(path.join(sourceDir, 'am', 'final.mdl'))) {
+                if (!fs.existsSync(modelDir)) {
+                    try {
+                        await fsp.rename(sourceDir, modelDir);
+                    } catch {
+                        await fsp.cp(sourceDir, modelDir, { recursive: true });
+                    }
+                }
+                await fsp.writeFile(readyMarker, '1').catch(() => {});
+                log.info('Vosk Spanish acoustic model installed successfully');
+                return modelDir;
+            }
+
+            throw new Error('Spanish model marker final.mdl not found after archive extraction');
+        } catch (err) {
+            log.error({ err: err.message }, 'Failed to download or extract Vosk Spanish model');
+            return null;
+        } finally {
+            if (fs.existsSync(tempZip)) {
+                try { await fsp.rm(tempZip, { force: true }); } catch { /* ignore */ }
+            }
+            if (fs.existsSync(tempExtractDir)) {
+                try { await fsp.rm(tempExtractDir, { recursive: true, force: true }); } catch { /* ignore */ }
+            }
+        }
+    })();
+
+    try {
+        return await spanishModelPromise;
+    } finally {
+        spanishModelPromise = null;
+    }
+}
+
 module.exports = {
     ensureVoskBinary,
     ensureVoskModel,
     ensureEnglishModel,
+    ensureSpanishModel,
     getPlatformBinaryInfo,
     BIN_VOSK_DIR,
     MODELS_DIR,
