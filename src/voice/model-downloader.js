@@ -70,7 +70,7 @@ async function ensureVoskBinary() {
     const tempZip = path.join(BIN_VOSK_DIR, `.vosk-${process.platform}-${process.pid}.zip`);
 
     try {
-        await downloadToFile(binaryInfo.url, tempZip, { minBytes: 10 * 1024 * 1024 });
+        await downloadToFile(binaryInfo.url, tempZip, { minBytes: 5 * 1024 * 1024 });
 
         log.info('Extracting Vosk C library binaries using native safe unzip...');
         const zipBuffer = await fsp.readFile(tempZip);
