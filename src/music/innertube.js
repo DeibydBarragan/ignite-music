@@ -103,20 +103,16 @@ async function searchVideosDirect(query, limit = 6, { timeoutMs = 3500 } = {}) {
 }
 
 /**
- * 2. Búsqueda de playlists en YouTube mediante Innertube (EgIQAw%3D%3D = filtro Playlist).
+ * Helper to parse playlist search cards from Innertube responses.
  */
-async function searchPlaylistsDirect(query, limit = 6, { timeoutMs = 3500 } = {}) {
-    const raw = String(query || '').trim();
-    if (!raw || raw.length < 2) return [];
-
-    const data = /** @type {any} */ (await postInnertube('search', { query: raw, params: 'EgIQAw%3D%3D' }, timeoutMs));
+function parsePlaylists(data) {
     const sections = data?.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents || [];
     const playlists = [];
 
     for (const section of sections) {
         const items = section?.itemSectionRenderer?.contents || [];
         for (const item of items) {
-            if (item.lockupViewModel && (item.lockupViewModel.contentType === 'LOCKUP_CONTENT_TYPE_PLAYLIST' || item.lockupViewModel.contentId?.startsWith('PL'))) {
+            if (item.lockupViewModel && (item.lockupViewModel.contentType === 'LOCKUP_CONTENT_TYPE_PLAYLIST' || item.lockupViewModel.contentId?.startsWith('PL') || item.lockupViewModel.contentId?.startsWith('RDCL') || item.lockupViewModel.contentId?.startsWith('VL'))) {
                 const p = item.lockupViewModel;
                 const id = p.contentId;
                 if (!id) continue;
@@ -162,13 +158,74 @@ async function searchPlaylistsDirect(query, limit = 6, { timeoutMs = 3500 } = {}
                     source: 'youtube',
                 });
             }
-
-            if (playlists.length >= limit) break;
         }
-        if (playlists.length >= limit) break;
     }
 
     return playlists;
+}
+
+/**
+ * 2. Búsqueda de playlists en YouTube mediante Innertube (EgIQAw%3D%3D = filtro Playlist).
+ * Prioriza automáticamente las listas oficiales "Presenting <artista>" (equivalente a "This Is" de Spotify)
+ * como primer resultado cuando se busca por artista.
+ */
+async function searchPlaylistsDirect(query, limit = 6, { timeoutMs = 3500 } = {}) {
+    const raw = String(query || '').trim();
+    if (!raw || raw.length < 2) return [];
+
+    const cleanArtist = raw.replace(/^(this\s+is|presenting|presentamos\s+a|presentando\s+a)\s+/i, '').trim();
+    const isPresentingAlready = /^(presenting|presentamos a|presentando a)\b/i.test(raw);
+
+    const mainPromise = postInnertube('search', { query: raw, params: 'EgIQAw%3D%3D' }, timeoutMs).catch(() => null);
+    const presentingPromise = (!isPresentingAlready && cleanArtist.length >= 2)
+        ? postInnertube('search', { query: `Presenting ${cleanArtist}`, params: 'EgIQAw%3D%3D' }, timeoutMs).catch(() => null)
+        : Promise.resolve(null);
+
+    const [mainData, presData] = await Promise.all([mainPromise, presentingPromise]);
+    const regular = parsePlaylists(mainData);
+    const presList = presData ? parsePlaylists(presData) : [];
+
+    const artistLower = cleanArtist.toLowerCase();
+    const isPresentingTitle = (t) => /^(presenting|presentamos a|presentando a)\b/i.test(t);
+
+    // 1. YouTube Music playlist oficial que mencione al artista con "Presenting / Presentamos a / Presentando a"
+    let presentingMatch = presList.find((p) =>
+        (p.uploader === 'YouTube Music' || p.id.startsWith('RDCL')) &&
+        p.title.toLowerCase().includes(artistLower) &&
+        isPresentingTitle(p.title)
+    );
+
+    // 2. Cualquier lista oficial de YouTube Music que coincida con el artista
+    if (!presentingMatch) {
+        presentingMatch = presList.find((p) =>
+            (p.uploader === 'YouTube Music' || p.id.startsWith('RDCL')) &&
+            p.title.toLowerCase().includes(artistLower)
+        );
+    }
+
+    // 3. Lista específicamente titulada "Presenting/Presentamos/Presentando <artista>"
+    if (!presentingMatch) {
+        presentingMatch = presList.find((p) =>
+            isPresentingTitle(p.title) &&
+            p.title.toLowerCase().includes(artistLower)
+        );
+    }
+
+    // 4. También verificar si la búsqueda regular ya contenía una lista oficial de Presenting
+    if (!presentingMatch) {
+        presentingMatch = regular.find((p) =>
+            (p.uploader === 'YouTube Music' || p.id.startsWith('RDCL')) &&
+            p.title.toLowerCase().includes(artistLower) &&
+            isPresentingTitle(p.title)
+        );
+    }
+
+    let finalPlaylists = [...regular];
+    if (presentingMatch) {
+        finalPlaylists = [presentingMatch, ...regular.filter((p) => p.id !== presentingMatch.id)];
+    }
+
+    return finalPlaylists.slice(0, limit);
 }
 
 /**
