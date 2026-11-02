@@ -23,6 +23,7 @@ const DEFAULT_TTS_TEMPLATES = Object.freeze({
     autoplay_off: 'Autoplay desactivado',
     volume: 'Volumen ajustado al {query}',
     queue: 'Mostrando la lista',
+    hola_que_hace: 'Hola que hace',
 });
 
 /**

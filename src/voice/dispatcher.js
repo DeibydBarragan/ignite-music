@@ -66,7 +66,7 @@ async function dispatchVoiceCommand(manager, payload, options = {}) {
                     commandId: 'resume',
                     params: {},
                 }, {
-                    enabled: settings?.tts_feedback_enabled,
+                    enabled: commandId === 'hola_que_hace' ? true : settings?.tts_feedback_enabled,
                     templates: settings?.tts_templates,
                     voice: ttsVoice,
                     rate: ttsRate,
@@ -229,6 +229,11 @@ async function dispatchVoiceCommand(manager, payload, options = {}) {
                 break;
             }
 
+            case 'hola_que_hace': {
+                executionResult = { ok: true, message: 'Hola que hace' };
+                break;
+            }
+
             default:
                 return { executed: false, reason: 'unsupported_command', commandId };
         }
@@ -246,7 +251,7 @@ async function dispatchVoiceCommand(manager, payload, options = {}) {
                     commandId,
                     params: { query },
                 }, {
-                    enabled: settings?.tts_feedback_enabled,
+                    enabled: commandId === 'hola_que_hace' ? true : settings?.tts_feedback_enabled,
                     templates: settings?.tts_templates,
                     voice: ttsVoice,
                     rate: ttsRate,

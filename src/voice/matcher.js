@@ -56,6 +56,19 @@ const DEFAULT_COMMAND_BINDINGS = Object.freeze({
     ],
     volume: ['volumen al', 'volumen a', 'volumen', 'sube el volumen a', 'baja el volumen a'],
     queue: ['cola', 'lista', 'fila', 'canciones'],
+    hola_que_hace: [
+        'hola que hace',
+        'hola que haces',
+        'hola ke hace',
+        'hola ke haces',
+        'ola que hace',
+        'ola que haces',
+        'ola k ase',
+        'hola k ase',
+        'ola k hace',
+        'hola q hace',
+        'hola q haces',
+    ],
 });
 
 /**
@@ -411,7 +424,25 @@ function matchVoiceCommand(rawText, options = {}) {
 
     // 1. Locate all wake word occurrences in the text
     const occurrences = findWakeWordOccurrences(text, candidateWakeWords);
+
+    // 2. Build ordered command phrases
+    const phrases = buildPhraseList(options.customBindings);
+
+    // If wake word was omitted, check if it's the direct friendly greeting command
     if (occurrences.length === 0) {
+        if (/^(?:hola|ola)\s+(?:que|ke|q)\s+haces?(?:\s|$)/i.test(text) ||
+            /^(?:hola|ola)\s+k\s+ase(?:\s|$)/i.test(text)) {
+            return {
+                matched: true,
+                wakeWord: candidateWakeWords[0] || 'ignite',
+                commandId: 'hola_que_hace',
+                phrase: 'hola que hace',
+                query: '',
+                missingQuery: false,
+                raw: rawText,
+            };
+        }
+
         return {
             matched: false,
             reason: 'wake_word_missing',
@@ -420,11 +451,20 @@ function matchVoiceCommand(rawText, options = {}) {
         };
     }
 
-    // 2. Build ordered command phrases
-    const phrases = buildPhraseList(options.customBindings);
-
     // 3. Check each occurrence to find one that contains a valid command
     for (const occurrence of occurrences) {
+        if ((occurrence.prefix.endsWith('hola') || occurrence.prefix.endsWith('ola')) &&
+            /^(?:que\s+haces?|ke\s+haces?|k\s+ase|q\s+haces?)(?:\s|$)/i.test(occurrence.rest)) {
+            return {
+                matched: true,
+                wakeWord: occurrence.wakeWord,
+                commandId: 'hola_que_hace',
+                phrase: 'hola que hace',
+                query: '',
+                missingQuery: false,
+                raw: rawText,
+            };
+        }
         const found = matchCommandInRest(occurrence.rest, phrases);
         if (found) {
             return {

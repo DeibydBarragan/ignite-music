@@ -191,6 +191,19 @@ test('matcher: normalizes and matches default voice commands', () => {
     assert.equal(fillerMatch.matched, true);
     assert.equal(fillerMatch.commandId, 'play');
     assert.equal(fillerMatch.query, 'starboy');
+
+    // Greetings command: "hola que hace" (with wake word, inverted, or direct)
+    const helloMatch1 = matchVoiceCommand('Ignite, hola que hace', { wakeWord: 'ignite' });
+    assert.equal(helloMatch1.matched, true);
+    assert.equal(helloMatch1.commandId, 'hola_que_hace');
+
+    const helloMatch2 = matchVoiceCommand('hola ignite que hace', { wakeWord: 'ignite' });
+    assert.equal(helloMatch2.matched, true);
+    assert.equal(helloMatch2.commandId, 'hola_que_hace');
+
+    const helloMatch3 = matchVoiceCommand('Hola qué hace', { wakeWord: 'ignite' });
+    assert.equal(helloMatch3.matched, true);
+    assert.equal(helloMatch3.commandId, 'hola_que_hace');
 });
 
 test('ttsFeedback: interpolates templates and formats messages', () => {
@@ -198,6 +211,7 @@ test('ttsFeedback: interpolates templates and formats messages', () => {
 
     assert.equal(interpolateTemplate('Reproduciendo {query}', { query: 'Starboy' }), 'Reproduciendo Starboy');
     assert.equal(interpolateTemplate('Saltando canción', {}), 'Saltando canción');
+    assert.equal(resolveFeedbackMessage('hola_que_hace'), 'Hola que hace');
 
     const defaultMsg = resolveFeedbackMessage('play', { query: 'In The End' });
     assert.equal(defaultMsg, 'Reproduciendo In The End');
