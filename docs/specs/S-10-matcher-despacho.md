@@ -9,7 +9,7 @@
 
 Convertir el texto transcrito en un comando (`commandId` y consulta). Después ejecutar el comando sobre la música y avisar con TTS (S-11).
 
-No incluye la transcripción (S-09), la puerta (S-06), la música (S-17 y S-18) ni los ajustes guardados del servidor (S-30).
+No incluye la transcripción (S-09), la puerta (S-06), la música (S-17, que define el trait `Musica`) ni los ajustes guardados del servidor (S-30).
 
 ## Archivos
 
@@ -20,6 +20,7 @@ No incluye la transcripción (S-09), la puerta (S-06), la música (S-17 y S-18) 
 - Crear: `rust/crates/voice/tests/despacho.rs` (música falsa)
 - Crear: `rust/crates/voice/tests/data/matcher-casos.json` (generado con Node)
 - Crear: `scripts/matcher-paridad-ref.js` (debe pasar `npm run lint`)
+- Modificar: `rust/crates/voice/Cargo.toml` (dependencia `player`, para el trait `Musica` de S-17).
 - No tocar: `src/voice/matcher.js`, `src/voice/dispatcher.js`, `src/music/events.js`.
 
 Cada archivo tiene como máximo 250 líneas.
@@ -31,7 +32,7 @@ Cada archivo tiene como máximo 250 líneas.
   - Palabras de activación: lista, o cadena separada por comas. Por defecto `ignite`.
   - Frases personalizadas del servidor, opcional (sale de S-30).
 - Salida de `coincidir`: `Coincidencia { coincide, motivo?, palabra?, comando?, frase?, consulta?, falta_consulta?, relleno? }`.
-- Entrada de `despachar`: `Solicitud { servidor, usuario, texto, canal? }`, los ajustes del servidor (S-30) y una música que cumpla el trait `Musica` (S-17 y S-18).
+- Entrada de `despachar`: `Solicitud { servidor, usuario, texto, canal? }`, los ajustes del servidor (S-30) y una música que cumpla el trait `Musica` (S-17).
 - Salida de `despachar`: `Resultado { ejecutado, comando?, consulta?, motivo?, mensaje_tts? }`.
 - Motivos de no ejecución. Son los mismos textos que Node, porque el registro (S-12) los guarda:
   - `empty_text`, `wake_word_missing`, `only_wake_word`, `command_not_found`.

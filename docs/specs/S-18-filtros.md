@@ -46,8 +46,8 @@ Cada archivo tiene como máximo 250 líneas.
 6. Un nombre que no está en el catálogo: `ok: false`, sin cambios.
 7. Los mensajes llevan la etiqueta del filtro.
 8. Opciones de entrada de ffmpeg para flujos por red: `reconnect 1`, `reconnect_streamed 1` y `reconnect_delay_max 5`. Se mantienen.
-9. Ejecutable de ffmpeg: `FFMPEG_PATH` si está definido. Si no, `ffmpeg-static` si existe. Si no, `ffmpeg` del PATH.
-10. En Rust, el filtro va en un proceso ffmpeg que lee la fuente y escribe PCM. songbird trae `ChildContainer`, que permite usar un proceso hijo como entrada (`src/input/adapters/child.rs`). Confirmar en S-16.
+9. Ejecutable de ffmpeg: `FFMPEG_PATH` si está definido. Si no, `bin/ffmpeg.exe` (S-32). Si no, `ffmpeg` del PATH. Node busca en su lugar `node_modules/ffmpeg-static`.
+10. En Rust, el filtro va en un proceso ffmpeg que lee la fuente y escribe PCM. songbird trae `ChildContainer`, que permite usar un proceso hijo como entrada (`src/input/adapters/child.rs`). Se confirma al implementar F4, porque S-16 no lo cubre.
 
 ## Tests
 

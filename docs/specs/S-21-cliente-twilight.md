@@ -101,6 +101,7 @@ Cada archivo tiene como máximo 250 líneas.
 4. Pánicos: un `set_hook` registra el pánico. El supervisor de tareas pide el apagado con código 1.
 5. Variables de shards (`SHARDS`, `SHARDING_MANAGER`, `SHARDING_MANAGER_MODE`): se ignoran, con aviso en el log.
 6. `pot.js`: Rust no lo arranca hasta que F7 mida si hace falta. Ver la decisión F4 (a) en S-15.
+7. Binarios hasta F7: el arranque localiza yt-dlp, ffmpeg y la DLL de Vosk con las variables de S-32 (`YTDLP_PATH`, `FFMPEG_PATH`, `BIN_DIR`). No descarga nada hasta que se implemente el instalador de S-32 en F7.
 
 ## Preguntas abiertas
 

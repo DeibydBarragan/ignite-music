@@ -14,6 +14,7 @@ No incluye las fuentes (S-14), los filtros (S-18), las sesiones (S-19) ni la pre
 ## Archivos
 
 - Crear: `rust/crates/player/src/cola.rs` (estado por servidor y bloqueo)
+- Crear: `rust/crates/player/src/musica.rs` (trait `Musica`, `EstadoCola` y `ErrorMusica`). Lo usa S-10. Se crea en F3 con pausa y reanudación, y F4 lo completa.
 - Crear: `rust/crates/player/src/cola_operaciones.rs` (quitar, mover, ordenar, saltar, limpiar y deshacer)
 - Crear: `rust/crates/player/src/acciones.rs` (pausa, reanudar, saltar, anterior, parar, mezclar, bucle, autoplay, volumen y búsqueda)
 - Crear: `rust/crates/player/src/reproducir.rs` (capacidad, truncado, NSFW y arranque)
@@ -34,6 +35,14 @@ Cada archivo tiene como máximo 250 líneas.
   - `PosicionInvalida` (400).
   - `DeshacerExpirado` (400): pasados 60 s.
   - `DeshacerVacio` (400).
+- Trait `Musica` (`rust/crates/player/src/musica.rs`), que usa S-10. Todos los métodos reciben `servidor` como primer parámetro.
+  - `estado(servidor) -> Result<EstadoCola, ErrorMusica>`. `EstadoCola { activa, pausada, tamano }`: `activa` es verdadero si hay cola. `pausada` es verdadero si la cola no suena, por pausa o por parada. `tamano` cuenta las canciones en cola.
+  - `reproducir(servidor, canal, miembro, consulta, posicion, saltar) -> Result<Resultado, ErrorMusica>`: la entrada de arriba, con el servidor.
+  - `pausar(servidor)` y `reanudar(servidor)`: se implementan en F3.
+  - `saltar(servidor)`, `anterior(servidor)`, `parar(servidor)`, `mezclar(servidor)`, `volumen(servidor, nivel)` (entero de 0 a 100) y `autoplay(servidor, activo)`: se implementan en F4. Hasta entonces devuelven `NoImplementado`. `activo` es opcional: sin valor alterna, y con valor lo fija.
+  - `tamano(servidor) -> Result<usize, ErrorMusica>`.
+- `ErrorMusica`: `NoHayCola` (`no_active_queue` en S-10), `ColaLlena`, `PosicionInvalida`, `NoImplementado` y `Fallo(texto)`. S-10 registra `Fallo` como `execution_error`.
+- `DeshacerExpirado` y `DeshacerVacio` no pasan por el trait. Los usan la API y los botones.
 
 ## Comportamiento
 

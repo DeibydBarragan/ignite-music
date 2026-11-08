@@ -67,6 +67,7 @@ Cada archivo tiene como máximo 250 líneas.
 
 - Se mantiene la marca `pausedForEmpty`. Solo se reanuda la pausa que puso el bot al vaciarse el canal. Una pausa manual no se reanuda sola.
 - `IGNITE_SOUND_BOT_ID` conserva su valor por defecto del código, como en Node.
+- Hasta F5, los eventos de voz llegan simulados en los tests de F4: un tipo con los mismos campos que el evento de Discord. S-21 los conecta en F5 (paso 6.2).
 
 ## Preguntas abiertas
 

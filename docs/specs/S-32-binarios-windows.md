@@ -13,7 +13,7 @@ Solo Windows (decisión 7 del plan). No incluye la carga de Vosk (S-05), la lóg
 
 ## Decisiones
 
-- Los binarios van en `BIN_DIR` (por defecto `bin/`), en las mismas rutas que Node.
+- Los binarios van en `BIN_DIR` (por defecto `bin/`). yt-dlp, la DLL de Vosk y cloudflared van en las mismas rutas que Node: `bin/yt-dlp-dist/`, `bin/vosk/` y `bin/cloudflared.exe`. ffmpeg va en `bin/ffmpeg.exe`. Node lo toma de `node_modules/ffmpeg-static/`.
 - El código va en el crate `bot` (`rust/crates/bot/src/binarios/`). No se crea un crate nuevo. Si se aprueba `nucleo` (S-01), este código se mueve allí.
 - No hay paso de instalación aparte. El bot asegura los binarios al arrancar, como hace `preflight.js`. El postinstall de npm no tiene equivalente.
 - Sin yt-dlp o sin ffmpeg, el arranque falla con código 1, como en Node.
@@ -23,6 +23,7 @@ Solo Windows (decisión 7 del plan). No incluye la carga de Vosk (S-05), la lóg
 - yt-dlp con `YTDLP_DOWNLOAD_BASE`: se verifica contra `SHA2-256SUMS` de esa base si existe. Si no existe, avisa y no verifica.
 - cloudflared: Rust borra solo la copia de `BIN_DIR`. Una copia fuera de `BIN_DIR` que no responde se ignora.
 - Carpeta de binarios en la prueba paralela: el bot de Rust de prueba usa un `BIN_DIR` propio, fuera de `bin/` (S-33). Así dos procesos no escriben el mismo `yt-dlp.exe`.
+- Hasta F7, Rust usa los binarios que ya tiene Node: yt-dlp está en `bin/yt-dlp-dist/` y la DLL de Vosk en `bin/vosk/`, con `BIN_DIR`. ffmpeg está en `node_modules/ffmpeg-static/ffmpeg.exe`, y Rust lo encuentra con `FFMPEG_PATH`. No se descarga nada. El instalador se implementa en F7, antes del corte, para que Rust no dependa de Node al retirarlo.
 
 ## Archivos
 
