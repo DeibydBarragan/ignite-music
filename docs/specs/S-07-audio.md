@@ -11,6 +11,11 @@ Portar a Rust las funciones de PCM de `audio-transcoder.js`, con la misma salida
 
 No se porta `opusStreamToWav`. Songbird decodifica Opus, así que esta spec empieza en el PCM ya decodificado.
 
+## Decisiones
+
+- No se mejora la decimación ni se añade filtro antialias: cualquier mejora rompe la paridad byte a byte con Node. Si algún día se quiere, se decide aparte.
+- La paridad se mide sobre PCM ya decodificado. Si el decode de Opus de songbird (crate `opus2`, libopus) difiere del de prism-media, el fallo se mide con voz real en F2 y no invalida esta spec (ver Preguntas abiertas).
+
 ## Archivos
 
 - Crear: `rust/crates/voice/src/audio.rs`
@@ -38,12 +43,12 @@ Formato de entrada, de songbird 0.6.0 (commit `3f77b5f`):
 
 ## Comportamiento
 
-1. Downsample: cada grupo de 3 frames estéreo da una muestra mono. La muestra sale solo del primer frame del grupo: el promedio de su L y su R. Los otros dos frames no se leen. No hay filtro antialias. Así lo hace Node.
+1. Downsample: cada grupo de 3 frames estéreo da una muestra mono. La muestra sale solo del primer frame del grupo: el promedio de su L y su R. Los otros dos frames no se leen. No hay filtro antialias. Así lo hace Node. Entradas de menos de 12 bytes (6 muestras) dan salida vacía, y las muestras sobrantes al final se ignoran.
 2. Redondeo: igual que `Math.round` de JS, es decir `floor((L + R + 1) / 2)`, con división hacia menos infinito (`div_euclid`). No usar `f64::round`. Con L + R = -3, JS da -1 y `f64::round` da -2.
 3. RMS: raíz cuadrada de la media de los cuadrados, en `f64`. Se suma en el mismo orden que Node. Entrada vacía da 0.
 4. WAV: cabecera de 44 bytes. Campos: `RIFF`, tamaño 36 + datos, `WAVE`, `fmt ` con tamaño 16, formato PCM (1), canales, tasa, tasa de bytes (tasa × canales × 2), alineación de bloque (canales × 2), 16 bits, `data` y tamaño de datos. Igual que `pcmToWav`.
 5. Recorte:
-   a. Entrada vacía: devuelve vacío.
+   a. Entrada vacía: devuelve vacío. En Node, `slicePcmWav` además envuelve el vacío en una cabecera WAV de 44 bytes; aquí lo hace quien llama con `pcm_to_wav`.
    b. `start_ms` = 0: devuelve todo.
    c. Inicio efectivo = máximo de 0 y (`start_ms` − `pre_roll_ms`). Desplazamiento en bytes = inicio × 32, es decir 16 000 muestras por segundo × 2 bytes, dividido entre 1 000.
    d. Si el desplazamiento es mayor o igual que el largo − 12 800 bytes (400 ms), devuelve todo.
@@ -68,8 +73,8 @@ Formato de entrada, de songbird 0.6.0 (commit `3f77b5f`):
 ## Preguntas resueltas
 
 - Formato de `decoded_voice`: ver Contrato. Fuente: `src/events/context/data/voice.rs` y `src/driver/decode_mode.rs` del commit `3f77b5f`.
+- Todas las reglas de Comportamiento verificadas contra `src/voice/audio-transcoder.js` actual. Confirmado: los 11 WAV de `test/fixtures/`, `test/voice.test.js` y `test/wake-gate.test.js` existen, y `npm run lint` cubre `scripts/`.
 
 ## Preguntas abiertas
 
 - Si el decode de Opus de songbird (crate `opus2`, libopus) difiere del de prism-media, el PCM de entrada no coincide con Node. Eso se mide con voz real en F2.
-- Mejorar la decimación rompe la paridad. Si se quiere mejorar, se decide aparte.

@@ -11,6 +11,10 @@ Convertir la voz que recibe songbird en fragmentos por usuario. Cada fragmento p
 
 Fuera de esta spec: la compuerta de wake word (S-06), Groq (S-09), el matcher (S-10) y el registro de eventos (S-12). Aquí se prueban con implementaciones de prueba.
 
+## Decisiones
+
+- El dato de bot sale de `twilight-http` (`client.guild_member(guild_id, user_id)`), no de la caché. La caché de twilight solo guarda miembros que llegan por eventos (MemberAdd, MemberUpdate, MemberChunk) y un miembro que no cambia nunca es invisible. Node hace lo mismo: primero caché y después `guild.members.fetch(userId)`. En F2 basta con el REST. No pide el intent privilegiado `GUILD_MEMBERS`.
+
 ## Archivos
 
 - Crear: `rust/crates/voice/src/receive.rs` (segmentación por usuario)
@@ -35,11 +39,11 @@ Salida: fragmento por usuario, en 48 kHz estéreo, con `guild_id`, `user_id` y d
 
 1. Un fragmento activo por usuario. Voz nueva de ese usuario se añade al fragmento activo.
 2. Un fragmento empieza cuando un usuario aparece en `speaking` y no tiene fragmento activo.
-3. Un fragmento termina cuando el usuario pasa `VOICE_SILENCE_DURATION_MS` sin voz. Por defecto 500 ms, rango de 400 a 3 000. El silencio se cuenta en ticks de 20 ms. Un tick sin voz es uno en que el SSRC no aparece en `speaking`. Un hueco de pérdida dentro de la voz sí aparece en `speaking` y no corta el fragmento.
+3. Un fragmento termina cuando el usuario pasa `VOICE_SILENCE_DURATION_MS` sin voz. Por defecto 500 ms, rango de 400 a 3 000. El silencio se cuenta en ticks de 20 ms. Un tick sin voz es uno en que el SSRC no aparece en `speaking` (aparece en `silent`). Un hueco de pérdida dentro de la voz sí aparece en `speaking` y no corta el fragmento.
 4. Se descartan fragmentos de menos de 650 ms de voz.
 5. A los 12 000 ms de voz, el fragmento se corta y se procesa.
 6. `ClientDisconnect` cierra el fragmento activo y aplica la regla 4.
-7. Se ignora el audio del propio bot. Se ignora a otros bots, salvo el bot de sonido configurado con `soundBotId` y `allowBotInput` de `config.voice`. El dato de bot sale del caché de twilight.
+7. Se ignora el audio del propio bot (el `user_id` se conoce desde S-16). Se ignora a otros bots, salvo el bot de sonido configurado con `soundBotId` y `allowBotInput` de `config.voice`. El dato de bot se consulta con `twilight-http` (ver Decisiones).
 8. Admisión, en este orden:
    a. Volumen: RMS en 16 kHz mono de al menos `VOICE_MIN_RMS` (200 por defecto). Si no, se descarta sin registro.
    b. Compuerta: se llama a S-06 con las wake words del servidor. Si cierra, se registra `filtered_out` en S-12 y termina.
@@ -73,8 +77,10 @@ Salida: fragmento por usuario, en 48 kHz estéreo, con `guild_id`, `user_id` y d
 - Duración de un tick: 20 ms (`AUDIO_FRAME_RATE` = 50, en `src/constants.rs`).
 - Formato de `decoded_voice`: ver S-07.
 - Voz de un SSRC sin usuario: con DAVE, los paquetes cifrados de un SSRC sin usuario se descartan antes de llegar al decodificador (`src/driver/tasks/udp_rx/mod.rs`). Sin DAVE, el paquete llega a `speaking` solo con el SSRC. S-08 lo descarta porque no tiene `user_id`.
+- Fuente del dato de bot: ver Decisiones. Verificado que `twilight-http` 0.17.1 tiene `Client::guild_member(guild_id, user_id)` (GET member), igual que el `guild.members.fetch(userId)` de Node.
+- Los payloads de `SpeakingStateUpdate` y `ClientDisconnect` vienen de `serenity-voice-model` 0.3.0, reexportado como `songbird::model`. `Speaking` trae `ssrc: u32` y `user_id: Option<UserId>`; `ClientDisconnect` trae `user_id: UserId`.
+- Verificado en el crate publicado songbird 0.6.0: `VoiceTick { speaking: HashMap<u32, VoiceData>, silent: HashSet<u32> }`, `VoiceData.decoded_voice: Option<Vec<i16>>`, y `playout_buffer_length` por defecto 5 (100 ms). La feature `receive` activa `discortp/demux` y `discortp/rtcp`.
 
 ## Preguntas abiertas
 
 - Si DAVE impide recibir voz, la spec falla y se aplica la regla de parada del plan. El código sí descifra DAVE. Falta la prueba con voz real en Tests.
-- Bots: songbird no dice si un usuario es bot. El punto 7 necesita otra fuente, que no está verificada.
