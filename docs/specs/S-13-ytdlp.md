@@ -23,7 +23,7 @@ No incluye las fuentes (S-14), el relay ni el token PO (S-15), ni la reproducci�
 - Crear: `scripts/errores-paridad-ref.js` (debe pasar `npm run lint`)
 - No tocar: `src/music/ytdlp.js`, `src/core/cache.js`, `src/music/errors.js`, `test/ytdlp.test.js`.
 
-El crate `medios` no estaba en S-31. Ver Preguntas abiertas.
+El crate `medios` se crea vacío en S-31 y recibe aquí su primer código.
 
 Cada archivo tiene como máximo 250 líneas.
 
