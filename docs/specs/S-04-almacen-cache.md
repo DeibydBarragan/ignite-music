@@ -13,6 +13,11 @@ Usos: ajustes por servidor (S-03) y estado de sesiones (S-19).
 
 No se porta aquí `Semaphore` de `src/core/cache.js`. Va en S-13, con el límite de procesos de yt-dlp.
 
+## Decisiones
+
+- Si la escritura falla, el valor nuevo queda en memoria, como en Node. El error llega a quien llamó (Comportamiento 3).
+- Si la escritura falla, Rust borra el `.tmp` que quedó a medias. Node lo deja.
+
 ## Archivos
 
 - Crear: `rust/crates/nucleo/src/almacen.rs` (`AlmacenJson`)
@@ -37,8 +42,8 @@ Cada archivo tiene como máximo 250 líneas.
 
 1. `initialize`: crea la carpeta si falta. Carga en memoria cada `<clave>.json` válido. Un archivo que no se lee o no es JSON se registra con aviso y se omite. No se borra.
 2. `get` solo lee la memoria. Con una clave inválida da error.
-3. `set`: cambia la memoria y después espera la escritura. Si la escritura falla, el error llega a quien llamó, igual que en Node (ver Preguntas).
-4. Escritura atómica: escribe en `<archivo>.<pid>.<8 hex>.tmp`, hace `sync_all` y renombra sobre `<clave>.json`. Si falla antes del renombrado, el archivo anterior queda intacto.
+3. `set`: cambia la memoria y después espera la escritura. Si la escritura falla, el error llega a quien llamó, igual que en Node (ver Decisiones).
+4. Escritura atómica: escribe en `<archivo>.<pid>.<8 hex>.tmp`, hace `sync_all` y renombra sobre `<clave>.json`. Si falla antes del renombrado, el archivo anterior queda intacto y el `.tmp` se borra.
 5. Las escrituras de la misma clave van en serie. Las de claves distintas pueden ir en paralelo.
 6. `delete` o un valor nulo borran el archivo y dejan la clave vacía en memoria.
 7. Formato: JSON compacto, sin sangría, con el mismo orden de claves que Node. En Rust, `serde_json` con la función `preserve_order`.
@@ -55,7 +60,7 @@ Cada archivo tiene como máximo 250 líneas.
 
 - Unitarios, equivalentes a `test/core.test.js`: caducidad y carga única con llamadas concurrentes; barrido sin lectura; tamaño máximo; escritura atómica, caché y borrado.
 - Propios de Rust:
-  - Fallo en el renombrado: el archivo anterior se conserva.
+  - Fallo en el renombrado: el archivo anterior se conserva y no queda `.tmp`.
   - Archivo corrupto: se omite en `initialize` y no se borra.
   - Clave inválida: error antes de tocar el disco.
   - Caché sin `ttl`: la entrada no caduca.
@@ -71,6 +76,4 @@ Cada archivo tiene como máximo 250 líneas.
 
 ## Preguntas abiertas
 
-- Fallo de escritura. En Node, el valor nuevo queda en memoria aunque el disco no cambió. Propuesta: mantener ese comportamiento hasta decidir. Cambiarlo es un cambio de comportamiento.
-- Restos de escritura. Si falla la escritura, Node deja el archivo `.tmp`. Propuesta: borrarlo en Rust. Es un cambio menor, pero también cambia el comportamiento.
 - `serde_json` con `preserve_order`: confirmar en el test de paridad que el orden de claves coincide con Node.

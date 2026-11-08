@@ -18,6 +18,15 @@ No se porta aquí:
 
 Hay un solo shard. Las variables de shards se leen, pero solo `TOTAL_SHARDS` tiene una regla.
 
+## Decisiones
+
+- La raíz del proyecto es la carpeta desde la que corre el binario. `start.bat` hace `cd` a esa carpeta (S-32).
+- Una línea de `.env` que no se entiende se ignora, con aviso en el log.
+- `.env.example` no cambia. El código usa su valor por defecto solo cuando falta la variable.
+- `DNS_SERVERS` y `DNS_LOOKUP_TIMEOUT_MS` no se portan, salvo que haga falta.
+- El crate `nucleo` se crea para M1.
+- `TOTAL_SHARDS` distinto de `auto` o `1` es error de arranque (regla 9).
+
 ## Archivos
 
 - Crear: `rust/crates/nucleo/Cargo.toml`
@@ -36,7 +45,7 @@ Hay un solo shard. Las variables de shards se leen, pero solo `TOTAL_SHARDS` tie
 - Modificar: `rust/crates/bot/src/main.rs` (llama al arranque)
 - No tocar: `index.js`, `src/`, `test/`, `.env.example` y el `.env` del usuario.
 
-El crate `nucleo` no estaba en S-31. Ver Preguntas abiertas.
+El crate `nucleo` no estaba en S-31. Se crea para M1 (ver Decisiones).
 
 Cada archivo tiene como máximo 250 líneas.
 
@@ -62,7 +71,7 @@ Cada archivo tiene como máximo 250 líneas.
 | `PANEL_REFRESH` | 20 | 0 | sin límite | segundos |
 | `YTDLP_CONCURRENCY` | 4 | 1 | 32 | |
 | `YTDLP_TIMEOUT` | 30 | 5 | sin límite | segundos |
-| `DNS_LOOKUP_TIMEOUT_MS` | 1500 | 100 | sin límite | ver Preguntas |
+| `DNS_LOOKUP_TIMEOUT_MS` | 1500 | 100 | sin límite | no se porta (ver Decisiones) |
 | `API_PORT` | 3001 | 1024 | 65535 | |
 | `API_RATE_LIMIT_PER_MINUTE` | 120 | 1 | 100000 | |
 | `VOICE_SILENCE_DURATION_MS` | 500 | 400 | 3000 | |
@@ -114,11 +123,5 @@ Cada archivo tiene como máximo 250 líneas.
 
 ## Preguntas abiertas
 
-- Raíz del proyecto. Node usa la carpeta padre de `src/`. Propuesta: la carpeta desde la que corre el binario. `start.bat` hace `cd` (S-32).
-- `.env` malformado. El dotenv de Node ignora las líneas malas. Propuesta: lo mismo, con aviso en el log.
-- Valores por defecto distintos. `.env.example` pone `VOICE_ENABLED=false` y `VOICE_TTS_FEEDBACK_ENABLED=false`, pero el código usa `true` si la variable falta. Propuesta: el ejemplo no cambia y el código manda solo cuando la variable falta.
-- `DEV_USER_IDS` trae un id de desarrollador fijo en el código. ¿Se mantiene en Rust?
-- `DNS_SERVERS` y `DNS_LOOKUP_TIMEOUT_MS` sirven al parche de DNS de Node (`src/core/dns-fix.js`). Propuesta: no portarlos, salvo que haga falta.
-- Título de arranque: Node imprime `Beatra startup check`. El resto del bot dice Ignite. ¿Se cambia?
-- Crate `nucleo`: no estaba en S-31. Propuesta: crearlo para M1.
-- `TOTAL_SHARDS` distinto de `auto` o `1`: propuesta, error de arranque. Confirmar.
+- `DEV_USER_IDS` trae un id de desarrollador fijo en el código. ¿Se mantiene en Rust? Sin propuesta. Lo decide el usuario.
+- Título de arranque: Node imprime `Beatra startup check`. El resto del bot dice Ignite. ¿Se cambia? Sin propuesta. Lo decide el usuario.
