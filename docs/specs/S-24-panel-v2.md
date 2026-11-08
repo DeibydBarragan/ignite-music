@@ -97,9 +97,12 @@ Cada archivo tiene como máximo 250 líneas.
 - `panel-node.json` y el JSON de Rust coinciden en los casos de la lista.
 - `cargo test` pasa.
 
+## Decisiones
+
+1. Tarea por servidor: una tarea con canal `mpsc` por servidor, en lugar de la cadena de promesas de Node. Así las órdenes de un servidor no se pisan, y no hacen falta bloqueos compartidos.
+2. Texto fijo en `favorite.js`, en español: se porta igual, por paridad. Pasarlo a `languages/*.json` es un cambio aparte, con la regla de F4 (e).
+
 ## Preguntas abiertas
 
 1. Componentes V2 en twilight. Confirmado en la documentación de `twilight-model` 0.17.0: `Container` (con `accent_color`), `TextDisplay`, `Section`, `Thumbnail`, `Separator`, `ActionRow` y `SelectMenu`. Falta comprobar en el servidor de prueba que Discord acepta el mensaje.
-2. Tarea por servidor. Propuesta: una tarea con canal `mpsc` por servidor, en lugar de la cadena de promesas de Node. Así las órdenes de un servidor no se pisan, y no hacen falta bloqueos compartidos.
-3. Texto fijo en `favorite.js`, en español. Propuesta: mantenerlo en F5, por paridad, y pasarlo a `languages/*.json` con F4 (e).
-4. Límite de texto. Node recorta a 3900 caracteres en `notice`. El límite de un TextDisplay se verifica en la documentación de Discord antes de cerrar esta spec.
+2. Límite de texto. Node recorta a 3900 caracteres en `notice`. El límite de un TextDisplay se verifica en la documentación de Discord antes de cerrar esta spec.

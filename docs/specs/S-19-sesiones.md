@@ -73,9 +73,12 @@ Cada archivo tiene como máximo 250 líneas.
 - `cargo test` pasa sin Discord.
 - Ningún archivo pasa de 250 líneas.
 
+## Decisiones
+
+- En F7, Rust usa su propio `DATA_DIR`, distinto del de Node. Así cada proceso restaura solo sus sesiones, y la música no suena dos veces.
+
 ## Preguntas abiertas
 
-- Carpeta compartida en F7. Si Node y Rust usan la misma carpeta `data/`, los dos procesos restauran las mismas sesiones y la música suena dos veces. Propuesta: en F7, cada uno con su propio `DATA_DIR`.
 - Posición. Node usa `_beginTime`, un campo privado de DisTube. Propuesta: `seek` de songbird (S-16) después de arrancar.
 - Formato. Propuesta: el mismo JSON de Node, para leer las sesiones de Node durante F7.
 - Después de F8, ¿quién restaura las sesiones que hoy restaura Node? Propuesta: Rust, cuando tenga el token del bot.

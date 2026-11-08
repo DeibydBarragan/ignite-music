@@ -42,7 +42,7 @@ No escribe código. Define qué se mide en F7 antes de decidir si hace falta alg
 4. Pérdida que hay que aceptar sin relay: el texto de error de yt-dlp (`errorFor`) deja de llegar a ffmpeg. Sustituto: el runner de S-13 ya captura el stderr de yt-dlp. Si la entrada pasa por ese runner, el error vuelve a estar disponible.
 5. pot.js (157 líneas) renueva cada 30 minutos un token PO (Proof of Origin) y lo pasa a yt-dlp. El generador es un script de Node (`bgutil-ytdlp-pot-provider`, `generate_once.js`), que se ejecuta con `process.execPath`. La renovación tiene un margen de 1 hora antes de que el token caduque. Si falla, yt-dlp sigue sin token.
 6. Conflicto con el plan: el plan retira pot.js. El código lo usa para que YouTube no pida verificación desde IPs de centros de datos. Sin pot.js, el token queda en `YOUTUBE_PO_TOKEN` (fijo) o en las cookies, y los dos caducan.
-7. Propuesta para pot.js: no retirarlo en F4. Medir en F7 si YouTube pide verificación en el servidor de prueba, con y sin token renovado. Si la pide, decidir entre cookies, token fijo u otro servicio de token. Si el generador sigue siendo de Node, la máquina necesita Node después de F8.
+7. Decisión para pot.js: no se retira en F4. Se mide en F7 si YouTube pide verificación en el servidor de prueba, con y sin token renovado. Si la pide, decidir entre cookies, token fijo u otro servicio de token. Si el generador sigue siendo de Node, la máquina necesita Node después de F8.
 
 ## Tests
 
@@ -59,9 +59,12 @@ No escribe código. Define qué se mide en F7 antes de decidir si hace falta alg
 - La decisión sobre pot.js se toma con los datos de F7, no antes.
 - La lista de retiradas coincide con la del plan (innertube, relay y pot.js), salvo pot.js, que queda abierto.
 
+## Decisiones
+
+- pot.js no se retira en F4. Se mide en F7 (ver Comportamiento 7).
+
 ## Preguntas abiertas
 
-- pot.js: ¿se retira como dice el plan, o se mide antes en F7? Propuesta: medir antes.
 - Generador de tokens: si pot.js se mantiene, ¿se sigue usando el script de Node o se busca otra implementación? Un script de Node obliga a tener Node después de F8.
 - Relay: ¿se confirma su retirada si F7 no muestra errores 403? Propuesta: sí.
 - Cabecera de cliente de innertube: si innertube se retira, el riesgo desaparece. Si se mantiene, hay que decidir quién actualiza la versión del cliente.

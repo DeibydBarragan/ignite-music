@@ -89,6 +89,7 @@ Cada archivo tiene como máximo 250 líneas.
     h. `DATA_DIR` debe ser escribible. Se crea la carpeta, se escribe un archivo de prueba y se borra.
     i. Con `API_ENABLED`: `API_SECRET` debe tener 32 caracteres o más. Si no, falla. Si `API_ALLOWED_ORIGINS` está vacío, solo informa.
     j. Sin claves de Spotify: solo informa.
+    k. `YTDLP_JS_RUNTIME`: si está vacía, avisa con `[WARN]` y yt-dlp corre sin `--js-runtimes`. Si tiene valor, debe tener la forma `runtime:ruta`, por ejemplo `node:<ruta>`, y la ruta debe existir. Si no, falla.
 11. Salida en formato de lista: `[ OK ]`, `[INFO]`, `[WARN]` y `[FAIL]`. Los textos son los de Node, en inglés. Hay color solo si la salida es una terminal y `NO_COLOR` no está definido. `OK` e `INFO` van a la salida estándar. `WARN` y `FAIL` van a la salida de error.
 12. Con problemas, imprime `The bot was not started: N problem(s) above must be fixed first.` y `Fix them and start the bot again. Every step is also explained in README.md.` en la salida de error. Después sale con código 1.
 13. Sin problemas, sigue el arranque: registro de comandos (S-22), túnel (S-29) y shards (S-21).

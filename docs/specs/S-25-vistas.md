@@ -144,11 +144,15 @@ Los textos de las vistas salen de i18n (S-03). Los textos entre comillas de esta
 - Los JSON de vistas y de formato coinciden con Node en los casos de la lista.
 - Ningún archivo pasa de 250 líneas.
 
+## Decisiones
+
+1. Lugar de `formato` y de `letras`: por ahora van en `bot` (`formato.rs` y `letras.rs`). Si se aprueban los crates `nucleo` y `medios`, se mueven.
+2. `resolvePlaylist`: se añade a S-14 como sección "Listas guardadas (`resolvePlaylist`)".
+3. Textos fijos en español (`search.js`, `playlists.js`, `new-playlist.js`, incluido el mensaje que dice "Vela con", y `favorite.js`): se portan igual, por paridad. Pasarlos a `languages/*.json` es un cambio aparte, con la regla de F4 (e).
+4. "Activos" en `/help`: se cuentan las colas del reproductor de F4 (S-17).
+5. `/search` exige estar en voz antes de buscar: se mantiene, por paridad.
+
 ## Preguntas abiertas
 
-1. Lugar de `formato` y de `letras`. Ninguna spec de M1 ni de M3 los cubre. Propuesta: `formato` en el crate `nucleo`, si se aprueba. Si no, en `bot`. `letras` en el crate `medios` (M3), si se aprueba. Si no, en `bot`.
-2. `resolvePlaylist` (`src/music/playlists.js`) no aparece en S-14, y S-30 todavía no existe. Propuesta: añadir `resolvePlaylist` a S-14 al cerrar F4.
-3. Textos fijos en español: `search.js`, `playlists.js`, `new-playlist.js` (incluido el mensaje de éxito, que dice "Vela con") y `favorite.js`. Propuesta: mantenerlos en F5, por paridad, y decidir con F4 (e).
-4. Límite de texto en `/help` y `/queue`. Node no recorta el texto de la ayuda. Con 25 comandos y descripciones largas, puede superar el límite de un TextDisplay. Se verifica en la documentación de Discord antes de cerrar esta spec.
-5. "Activos" en `/help`. En Node son las colas de DisTube. Propuesta: contar las colas del reproductor de F4 (S-17).
-6. `/search` exige estar en voz antes de buscar. Propuesta: mantenerlo, por paridad.
+1. Aprobar los crates `nucleo` y `medios`. Ver S-01 y S-13. Sin esa aprobación, `formato` y `letras` quedan en `bot`.
+2. Límite de texto en `/help` y `/queue`. Node no recorta el texto de la ayuda. Con 25 comandos y descripciones largas, puede superar el límite de un TextDisplay. Se verifica en la documentación de Discord antes de cerrar esta spec.

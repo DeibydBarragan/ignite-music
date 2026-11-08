@@ -57,7 +57,7 @@ Cada archivo tiene como máximo 250 líneas.
    3. `VoiceServerUpdate` pasa a songbird (S-16).
    4. Un error al procesar un evento se registra y el bucle sigue.
 7. Corte de red: se espera que twilight reconecte el gateway y reanude la sesión sin reiniciar el proceso. Se comprueba a mano en el servidor de prueba.
-8. Señales: Ctrl+C inicia el apagado. Las demás señales se deciden en Preguntas abiertas.
+8. Señales: Ctrl+C inicia el apagado. Las demás señales se fijan en Decisiones.
 9. Apagado, en este orden:
    1. Dejar de despachar eventos nuevos.
    2. Parar el anunciador (S-29), cerrar el túnel (S-29) y cerrar la API (S-26), cortando las conexiones abiertas.
@@ -93,11 +93,15 @@ Cada archivo tiene como máximo 250 líneas.
 - `cargo test` pasa con las pruebas de la lista.
 - Ningún archivo pasa de 250 líneas.
 
+## Decisiones
+
+1. Caché: `twilight-cache-inmemory` 0.17 con la feature `permission-calculator`, limitada a guilds, canales, miembros, roles y estado de voz. S-23 saca de ahí el canal de voz y los permisos.
+2. Señales de cierre: Ctrl+C, Ctrl+Break y el cierre de la consola. Node solo escucha SIGINT y SIGTERM.
+3. Reinicio tras una caída: el proceso sale con código 1. Un `start.bat` lo vuelve a lanzar tras 5 s. Node reinicia el shard con `respawn`. Rust no tiene gestor de shards.
+4. Pánicos: un `set_hook` registra el pánico. El supervisor de tareas pide el apagado con código 1.
+5. Variables de shards (`SHARDS`, `SHARDING_MANAGER`, `SHARDING_MANAGER_MODE`): se ignoran, con aviso en el log.
+6. `pot.js`: Rust no lo arranca hasta que F7 mida si hace falta. Ver la decisión F4 (a) en S-15.
+
 ## Preguntas abiertas
 
-1. Caché. Propuesta: `twilight-cache-inmemory` 0.17 con la feature `permission-calculator`, limitada a guilds, canales, miembros, roles y estado de voz. Así S-23 saca el canal de voz y los permisos de la caché, sin código propio.
-2. Señales de cierre. Propuesta: escuchar Ctrl+C, Ctrl+Break y el cierre de la consola. En Windows, Ctrl+Break y el cierre de consola no llegan como SIGINT. Node solo escucha SIGINT y SIGTERM.
-3. Reinicio tras una caída. Node puede reiniciar un shard con `respawn` del `ShardingManager`. Rust no tiene gestor de shards. Propuesta: el proceso sale con código 1, y un script de arranque (`start.bat`, módulo M8, que aún no tiene spec) lo vuelve a lanzar tras una pausa de 5 s.
-4. Pánicos. Propuesta: un `set_hook` que registra el pánico. El supervisor de tareas ve el fallo y pide el apagado con código 1.
-5. Variables de shards (`SHARDS`, `SHARDING_MANAGER`, `SHARDING_MANAGER_MODE`). Propuesta: ignorarlas y dejar un aviso en el log.
-6. `pot.js`. Node lo arranca al cargar `bot.js`. Propuesta: no arrancarlo en Rust hasta que S-15 decida si se retira.
+- `start.bat` (módulo M8) todavía no tiene spec.

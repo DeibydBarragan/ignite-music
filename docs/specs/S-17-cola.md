@@ -95,9 +95,12 @@ Cada archivo tiene como máximo 250 líneas.
 - `cargo test` pasa sin Discord.
 - Ningún archivo pasa de 250 líneas.
 
+## Decisiones
+
+- Textos fijos: los de `playback.js`, `actions.js` y `events.js` salen de `languages/*.json` (S-03), con claves nuevas en las 23 lenguas. Node no cambia en F4. Un servidor en otro idioma verá el texto traducido, no el texto fijo.
+
 ## Preguntas abiertas
 
 - Dos caminos para limpiar. El botón (`actions.clear`) no guarda para deshacer, y la API (`queue.clear`) sí. Propuesta: que los dos guarden para deshacer.
-- Textos fijos sin i18n. `playback.js` tiene el aviso "No se pudo conectar..." en español. `actions.js` tiene "Bot ensordecido" y "Bot des-ensordecido". `events.js` tiene el aviso de auto-recuperación en dos idiomas. El `AGENTS.md` exige los 23 idiomas. Propuesta: pasarlos a `languages/*.json` (S-03).
 - Auto-recuperación. Node usa `queue._beginTime`, un campo privado de DisTube. Propuesta: en Rust, `seek` después de arrancar (S-16).
 - Bloqueo. Propuesta: un `Mutex` por servidor que solo cubra el cambio de la cola. Así no se mantiene mientras se espera la red.

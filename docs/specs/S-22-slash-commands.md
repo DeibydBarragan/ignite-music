@@ -116,10 +116,14 @@ Son 25: 17 de reproducción, 6 de cola y 2 de ajustes.
 - `/pause`, `/skip`, `/volume 50` y `/loop song` funcionan en el servidor de prueba.
 - `cargo test` pasa.
 
+## Decisiones
+
+1. Marcador: `data/commands-rust.hash`. Node conserva `data/commands.hash`. Si Node y Rust usan el mismo `CLIENT_ID` en F7, cada uno hace un `PUT` de la lista completa, y el último en registrarse gana. Por eso los cuerpos deben ser iguales.
+2. Textos fijos: las descripciones de `playlists` y `new-playlist` se quedan en español, por paridad. Pasarlas a `languages/*.json` es un cambio aparte, con la regla de F4 (e).
+3. Consulta vacía en `play` y `playnext`: Rust porta el fallo igual que Node. Node responde con la descripción del campo ("Song name or link"). La corrección es una tarea aparte.
+4. Opciones de respaldo (`song`, `name` y `options.data[0]`): no se portan. Discord solo envía las opciones definidas en el registro.
+5. Reparto: `/search`, `/lyrics`, `/playlists`, `/new-playlist`, `/help`, `/queue` y `/language` están en S-25. `/nowplaying` está en S-24.
+
 ## Preguntas abiertas
 
-1. Marcador. Propuesta: `data/commands-rust.hash`. Node conserva `data/commands.hash`. Si Node y Rust usan el mismo `CLIENT_ID` en F7, cada uno hace un `PUT` de la lista completa, y el último en registrarse gana. Por eso los cuerpos deben ser iguales.
-2. Textos fijos. Las descripciones de `playlists` y `new-playlist` están en español y no se localizan. Propuesta: mantenerlas en F5, por paridad. Pasarlas a `languages/*.json` se decide con F4 (e).
-3. Consulta vacía en `play` y `playnext`. Node responde con la descripción del campo ("Song name or link"), porque el texto de respaldo nunca se usa. Propuesta: portarlo igual en F5 y corregirlo en una tarea aparte.
-4. Opciones de respaldo (`song`, `name` y `options.data[0]`) en `play`, `playnext` y `search`. Propuesta: no portarlas. Discord solo envía las opciones definidas en el registro.
-5. Las funciones de `/search`, `/lyrics`, `/playlists`, `/new-playlist`, `/help`, `/queue` y `/language` están en S-25. `/nowplaying` está en S-24.
+- Ninguna en esta spec.

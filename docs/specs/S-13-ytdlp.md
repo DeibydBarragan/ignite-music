@@ -46,7 +46,7 @@ Cada archivo tiene como máximo 250 líneas.
 ## Comportamiento
 
 1. Binario: `YTDLP_PATH` si está definido. Si no, `bin/yt-dlp-dist/yt-dlp` (`.exe` en Windows) si existe. Si no, `yt-dlp` del PATH.
-2. Argumentos base, en este orden: `--ignore-config`, `--no-warnings`, `--no-progress`, `--no-check-certificates`, `--socket-timeout 30`, `--retries 10`, `--fragment-retries 10`, `--retry-sleep fragment:1`, `--buffer-size 16M`, `--force-ipv4` y `--js-runtimes node:<ruta de Node>`.
+2. Argumentos base, en este orden: `--ignore-config`, `--no-warnings`, `--no-progress`, `--socket-timeout 30`, `--retries 10`, `--fragment-retries 10`, `--retry-sleep fragment:1`, `--buffer-size 16M`, `--force-ipv4` y, si `YTDLP_JS_RUNTIME` tiene valor, `--js-runtimes <valor>`.
 3. Cookies: con `COOKIES_FILE`, `--cookies <ruta>`. Si no, y hay `COOKIES_FROM_BROWSER`, `--cookies-from-browser <valor>`.
 4. Token PO: si hay token (S-15), `--extractor-args youtube:po_token=web.gvs+<token>;player_client=web,default`. Si hay `YTDLP_EXTRACTOR_ARGS`, se añade otro `--extractor-args` con ese valor.
 5. Proxy: con un proxy, `--proxy <url>`.
@@ -105,8 +105,11 @@ Cada archivo tiene como máximo 250 líneas.
 - `cargo test` pasa sin yt-dlp instalado.
 - Ningún archivo pasa de 250 líneas.
 
+## Decisiones
+
+- Runtime de JavaScript: `--js-runtimes` toma su valor de la variable `YTDLP_JS_RUNTIME` de `.env`, en lugar de la ruta de Node. Cuando se retire Node (F8), basta con cambiar esa variable. Si falta, S-01 avisa al arrancar (preflight, punto k) y yt-dlp corre sin esa opción.
+- `--no-check-certificates` se quita. Node desactiva así la verificación TLS de yt-dlp. Solo se vuelve a poner si F7 muestra fallos de certificado detrás de un proxy.
+
 ## Preguntas abiertas
 
-- Runtime de JavaScript. Node pasa `--js-runtimes node:<ruta>` a yt-dlp. Cuando se retire Node (F8), hará falta otro runtime de JavaScript. Propuesta: una variable nueva en `.env` con esa ruta, comprobada en el arranque (S-01).
-- `--no-check-certificates`. Node desactiva la verificación de certificados en las peticiones de yt-dlp. Eso deja esas peticiones sin comprobar TLS. Propuesta: quitarlo, salvo que una red con proxy lo exija. Cambia el comportamiento, así que pide tu OK.
 - Crate `medios`. No estaba en S-31. Propuesta: crearlo para M3, igual que `nucleo` para M1.

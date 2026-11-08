@@ -86,6 +86,19 @@ Cada archivo tiene como máximo 250 líneas.
 - Un error de verificación de bot se reintenta una vez. Si vuelve a fallar, informa el error.
 - Ningún archivo pasa de 250 líneas.
 
+## Listas guardadas (`resolvePlaylist`)
+
+Lo usan `/new-playlist` y `/playlists reproducir` (S-25). Origen: `src/music/playlists.js` (`resolvePlaylist`, `detectSource`, `deriveName`, `snapshotTrack`).
+
+1. Entrada: la URL y un límite de temas. El límite es `maxSize`, o `maxPlaylistSize` de la config, o 200 si no hay ninguno. Una URL vacía falla con `EMPTY_URL`. Una URL no soportada falla en `assertSupportedUrl`.
+2. Si la fuente es YouTube y la URL tiene `list=`, pide los videos a innertube (`getPlaylistVideosDirect`) con un límite de 5 s. Si hay temas, los devuelve. Este atajo depende de S-15.
+3. Si no, resuelve con DisTube (`handler.resolve`) sin unirse a voz. Usa el miembro que pide, o el bot si no hay miembro.
+4. La lista devuelve como máximo el límite de temas. Si la original tiene más, `truncated` es verdadero.
+5. Una pista suelta devuelve `kind: track`, con un tema y `truncated` falso.
+6. Salida: `{kind, name, tracks, truncated, source}`. `source` es `spotify`, `youtube` o `generic`, según la URL.
+7. Cada tema se guarda con `snapshotTrack`, que usa `serializeTrack` de `src/api/contracts.js`. Ese formato se porta con la API (M6).
+8. El nombre final lo fija `/new-playlist` con `deriveName(url, nombre dado o nombre resuelto)`, con máximo 60 caracteres. Si la URL no se puede leer, el nombre es "Nueva playlist".
+
 ## Preguntas abiertas
 
 - Spotify sin claves de API. Node usa el scraping público del plugin. Propuesta: usar la API con credenciales de cliente (clave y secreto del `.env`) y no portar el scraping. Cambia el comportamiento, así que pide tu OK.

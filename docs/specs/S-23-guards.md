@@ -80,8 +80,12 @@ Entrada de `responder`: interacción y respuesta. Salida: respuesta enviada o na
 - En un canal donde el bot no puede escribir, la reproducción sigue sin panel.
 - `cargo test` pasa con la tabla de casos.
 
+## Decisiones
+
+1. Modo dev: no se porta en F5. El archivo de trabajo de `guards.js` lo añade, y `test/dev-mode.test.js` lo prueba. Riesgo de seguridad: el modo dev salta la regla de mismo canal.
+2. Si el modo dev se porta alguna vez, no tendrá ID por defecto ni variable pública. En el archivo de trabajo de `config.js`, el ID por defecto es `472144161357824000`, y la variable pública es `NEXT_PUBLIC_DEV_USER_IDS`. Una variable con ese prefijo llega al navegador si el dashboard la usa.
+3. Caché de voz y permisos: `twilight-cache-inmemory` con `permission-calculator`, como en S-21.
+
 ## Preguntas abiertas
 
-1. Modo dev (sin commit). El archivo de trabajo de `guards.js` permite que los usuarios que cumplen `isDevUser` usen comandos de voz sin estar en un canal. También salta la regla de mismo canal. Además, elige un canal de voz disponible con `findAvailableVoiceChannel`. `test/dev-mode.test.js` ya prueba este caso. Propuesta: no portarlo en F5. Se decide cuando el usuario haga commit de ese cambio.
-2. Riesgo de seguridad. El modo dev salta la regla de mismo canal. En el archivo de trabajo de `config.js`, la lista sale de `DEV_USER_IDS`. Si esa variable no existe, usa `NEXT_PUBLIC_DEV_USER_IDS`, y si tampoco existe, un ID fijo en el código (`472144161357824000`). Una variable con prefijo `NEXT_PUBLIC_` llega al navegador si el dashboard la usa. Propuesta: si se porta, sin ID por defecto y sin variable pública.
-3. Caché de voz y permisos (S-21). Propuesta: `twilight-cache-inmemory` con `permission-calculator`. Si no se aprueba, hace falta una caché propia de voz y roles.
+- Ninguna en esta spec.
