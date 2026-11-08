@@ -1,6 +1,6 @@
 # Plan de migración de ignite-music a Rust
 
-Rama: `feature/rust-migration`. Este documento es solo el plan. No hay código de la migración todavía.
+Rama: `feature/rust-migration`. Este documento es solo el plan. Solo hay un esqueleto de workspace (S-31), sin lógica portada.
 
 ## 1. Alcance
 
@@ -15,7 +15,7 @@ Rama: `feature/rust-migration`. Este documento es solo el plan. No hay código d
 | :--- | :--- | :--- | :--- | :--- |
 | 1 | Librería de Discord | twilight 0.17 | El panel usa Components V2. twilight lo trae. serenity 0.12.5 no. | Esperar la rama nueva de serenity. |
 | 2 | Voz | songbird 0.6 | Trae DAVE, el cifrado de voz que Discord exige desde marzo de 2026. | Ver la regla de parada (sección 3). |
-| 3 | Vosk | Cargar `libvosk.dll` al arrancar con `libloading` | Es lo que hace koffi hoy. Sirve con el toolchain GNU de Rust y usa los archivos de `bin/vosk`. | Crate `vosk`. |
+| 3 | Vosk | Cargar `libvosk.dll` al arrancar con `libloading` | Es lo que hace koffi hoy. Rust usa MSVC (S-31). Usa los archivos de `bin/vosk`. | Crate `vosk`. |
 | 4 | YouTube | Solo yt-dlp como proceso externo | Hay menos código que portar. Quedan fuera innertube, relay y pot.js. | Portar el relay solo si aparecen errores 403. |
 | 5 | Procesos | Uno solo, con un solo shard. La API (axum) corre dentro del bot. | Un servidor usa el bot. Desaparecen `shard-proxy` y `broadcastEval`. | Separar la API después de F8. |
 | 6 | Filtros de audio | Mantener ffmpeg con los 8 filtros de hoy | El sonido queda igual. | DSP propio más adelante. |
@@ -34,7 +34,7 @@ DAVE cifra la voz. Para oír a una persona, el bot debe descifrar su audio:
 Voz cifrada -> songbird descifra -> Opus a audio -> Vosk -> Groq
 ```
 
-Songbird 0.6 dice que soporta DAVE. Sus notas no dicen si funciona al recibir audio. Es el mayor riesgo del plan y se prueba en F2.
+Songbird 0.6 dice que soporta DAVE. Su código descifra DAVE al recibir audio (crate `davey`). Eso no prueba voz real. Es el mayor riesgo del plan y se prueba en F2.
 
 Si songbird no recibe voz con DAVE:
 
