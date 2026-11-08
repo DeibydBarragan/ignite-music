@@ -35,12 +35,12 @@ Cada archivo tiene como máximo 250 líneas.
 - Entrada de `AlmacenJson`: carpeta, clave y valor JSON. La clave debe cumplir `^[A-Za-z0-9_-]{1,64}$`.
 - Salida de `get`: el valor, o nada si no existe. No toca el disco.
 - Salida de `set` y `delete`: resultado de la escritura. Error si falla.
-- Entrada de `CacheTtl`: TTL en milisegundos y tamaño máximo. Luego, clave y valor.
-- Errores: `ClaveInvalida` (la clave no cumple el patrón, antes de tocar el disco) y `Escritura` (con la causa de E/S).
+- Entrada de `CacheTtl`: TTL en milisegundos (opcional) y tamaño máximo (por defecto 1000, como en Node). `set` admite un TTL propio para esa entrada; si no, usa el del caché.
+- Errores: `ClaveInvalida` (la clave no cumple el patrón, antes de tocar el disco; mensaje de Node: `Invalid store key: <clave>`) y `Escritura` (con la causa de E/S).
 
 ## Comportamiento
 
-1. `initialize`: crea la carpeta si falta. Carga en memoria cada `<clave>.json` válido. Un archivo que no se lee o no es JSON se registra con aviso y se omite. No se borra.
+1. `initialize`: crea la carpeta si falta. Carga en memoria cada `<clave>.json` válido. Un archivo que no se lee o no es JSON se registra con aviso y se omite. No se borra. Si no se puede listar la carpeta, se registra con aviso y se sigue con la caché vacía.
 2. `get` solo lee la memoria. Con una clave inválida da error.
 3. `set`: cambia la memoria y después espera la escritura. Si la escritura falla, el error llega a quien llamó, igual que en Node (ver Decisiones).
 4. Escritura atómica: escribe en `<archivo>.<pid>.<8 hex>.tmp`, hace `sync_all` y renombra sobre `<clave>.json`. Si falla antes del renombrado, el archivo anterior queda intacto y el `.tmp` se borra.
@@ -53,7 +53,7 @@ Cada archivo tiene como máximo 250 líneas.
 11. Sin `ttl`, la entrada no caduca. En Node pasa porque el cálculo da NaN. Se conserva.
 12. Barrido: cada 60 s se quitan las entradas caducadas de todas las cachés vivas. Hay una sola tarea para todas. No retiene cachés que ya no se usan.
 13. Tamaño máximo: al pasar el límite se borra la entrada más antigua por inserción. `get` no cambia el orden.
-14. `get_or_load(clave, cargador)`: si hay un valor vigente, lo devuelve. Si ya hay una carga en curso para esa clave, espera a esa. Si la carga falla, no cachea nada, y la siguiente llamada reintenta.
+14. `get_or_load(clave, cargador)` (en Node, `wrap`): si hay un valor vigente, lo devuelve. Si ya hay una carga en curso para esa clave, espera a esa. Si la carga falla, no cachea nada, y la siguiente llamada reintenta.
 15. `clear` borra las entradas y las cargas en curso.
 
 ## Tests

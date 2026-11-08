@@ -1,6 +1,6 @@
 # Spec S-31: Workspace de Cargo y CI
 
-- Estado: borrador
+- Estado: en curso
 - Fase: F1 (la necesita F2)
 - Módulo: M8
 - Origen en Node: ninguno. Solo se añade código nuevo.
@@ -64,3 +64,4 @@ Esta spec no tiene tests de lógica. Los comandos de arriba son la prueba.
 - Decidido: CMake 4.4.4 (ver Decisiones).
 - Si Opus falla con "Compatibility with CMake < 3.5 has been removed", añadir `CMAKE_POLICY_VERSION_MINIMUM = "3.5"` al mismo `[env]`. CMake 4.0 quitó esa compatibilidad. Probar en el primer build.
 - ¿Trae CMake el runner `windows-latest`? Verificar en el primer run del workflow.
+- Estado real (2026-11-08): el workspace existe con `bot`, `player`, `voice` y `medios` (el crate vacío `medios` se creó para cerrar esta spec). Falta correr el workflow en GitHub.
