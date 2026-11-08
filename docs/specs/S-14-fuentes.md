@@ -9,7 +9,7 @@
 
 Convertir una URL o un texto en una canción o en una lista, con sus metadatos y su enlace de audio. Cubre YouTube (videos, listas, búsqueda, relacionados y letras), Spotify (metadatos, y audio desde YouTube), enlaces directos y otros sitios que soporta yt-dlp.
 
-No incluye la cola (S-17), los filtros (S-18), ni las llamadas a innertube, que decide S-15.
+No incluye la cola (S-17), los filtros (S-18), ni innertube, que se retira (S-15).
 
 ## Archivos
 
@@ -49,9 +49,9 @@ Cada archivo tiene como máximo 250 líneas.
    d. En otro caso: título limpio y canal como artista.
 6. Letras: un título que contenga "lyric" o "lyrics" marca la URL como letra durante 24 horas. Caché de hasta 5000 URL.
 7. Búsqueda por texto (`buscar_cancion`): `ytsearch1:<texto>` con `-f bestaudio[acodec=opus]/bestaudio/best`. Caché de 30 minutos por servidor y texto. Dos búsquedas iguales a la vez lanzan un solo proceso. Si YouTube pide verificación de bot, espera 8 s y reintenta una vez. El error de YouTube se guarda para `describeError` (S-13). No hay respaldo en otra plataforma.
-8. Resultados para `/search` (`buscar`): primero innertube, con 3 s de límite (S-15). Si no da resultados, `ytsearch<n>` con `--flat-playlist`. Solo entradas con id válido.
-9. Búsqueda de listas (`buscar_listas`): innertube primero. Si no, la página de resultados de YouTube con el filtro `sp=EgIQAw%3D%3D` (solo listas) y `--flat-playlist`.
-10. Relacionados (`relacionados`): innertube primero (mezcla de 15). Si no, `watch?v=<id>&list=RD<id>` con `--flat-playlist --playlist-end 15`. Filtro: id válido, distinto de la canción actual, y duración entre 60 y 900 s cuando hay duración.
+8. Resultados para `/search` (`buscar`): `ytsearch<n>` con `--flat-playlist`. Solo entradas con id válido. Innertube se retira (S-15).
+9. Búsqueda de listas (`buscar_listas`): la página de resultados de YouTube con el filtro `sp=EgIQAw%3D%3D` (solo listas) y `--flat-playlist`.
+10. Relacionados (`relacionados`): `watch?v=<id>&list=RD<id>` con `--flat-playlist --playlist-end 15`. Filtro: id válido, distinto de la canción actual, y duración entre 60 y 900 s cuando hay duración.
 11. Precarga: `prefetch` obtiene la información de la siguiente canción con prioridad baja, sin descargar audio. `prefetchQuery` hace lo mismo con una búsqueda de texto (Spotify).
 12. Spotify: cada tema se reproduce buscando su texto en YouTube (`createSearchQuery`). Los metadatos vienen del plugin de Spotify. Si hay claves de API, se usan; si no, scraping público. Una lista de Spotify carga solo las primeras 100 canciones (aviso del preflight).
 13. Enlaces directos (`RelayedDirectLinkPlugin`): el enlace de audio pasa por el relay (S-15). Así ffmpeg no abre conexiones de red por su cuenta.
@@ -91,16 +91,20 @@ Cada archivo tiene como máximo 250 líneas.
 Lo usan `/new-playlist` y `/playlists reproducir` (S-25). Origen: `src/music/playlists.js` (`resolvePlaylist`, `detectSource`, `deriveName`, `snapshotTrack`).
 
 1. Entrada: la URL y un límite de temas. El límite es `maxSize`, o `maxPlaylistSize` de la config, o 200 si no hay ninguno. Una URL vacía falla con `EMPTY_URL`. Una URL no soportada falla en `assertSupportedUrl`.
-2. Si la fuente es YouTube y la URL tiene `list=`, pide los videos a innertube (`getPlaylistVideosDirect`) con un límite de 5 s. Si hay temas, los devuelve. Este atajo depende de S-15.
-3. Si no, resuelve con DisTube (`handler.resolve`) sin unirse a voz. Usa el miembro que pide, o el bot si no hay miembro.
+2. Spotify se lee con su API (ver Decisiones). YouTube y otros sitios se leen con yt-dlp (S-13), sin innertube (S-15). Las listas de YouTube se leen en modo de lista plana.
+3. La resolución no une el bot a voz.
 4. La lista devuelve como máximo el límite de temas. Si la original tiene más, `truncated` es verdadero.
 5. Una pista suelta devuelve `kind: track`, con un tema y `truncated` falso.
 6. Salida: `{kind, name, tracks, truncated, source}`. `source` es `spotify`, `youtube` o `generic`, según la URL.
 7. Cada tema se guarda con `snapshotTrack`, que usa `serializeTrack` de `src/api/contracts.js`. Ese formato se porta con la API (M6).
 8. El nombre final lo fija `/new-playlist` con `deriveName(url, nombre dado o nombre resuelto)`, con máximo 60 caracteres. Si la URL no se puede leer, el nombre es "Nueva playlist".
 
+## Decisiones
+
+- Spotify: se usa la API de Spotify con credenciales de cliente (`.env`). El scraping no se porta. Sin claves, los enlaces de Spotify no funcionan, y el arranque lo informa (S-01, regla j). Cambia el comportamiento de Node.
+- Enlaces directos y otros sitios: pasan por el runner de S-13. Cookies, proxy y token llegan igual que en las búsquedas. S-15 mantiene la prueba de que songbird recibe esa salida.
+- Listas de Spotify: se recortan a 100 canciones, como en Node.
+
 ## Preguntas abiertas
 
-- Spotify sin claves de API. Node usa el scraping público del plugin. Propuesta: usar la API con credenciales de cliente (clave y secreto del `.env`) y no portar el scraping. Cambia el comportamiento, así que pide tu OK.
-- Enlaces directos y otros sitios. songbird trae entradas propias de yt-dlp y HTTP. Propuesta: usar nuestro runner de S-13 para todo, para que proxies, cookies y token funcionen igual. Confirmar en S-15.
-- Listas de Spotify de más de 100 canciones. Node recorta. Propuesta: mantenerlo.
+- Ninguna en esta spec.

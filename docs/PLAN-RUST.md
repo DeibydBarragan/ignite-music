@@ -16,7 +16,7 @@ Rama: `feature/rust-migration`. Este documento es solo el plan. Solo hay un esqu
 | 1 | Librería de Discord | twilight 0.17 | El panel usa Components V2. twilight lo trae. serenity 0.12.5 no. | Esperar la rama nueva de serenity. |
 | 2 | Voz | songbird 0.6 | Trae DAVE, el cifrado de voz que Discord exige desde marzo de 2026. | Ver la regla de parada (sección 3). |
 | 3 | Vosk | Cargar `libvosk.dll` al arrancar con `libloading` | Es lo que hace koffi hoy. Rust usa MSVC (S-31). Usa los archivos de `bin/vosk`. | Crate `vosk`. |
-| 4 | YouTube | Solo yt-dlp como proceso externo | Hay menos código que portar. Quedan fuera innertube, relay y pot.js. | Portar el relay solo si aparecen errores 403. |
+| 4 | YouTube | Solo yt-dlp como proceso externo | Hay menos código que portar. Quedan fuera innertube y relay. pot.js se mide en F7 antes de retirarlo. | Portar el relay solo si aparecen errores 403. |
 | 5 | Procesos | Uno solo, con un solo shard. La API (axum) corre dentro del bot. | Un servidor usa el bot. Desaparecen `shard-proxy` y `broadcastEval`. | Separar la API después de F8. |
 | 6 | Filtros de audio | Mantener ffmpeg con los 8 filtros de hoy | El sonido queda igual. | DSP propio más adelante. |
 | 7 | Sistema | Solo Windows | El servicio corre en la máquina del usuario. | Linux si algún día hay VPS. |
@@ -92,8 +92,8 @@ Solo se nombran. Cada spec se escribe antes de su fase.
 | S-29 | Túnel de Cloudflare |
 | S-30 | Supabase (ajustes de voz, wake words, historial) |
 | S-31 | Workspace de Cargo y CI (fmt, clippy, test) |
-| S-32 | Instalación de binarios en Windows (Vosk, yt-dlp, ffmpeg) |
-| S-33 | Tests de paridad entre Node y Rust |
+| S-32 | Binarios y arranque en Windows (yt-dlp, ffmpeg, cloudflared, Vosk, `start.bat`) |
+| S-33 | Paridad, medición en paralelo y corte a Rust |
 
 ### Qué lleva cada spec
 

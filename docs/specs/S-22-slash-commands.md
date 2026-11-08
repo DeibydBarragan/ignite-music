@@ -55,7 +55,7 @@ Cada archivo tiene como máximo 250 líneas.
    3. `reproducir_desde_interaccion(consulta, siguiente)`: `revisar_voz` con unirse y sin requerir cola. Después llama a `manager.play` (S-17) con el canal de voz, `canal_de_panel` (S-23), el miembro, la consulta y la posición (1 si es `playnext`, 0 si no).
    4. Mensaje de resultado: lista (número de temas, con nota si se recortó), canción iniciada, canción en cola siguiente (`playnext`) o canción en cola con su posición (`play`).
    5. Error `QUEUE_FULL` se avisa con `ui.queue_full` y el máximo. Otro error pasa por `explainError` (S-13). Si la clave es `errors.unknown`, se añade el detalle recortado a 200 caracteres.
-9. Autocompletado de `play.query` y `playnext.query`: `choices(texto)` de `src/music/suggest.js`. Las fuentes de búsqueda están en S-14. La búsqueda por innertube que usa `suggest.js` está en revisión en S-15. Hasta 25 opciones.
+9. Autocompletado de `play.query` y `playnext.query`: `choices(texto)` de `src/music/suggest.js`, sin innertube (S-15). Los videos con duración vienen de `ytsearch` (S-13 y S-14), con un límite de tiempo menor que los 3 s de Discord. Si no llegan a tiempo, se muestran solo sugerencias de texto. Hasta 25 opciones.
 10. Registro al arrancar (`registro.rs`):
     1. Construye los 25 cuerpos JSON.
     2. Calcula el SHA-256 de los cuerpos junto con `CLIENT_ID` y `GUILD_ID`.

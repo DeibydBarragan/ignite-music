@@ -12,7 +12,7 @@ Leer `.env` con los mismos nombres y valores por defecto que Node. Revisar lo ne
 No se porta aquí:
 
 - El arranque de Node: versión de Node y `npm install` (`src/setup/bootstrap.js`).
-- La comprobación de yt-dlp y ffmpeg (S-33).
+- La comprobación de yt-dlp y ffmpeg (S-32).
 - Supabase (S-30), Vosk (S-05) y las librerías de voz de Node.
 - Registro de comandos (S-22), túnel (S-29) y shards (S-21). Van después de esta spec.
 
@@ -49,7 +49,7 @@ Cada archivo tiene como máximo 250 líneas.
 ## Comportamiento
 
 1. Si `<raíz>/.env` no existe y no hay `DISCORD_TOKEN` en el entorno, copia `.env.example` a `.env`. Después falla con `A .env file was created for you, but it still needs your bot token`. Nunca sobrescribe un `.env` existente.
-2. Texto: quita los espacios del inicio y del final. Si queda vacío, usa el valor por defecto.
+2. Texto: quita los espacios del inicio y del final. Si queda vacío, usa el valor por defecto. `SUPABASE_URL`, `SUPABASE_KEY`, `SUPABASE_ANON_KEY` y `SUPABASE_SERVICE_ROLE_KEY` son texto, con valor por defecto vacío. Sin URL o sin clave, Supabase queda desactivado (S-30). `SUPABASE_KEY` usa `SUPABASE_ANON_KEY` si falta, como en Node.
 3. Entero: lee los dígitos iniciales, como `parseInt` de JS (`12abc` da 12). Sin dígitos, usa el valor por defecto. Después aplica los límites:
 
 | Variable | Por defecto | Mínimo | Máximo | Nota |
@@ -97,6 +97,7 @@ Cada archivo tiene como máximo 250 líneas.
 ## Tests
 
 - Unitarios: parseo de cada tipo (límites, `12abc`, booleanos raros, listas con espacios, color inválido, wake word en minúsculas, `DEV_USER_IDS` en cadena). Validación de token, proxy, `GUILD_ID`, cookies y `DATA_DIR`. `API_SECRET` de 31 caracteres falla y de 32 pasa.
+- Supabase: `SUPABASE_KEY` vacía usa `SUPABASE_ANON_KEY`, y `SUPABASE_SERVICE_ROLE_KEY` gana sobre las dos.
 - Token: pruebas contra un servidor HTTP local, no contra Discord. Casos: 200, 401, 500 y sin conexión. Son los de `checkToken` en `test/setup.test.js`.
 - `.env`: se crea desde el ejemplo si falta, y nunca se sobrescribe. Es el caso de `test/setup.test.js`.
 - Paridad con Node: `scripts/config-paridad-ref.js` lee cada archivo de `tests/data/env-casos/` en un proceso propio, carga `src/config.js` y guarda los valores en JSON. El test de Rust hace lo mismo con `Config` y compara campo por campo. Los casos incluyen vacíos, enteros fuera de rango, `12abc`, booleanos raros, listas con espacios y color inválido.
@@ -113,7 +114,7 @@ Cada archivo tiene como máximo 250 líneas.
 
 ## Preguntas abiertas
 
-- Raíz del proyecto. Node usa la carpeta padre de `src/`. Propuesta: la carpeta desde la que corre el binario. `start.bat` hace `cd` (S-33).
+- Raíz del proyecto. Node usa la carpeta padre de `src/`. Propuesta: la carpeta desde la que corre el binario. `start.bat` hace `cd` (S-32).
 - `.env` malformado. El dotenv de Node ignora las líneas malas. Propuesta: lo mismo, con aviso en el log.
 - Valores por defecto distintos. `.env.example` pone `VOICE_ENABLED=false` y `VOICE_TTS_FEEDBACK_ENABLED=false`, pero el código usa `true` si la variable falta. Propuesta: el ejemplo no cambia y el código manda solo cuando la variable falta.
 - `DEV_USER_IDS` trae un id de desarrollador fijo en el código. ¿Se mantiene en Rust?

@@ -39,7 +39,7 @@ Cada archivo tiene como máximo 250 líneas.
 - Salida: el JSON que imprime yt-dlp con `--dump-single-json`.
 - Errores: `YtDlpError { mensaje, stderr }`. El mensaje tiene como máximo 300 caracteres.
   - Tiempo agotado: `yt-dlp timed out after <N>s`.
-  - Binario no encontrado: se añade la pista `yt-dlp binary not found, run "npm install" or set YTDLP_PATH`. En Rust la pista habla de S-33.
+  - Binario no encontrado: se añade la pista `yt-dlp binary not found, run "npm install" or set YTDLP_PATH`. En Rust la pista habla de S-32.
   - JSON inválido: `yt-dlp returned invalid JSON`.
 - `version()`: `{ version }` o `{ error }`.
 
@@ -109,7 +109,8 @@ Cada archivo tiene como máximo 250 líneas.
 
 - Runtime de JavaScript: `--js-runtimes` toma su valor de la variable `YTDLP_JS_RUNTIME` de `.env`, en lugar de la ruta de Node. Cuando se retire Node (F8), basta con cambiar esa variable. Si falta, S-01 avisa al arrancar (preflight, punto k) y yt-dlp corre sin esa opción.
 - `--no-check-certificates` se quita. Node desactiva así la verificación TLS de yt-dlp. Solo se vuelve a poner si F7 muestra fallos de certificado detrás de un proxy.
+- Crate `medios` (M3), con yt-dlp y las fuentes (S-14). Se añade al workspace en S-31.
 
 ## Preguntas abiertas
 
-- Crate `medios`. No estaba en S-31. Propuesta: crearlo para M3, igual que `nucleo` para M1.
+- Ninguna en esta spec.

@@ -104,4 +104,4 @@ Cada archivo tiene como máximo 250 líneas.
 
 ## Preguntas abiertas
 
-- `start.bat` (módulo M8) todavía no tiene spec.
+- Ninguna en esta spec. `start.bat` lo especifica S-32.

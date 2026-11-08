@@ -65,8 +65,12 @@ Cada archivo tiene como máximo 250 líneas.
 - `cargo test` pasa sin ffmpeg instalado, usando un proceso falso.
 - Ningún archivo pasa de 250 líneas.
 
+## Decisiones
+
+- Los argumentos de ffmpeg de los 8 filtros se copian al repositorio de Rust. No dependen de DisTube.
+- Al cambiar de filtro, la pista sigue desde el segundo actual. Si no se puede, empieza desde el principio.
+- ffmpeg lo deja en `bin/` el instalador de S-32. S-33 son los tests de paridad.
+
 ## Preguntas abiertas
 
-- Versión de DisTube. Los argumentos están fijados en la 5.2.3. Si se actualiza DisTube, pueden cambiar. Propuesta: copiar los argumentos al repositorio de Rust, sin depender de DisTube.
-- Al aplicar un filtro, ¿la pista se reinicia desde el segundo actual o desde el principio? Hay que comprobarlo en DisTube. Propuesta: mantener el segundo actual cuando sea posible.
-- ffmpeg en la máquina. Node usa `ffmpeg-static` si está instalado. Propuesta: el instalador de S-33 deja ffmpeg en `bin/`.
+- Ninguna en esta spec.

@@ -30,7 +30,7 @@ No escribe código. Define qué se mide en F7 antes de decidir si hace falta alg
    - La mezcla de relacionados (`plugins.js`).
    - Los videos de una lista (`playlists.js`).
    - Las sugerencias (`suggest.js`).
-   Propuesta: retirarlo, como dice el plan. Sustitutos: `ytsearch` y la lista plana con yt-dlp, y `watch?v=<id>&list=RD<id>`, que ya están en S-13 y S-14. Esto cambia el tiempo de respuesta de las búsquedas. Según el comentario del propio archivo, innertube responde en pocos cientos de milisegundos, y yt-dlp tarda más por el arranque del proceso.
+   Decisión: se retira, como dice el plan. Sustitutos: `ytsearch` y la lista plana con yt-dlp, y `watch?v=<id>&list=RD<id>`, que ya están en S-13 y S-14. Esto cambia el tiempo de respuesta de las búsquedas. Según el comentario del propio archivo, innertube responde en pocos cientos de milisegundos, y yt-dlp tarda más por el arranque del proceso.
 2. Cabeceras fijas de innertube: `CLIENT_VERSION = 2.20240101.00.00` y un User-Agent de Chrome 122. Si YouTube deja de aceptarlas, innertube falla y el bot pasa a yt-dlp (`directEntries`). Riesgo bajo mientras exista ese respaldo.
 3. relay.js (413 líneas) es un servidor HTTP local en 127.0.0.1. yt-dlp descarga el formato elegido y ffmpeg lee el audio desde el relay. Incluye:
    - Peticiones de rango (206) y reconexión sin volver a extraer.
@@ -38,7 +38,7 @@ No escribe código. Define qué se mide en F7 antes de decidir si hace falta alg
    - `errorFor(url)`, que guarda la última salida de error de yt-dlp, para el mensaje al usuario.
    - Límite de 300 entradas y 6 horas de vida.
    - Una carpeta por proceso en `DATA_DIR/relay/<pid>`, que se limpia al arrancar (`StreamRelay.cleanAll`).
-   Propuesta: retirarlo, como dice el plan. Sustituto: songbird lee la entrada directamente. Hay que confirmar que las cabeceras, las cookies y el proxy llegan a la entrada de songbird (S-16). Plan B: portar el relay solo si F7 muestra errores 403 de YouTube.
+   Decisión: se retira, como dice el plan. Sustituto: songbird lee la entrada directamente. Hay que confirmar que las cabeceras, las cookies y el proxy llegan a la entrada de songbird (S-16). Plan B: portar el relay solo si F7 muestra errores 403 de YouTube.
 4. Pérdida que hay que aceptar sin relay: el texto de error de yt-dlp (`errorFor`) deja de llegar a ffmpeg. Sustituto: el runner de S-13 ya captura el stderr de yt-dlp. Si la entrada pasa por ese runner, el error vuelve a estar disponible.
 5. pot.js (157 líneas) renueva cada 30 minutos un token PO (Proof of Origin) y lo pasa a yt-dlp. El generador es un script de Node (`bgutil-ytdlp-pot-provider`, `generate_once.js`), que se ejecuta con `process.execPath`. La renovación tiene un margen de 1 hora antes de que el token caduque. Si falla, yt-dlp sigue sin token.
 6. Conflicto con el plan: el plan retira pot.js. El código lo usa para que YouTube no pida verificación desde IPs de centros de datos. Sin pot.js, el token queda en `YOUTUBE_PO_TOKEN` (fijo) o en las cookies, y los dos caducan.
@@ -62,9 +62,9 @@ No escribe código. Define qué se mide en F7 antes de decidir si hace falta alg
 ## Decisiones
 
 - pot.js no se retira en F4. Se mide en F7 (ver Comportamiento 7).
+- innertube se retira. Su cabecera fija de cliente deja de importar.
+- Relay: se confirma su retirada si F7 no muestra errores 403 de YouTube. Si los muestra, se porta (Plan B).
 
 ## Preguntas abiertas
 
 - Generador de tokens: si pot.js se mantiene, ¿se sigue usando el script de Node o se busca otra implementación? Un script de Node obliga a tener Node después de F8.
-- Relay: ¿se confirma su retirada si F7 no muestra errores 403? Propuesta: sí.
-- Cabecera de cliente de innertube: si innertube se retira, el riesgo desaparece. Si se mantiene, hay que decidir quién actualiza la versión del cliente.

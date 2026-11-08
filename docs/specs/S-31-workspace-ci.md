@@ -34,6 +34,7 @@ Instalados el 2026-11-07 con winget. Verificado: `cl` y `link` responden.
 - Crear: `rust/crates/voice/` (biblioteca vacía)
 - Crear: `rust/crates/player/` (biblioteca vacía)
 - Crear: `rust/crates/bot/` (binario con `fn main() {}`)
+- Crear: `rust/crates/medios/` (biblioteca vacía, M3)
 - Crear: `.github/workflows/rust.yml` (job en `windows-latest`)
 - No tocar: `src/`, `test/`, `package.json` ni los workflows que ya existen.
 

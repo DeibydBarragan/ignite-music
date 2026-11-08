@@ -63,7 +63,11 @@ Cada archivo tiene como máximo 250 líneas.
 - `cargo test` pasa sin Discord.
 - Ningún archivo pasa de 250 líneas.
 
+## Decisiones
+
+- Se mantiene la marca `pausedForEmpty`. Solo se reanuda la pausa que puso el bot al vaciarse el canal. Una pausa manual no se reanuda sola.
+- `IGNITE_SOUND_BOT_ID` conserva su valor por defecto del código, como en Node.
+
 ## Preguntas abiertas
 
-- Pausa manual frente a pausa automática. Si alguien pausó la música antes de que el canal se vaciara, al volver no se reanuda. Node lo resuelve con la marca `pausedForEmpty`. Propuesta: mantener esa marca.
-- Bot de sonido. El ID `IGNITE_SOUND_BOT_ID` tiene un valor por defecto fijo en el código. Propuesta: mantenerlo como en Node.
+- Ninguna en esta spec.

@@ -60,7 +60,7 @@ Cada archivo tiene como máximo 250 líneas.
     - Autoplay: alterna, o fija un estado (idempotente).
     - Volumen: entero de 0 a 100.
     - Búsqueda: no es válida en directos ni en canciones sin duración. La posición va de 0 a la duración.
-    - Quitar, mover, saltar y limpiar en los botones de Discord: mismas validaciones. El botón de limpiar no guarda para deshacer (ver Preguntas).
+    - Quitar, mover, saltar y limpiar en los botones de Discord: mismas validaciones. El botón de limpiar guarda para deshacer, con el mismo plazo de 60 s que la API.
     - `safely`: convierte los errores de DisTube que significan "no hay nada que hacer" (PAUSED, RESUMED, NO_PREVIOUS, NO_UP_NEXT, NO_RELATED, NO_SONG_POSITION) en avisos. Los demás errores se relanzan.
 15. Auto-recuperación de cortes (`FINISH_SONG`): se aplica si la canción dura más de 30 s, se reprodujeron al menos 5 s, el corte llegó antes de los últimos 12 s, y es el primer corte de esa canción. Entonces se reanuda 2 s antes del corte, con el bucle de canción activado de forma temporal, y se avisa en el canal.
 16. Eventos:
@@ -99,8 +99,10 @@ Cada archivo tiene como máximo 250 líneas.
 
 - Textos fijos: los de `playback.js`, `actions.js` y `events.js` salen de `languages/*.json` (S-03), con claves nuevas en las 23 lenguas. Node no cambia en F4. Un servidor en otro idioma verá el texto traducido, no el texto fijo.
 
+- Limpiar guarda la cola para deshacer en los dos caminos: el botón (`actions.clear`) y la API (`queue.clear`). Plazo de 60 s.
+- La auto-recuperación reanuda con `seek` de songbird después de arrancar (S-16). No usa `queue._beginTime`.
+- El bloqueo es un `Mutex` por servidor. Solo cubre el cambio de la cola, como dice el Comportamiento 2.
+
 ## Preguntas abiertas
 
-- Dos caminos para limpiar. El botón (`actions.clear`) no guarda para deshacer, y la API (`queue.clear`) sí. Propuesta: que los dos guarden para deshacer.
-- Auto-recuperación. Node usa `queue._beginTime`, un campo privado de DisTube. Propuesta: en Rust, `seek` después de arrancar (S-16).
-- Bloqueo. Propuesta: un `Mutex` por servidor que solo cubra el cambio de la cola. Así no se mantiene mientras se espera la red.
+- Ninguna en esta spec.

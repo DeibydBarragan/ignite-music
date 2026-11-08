@@ -9,7 +9,7 @@
 
 Cargar `libvosk` desde Rust, cargar el modelo acústico y dar reconocedores para audio de 16 kHz. Lo usan S-06 (puerta de palabra de activación) y S-09 (respaldo local de transcripción).
 
-No se porta aquí la descarga de la DLL ni de los modelos (S-33). Esta spec solo recibe rutas.
+No se porta aquí la descarga de la DLL ni de los modelos (S-32). Esta spec solo recibe rutas.
 
 ## Archivos
 

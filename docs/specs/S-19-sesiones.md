@@ -76,9 +76,10 @@ Cada archivo tiene como máximo 250 líneas.
 ## Decisiones
 
 - En F7, Rust usa su propio `DATA_DIR`, distinto del de Node. Así cada proceso restaura solo sus sesiones, y la música no suena dos veces.
+- La posición se restaura con `seek` de songbird (S-16) después de arrancar. No se usa `_beginTime`.
+- El formato es el mismo JSON de Node. En F7, Rust lee archivos de Node solo en pruebas de paridad. No los restaura al arrancar.
+- Después de F8, Rust restaura las sesiones.
 
 ## Preguntas abiertas
 
-- Posición. Node usa `_beginTime`, un campo privado de DisTube. Propuesta: `seek` de songbird (S-16) después de arrancar.
-- Formato. Propuesta: el mismo JSON de Node, para leer las sesiones de Node durante F7.
-- Después de F8, ¿quién restaura las sesiones que hoy restaura Node? Propuesta: Rust, cuando tenga el token del bot.
+- Ninguna en esta spec.

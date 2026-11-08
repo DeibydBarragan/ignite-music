@@ -16,7 +16,7 @@ No incluye el panel (S-24), los permisos (S-23) ni los comandos de reproducción
 - Crear: `rust/crates/bot/src/ui/cola.rs`, `ui/letras.rs`, `ui/busqueda.rs`, `ui/ayuda.rs` (ayuda e idioma) y `ui/listas.rs` (playlists).
 - Crear: `rust/crates/bot/src/ui/interaccion.rs`: `q:<página>`, `ly:<token>:<página>`, `s:<token>` y `lang:set`.
 - Crear: `rust/crates/bot/src/comandos/ver_cola.rs`, `letras.rs`, `buscar.rs`, `ayuda.rs`, `idioma.rs` y `listas.rs` (`playlists` y `new-playlist`).
-- Crear: `rust/crates/bot/src/letras.rs`: `buscar_letras`, `limpiar_titulo` y `elegir_mejor`, con la fuente LRCLIB. Puede pasar al crate `medios` (M3) si se aprueba.
+- Crear: `rust/crates/medios/src/letras.rs`: `buscar_letras`, `limpiar_titulo` y `elegir_mejor`, con la fuente LRCLIB. Crate `medios` (M3), aprobado en F4.
 - Crear: `rust/crates/bot/src/formato.rs`: funciones de formato. Puede pasar al crate `nucleo` si se aprueba.
 - Crear: `rust/crates/bot/tests/vistas.rs`, `tests/formato.rs`, `tests/letras.rs`, `tests/fixtures/vistas-node.json` y `tests/fixtures/formato-node.json`.
 - No tocar: `src/ui/auxiliary-views.js`, `src/commands/`, `src/handlers/interactions.js`, `src/music/lyrics.js`, `src/music/playlists.js` y `src/core/format.js`.
@@ -146,7 +146,7 @@ Los textos de las vistas salen de i18n (S-03). Los textos entre comillas de esta
 
 ## Decisiones
 
-1. Lugar de `formato` y de `letras`: por ahora van en `bot` (`formato.rs` y `letras.rs`). Si se aprueban los crates `nucleo` y `medios`, se mueven.
+1. Lugar de `formato` y de `letras`: `letras.rs` va en el crate `medios` (M3), aprobado en F4. `formato.rs` queda en `bot` hasta aprobar `nucleo`.
 2. `resolvePlaylist`: se añade a S-14 como sección "Listas guardadas (`resolvePlaylist`)".
 3. Textos fijos en español (`search.js`, `playlists.js`, `new-playlist.js`, incluido el mensaje que dice "Vela con", y `favorite.js`): se portan igual, por paridad. Pasarlos a `languages/*.json` es un cambio aparte, con la regla de F4 (e).
 4. "Activos" en `/help`: se cuentan las colas del reproductor de F4 (S-17).
@@ -154,5 +154,5 @@ Los textos de las vistas salen de i18n (S-03). Los textos entre comillas de esta
 
 ## Preguntas abiertas
 
-1. Aprobar los crates `nucleo` y `medios`. Ver S-01 y S-13. Sin esa aprobación, `formato` y `letras` quedan en `bot`.
+1. Aprobar el crate `nucleo` (ver S-01). Sin esa aprobación, `formato.rs` queda en `bot`.
 2. Límite de texto en `/help` y `/queue`. Node no recorta el texto de la ayuda. Con 25 comandos y descripciones largas, puede superar el límite de un TextDisplay. Se verifica en la documentación de Discord antes de cerrar esta spec.

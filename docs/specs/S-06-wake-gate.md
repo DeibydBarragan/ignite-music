@@ -55,7 +55,7 @@ Cada archivo tiene como máximo 250 líneas.
     c. No hay aparición: `no_wake_word`.
     d. Ninguna palabra es soportada: `no_supported_wake_word`, con la lista en `no_soportadas`.
     e. La puerta no está lista: `gate_unavailable`, sin tocar el audio.
-11. Carga: `initialize` carga la DLL (S-05), el modelo inglés y el español si existe `am/final.mdl`. Si falta la DLL o el inglés, la puerta queda cerrada. Si falla la carga, queda cerrada y se registra el error. Node descarga el español al arrancar si falta. En Rust esa descarga es de S-33.
+11. Carga: `initialize` carga la DLL (S-05), el modelo inglés y el español si existe `am/final.mdl`. Si falta la DLL o el inglés, la puerta queda cerrada. Si falla la carga, queda cerrada y se registra el error. Node descarga el español al arrancar si falta. En Rust esa descarga es de S-32.
 12. Node llama a `initialize` antes de cada evaluación (`admission.js`). En Rust se hace una vez al arrancar.
 13. Con `VOICE_OFFLINE_GATING` en falso, la admisión no llama a la puerta (S-08).
 14. Mejora del plan, no paridad: la evaluación corre en `spawn_blocking`, para no frenar el runtime de Tokio. Node es síncrono.
