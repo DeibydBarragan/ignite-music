@@ -1,0 +1,73 @@
+name: Rust
+
+on:
+  push:
+    paths: &rust_paths
+      - "rust/**"
+      - "languages/**"
+      - "scripts/**"
+      - "src/**"
+      - "test/fixtures/**"
+      - "package.json"
+      - "package-lock.json"
+      - "openapi.yaml"
+      - ".gitignore"
+      - ".github/workflows/rust.yml"
+  pull_request:
+    paths: *rust_paths
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: rust
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+      - name: Install Node dependencies
+        working-directory: .
+        run: npm ci --ignore-scripts
+      - name: Validate OpenAPI contract
+        working-directory: .
+        run: npx --yes @redocly/cli@1.34.5 lint openapi.yaml
+      - name: Report toolchain and optional test assets
+        run: |
+          rustc --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cmake --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Write-Output "Vosk DLL: $(Test-Path ../bin/vosk/libvosk.dll)"
+          Write-Output "Vosk English model: $(Test-Path ../data/models/vosk-model-small-en-us-0.15)"
+          Write-Output "Vosk Spanish model: $(Test-Path ../data/models/vosk-model-small-es)"
+          Write-Output "ffmpeg on PATH: $([bool](Get-Command ffmpeg -ErrorAction SilentlyContinue))"
+      - name: Format
+        run: cargo fmt --all --check
+      - name: Source size
+        run: ./scripts/check-source-size.ps1
+      - name: Clippy
+        run: cargo clippy --locked --workspace --all-targets -- -D warnings
+      - name: Tests
+        run: cargo test --locked --workspace --no-fail-fast
+      - name: Build release bot
+        run: cargo build --locked --release -p bot
+
+  msrv:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: rust
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install declared minimum Rust
+        run: rustup toolchain install 1.89.0 --profile minimal
+      - name: Check with declared minimum
+        run: cargo +1.89.0 check --locked --workspace --tests

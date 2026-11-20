@@ -5,7 +5,7 @@ const globals = require('globals');
 module.exports = [
     {
         files: ['**/*.js'],
-        ignores: ['node_modules/**', 'data/**', 'bin/**', 'src/public/**'],
+        ignores: ['node_modules/**', 'data/**', 'bin/**', 'src/public/**', 'rust/**'],
         languageOptions: {
             ecmaVersion: 2023,
             sourceType: 'commonjs',
