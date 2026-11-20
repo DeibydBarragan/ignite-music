@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "kind": "playlist",
+  "name": "Empty playlist",
+  "source": "youtube",
+  "count": 0,
+  "truncated": false,
+  "tracks": []
+}

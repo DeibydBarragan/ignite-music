@@ -10,6 +10,7 @@ const { RepeatMode } = require('distube');
 const config = require('../../../config');
 const { unsupportedUrlReason } = require('../../../core/youtube-guards');
 const { ApiError, serializeTrack } = require('../../contracts');
+const { isDevUser } = require('../../../core/dev-mode');
 const { applyControl, CONTROL_ACTIONS, ensureResumed } = require('../../../music/actions');
 
 function state(music, { guildId }) {
@@ -62,9 +63,26 @@ function state(music, { guildId }) {
  * Resolve the acting member (with a lightweight fallback for users that are
  * not cached in the guild) and validate voice-channel constraints.
  */
-async function resolveVoiceChannel(music, guild, { voiceChannelId, userId }) {
+async function resolveVoiceChannel(music, guild, { voiceChannelId, userId, devMode = false }) {
     const client = music.client;
     const botVoiceChannel = guild.members.me?.voice?.channel;
+    const isDev = isDevUser(userId) || Boolean(devMode);
+
+    const findAvailableChannel = async () => {
+        if (!guild.channels.cache.some((c) => c.isVoiceBased?.())) {
+            await guild.channels.fetch().catch(() => null);
+        }
+        const me = guild.members.me;
+        const voiceChannels = guild.channels.cache.filter((c) => {
+            if (!c.isVoiceBased?.()) return false;
+            if (!me) return true;
+            const perms = c.permissionsFor(me);
+            return perms?.has(['ViewChannel', 'Connect', 'Speak']);
+        });
+        return voiceChannels.filter((c) => c.members.some((m) => !m.user.bot)).first()
+            || voiceChannels.first()
+            || null;
+    };
     const wrongChannel = () => new ApiError(
         400,
         'WRONG_VOICE_CHANNEL',
@@ -83,10 +101,13 @@ async function resolveVoiceChannel(music, guild, { voiceChannelId, userId }) {
         member = guild.members.cache.get(userId) || await guild.members.fetch(userId).catch(() => null);
         const userVoice = member?.voice?.channel;
         if (userVoice) {
-            if (botVoiceChannel && botVoiceChannel.id !== userVoice.id) throw wrongChannel();
+            if (botVoiceChannel && botVoiceChannel.id !== userVoice.id && !isDev) throw wrongChannel();
             channel = userVoice;
         } else if (voiceChannelId) {
             channel = guild.channels.cache.get(voiceChannelId) || await guild.channels.fetch(voiceChannelId).catch(() => null);
+        } else if (isDev) {
+            const existingQueue = music.distube.getQueue(guild.id);
+            channel = botVoiceChannel || existingQueue?.voiceChannel || await findAvailableChannel();
         } else {
             throw notInVoice();
         }
@@ -97,6 +118,7 @@ async function resolveVoiceChannel(music, guild, { voiceChannelId, userId }) {
 
     const existingQueue = music.distube.getQueue(guild.id);
     if (!channel && existingQueue) channel = existingQueue.voiceChannel;
+    if (!channel && isDev) channel = botVoiceChannel || await findAvailableChannel();
     if (!channel) throw notInVoice();
 
     if (!member && userId) {
@@ -121,7 +143,7 @@ async function play(music, { guildId, query, voiceChannelId = null, userId = nul
     const unsupported = unsupportedUrlReason(query);
     if (unsupported) throw new ApiError(400, 'UNSUPPORTED_URL', unsupported);
 
-    const { channel, member } = await resolveVoiceChannel(music, guild, { voiceChannelId, userId });
+    const { channel, member } = await resolveVoiceChannel(music, guild, { voiceChannelId, userId, devMode });
 
     const outcome = await music.play({
         voiceChannel: channel,

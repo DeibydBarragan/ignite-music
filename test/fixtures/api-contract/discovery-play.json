@@ -1,0 +1,71 @@
+{
+  "channels": {
+    "guildId": "123456789012345678",
+    "total": 2,
+    "channels": [
+      {
+        "id": "222222222222222222",
+        "name": "Stage",
+        "bitrate": 96000,
+        "userLimit": 0,
+        "userCount": 0,
+        "botPresent": false,
+        "members": []
+      },
+      {
+        "id": "111111111111111111",
+        "name": "General",
+        "bitrate": 64000,
+        "userLimit": 26,
+        "userCount": 1,
+        "botPresent": true,
+        "members": [
+          {
+            "id": "987654321098765432",
+            "username": "listener",
+            "avatar": "https://cdn.discordapp.com/embed/avatars/3.png",
+            "bot": false
+          }
+        ]
+      }
+    ]
+  },
+  "playErrors": {
+    "outside": {
+      "status": 400,
+      "code": "NOT_IN_VOICE",
+      "detail": "¡Debes estar en un canal de voz en Discord para reproducir música!"
+    },
+    "different": {
+      "status": 400,
+      "code": "WRONG_VOICE_CHANNEL",
+      "detail": "¡Debes estar en el mismo canal de voz que el bot (General)!"
+    }
+  },
+  "playSuccess": {
+    "success": true,
+    "started": true,
+    "position": 0,
+    "song": {
+      "id": "dQw4w9WgXcQ",
+      "title": "Never Gonna Give You Up",
+      "artist": "Rick Astley",
+      "albumArt": "https://example.com/thumb.jpg",
+      "coverUrl": "https://example.com/thumb.jpg",
+      "duration": 213,
+      "formattedDuration": "3:33",
+      "source": "youtube",
+      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "category": "hits",
+      "isLive": false,
+      "isLyric": false,
+      "isAutoplay": false,
+      "requestedBy": {
+        "id": "345678901234567890",
+        "username": "Listener",
+        "avatar": null
+      }
+    },
+    "playlist": null
+  }
+}

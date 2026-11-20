@@ -55,6 +55,11 @@ paths:
       parameters:
         - $ref: '#/components/parameters/GuildId'
         - $ref: '#/components/parameters/UserId'
+        - name: X-Dev-Mode
+          in: header
+          required: false
+          description: Legacy trusted gateway flag that enables developer playback behavior.
+          schema: { type: string, enum: ['true', 'false'] }
       requestBody:
         required: true
         content:
@@ -73,8 +78,32 @@ paths:
           description: Play result
           content:
             application/json:
-              schema: { type: object }
+              schema:
+                type: object
+                required: [success, started, position, song, playlist]
+                properties:
+                  success: { type: boolean }
+                  started: { type: boolean }
+                  position: { type: integer, minimum: 0 }
+                  song:
+                    oneOf: [{ $ref: '#/components/schemas/Track' }, { type: 'null' }]
+                  playlist:
+                    oneOf:
+                      - type: object
+                        required: [name, count, truncated]
+                        properties:
+                          name: { type: [string, 'null'] }
+                          count: { type: integer, minimum: 0 }
+                          truncated: { type: boolean }
+                      - { type: 'null' }
         '400': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '500':
+          description: The Rust voice driver failed to start playback.
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
   /api/v1/guilds/{guildId}/control:
     post:
       tags: [player]
@@ -92,16 +121,27 @@ paths:
               properties:
                 action:
                   type: string
-                  enum: [pause, resume, toggle, skip, previous, stop, shuffle, autoplay, filter, volume, seek, loop]
+                  enum: [pause, resume, toggle, skip, previous, stop, shuffle, autoplay, filter, volume, seek, loop, deafen, undeafen]
                 value:
-                  oneOf: [{ type: string }, { type: number }, { type: boolean }, { type: 'null' }]
+                  oneOf: [{ type: string, maxLength: 200 }, { type: number }, { type: boolean }, { type: 'null' }]
       responses:
         '200':
-          description: Action result
+          description: Action result. A rejected operation such as an out of range volume or seek returns success false with a localized message.
           content:
             application/json:
-              schema: { type: object }
+              schema:
+                type: object
+                required: [success, message]
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
         '400': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409':
+          description: The Rust voice driver rejected a playback control.
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
   /api/v1/guilds/{guildId}/events:
     get:
       tags: [player]
@@ -300,12 +340,283 @@ paths:
       summary: Most played songs for the guild
       parameters:
         - $ref: '#/components/parameters/GuildId'
+        - name: timeframe
+          in: query
+          schema: { type: string, enum: [week, month, all], default: week }
+        - name: limit
+          in: query
+          description: A request can ask for up to 100 tracks. The ranking returns at most 50.
+          schema: { type: integer, minimum: 1, maximum: 100, default: 100 }
       responses:
         '200':
           description: Top songs
           content:
             application/json:
-              schema: { type: array, items: { $ref: '#/components/schemas/Track' } }
+              schema:
+                type: object
+                required: [success, guildId, timeframe, total, songs]
+                properties:
+                  success: { type: boolean, const: true }
+                  guildId: { type: string }
+                  timeframe: { type: string, enum: [week, month, all] }
+                  total: { type: integer, minimum: 0, maximum: 50 }
+                  songs: { type: array, maxItems: 50, items: { $ref: '#/components/schemas/RankedTrack' } }
+        '400': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+
+  /api/v1/guilds/{guildId}/voice-status:
+    get:
+      tags: [discovery]
+      summary: Current voice connection status
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+      responses:
+        '200':
+          description: Voice status
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VoiceStatus' }
+        '400': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/channels:
+    get:
+      tags: [discovery]
+      summary: Voice channels available in the guild
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+      responses:
+        '200':
+          description: Voice channels
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [guildId, total, channels]
+                properties:
+                  guildId: { type: string, pattern: '^\d{17,20}$' }
+                  total: { type: integer, minimum: 0 }
+                  channels:
+                    type: array
+                    items: { $ref: '#/components/schemas/VoiceChannelDetails' }
+        '400': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/recommendations:
+    get:
+      tags: [discovery]
+      summary: Recommended tracks for the guild
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - name: force
+          in: query
+          description: Set to true to refresh contextual recommendations.
+          schema: { type: boolean, default: false }
+        - name: refresh
+          in: query
+          description: Alias for force.
+          schema: { type: boolean, default: false }
+      responses:
+        '200':
+          description: Recommendation result
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Recommendations' }
+        '400': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/playlist/resolve:
+    get:
+      tags: [discovery]
+      summary: Resolve playlist metadata and tracks
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - name: url
+          in: query
+          required: true
+          schema: { type: string, minLength: 1, maxLength: 1000 }
+      responses:
+        '200':
+          description: Resolved playlist
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ResolvedPlaylist' }
+        '400': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '422': { $ref: '#/components/responses/Problem' }
+  /api/v1/search/playlists:
+    get:
+      tags: [discovery]
+      summary: Search playlists
+      parameters:
+        - name: q
+          in: query
+          schema: { type: string, maxLength: 500 }
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 15, default: 6 }
+      responses:
+        '200':
+          description: Playlist search results
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [query, results]
+                properties:
+                  query: { type: string }
+                  results:
+                    type: array
+                    maxItems: 15
+                    items: { $ref: '#/components/schemas/PlaylistSearchResult' }
+        '400': { $ref: '#/components/responses/Problem' }
+
+  /api/v1/guilds/{guildId}/voice:
+    get:
+      tags: [player]
+      summary: Get guild voice settings
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+      responses:
+        '200':
+          description: Voice settings
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VoiceSettings' }
+        '400': { $ref: '#/components/responses/Problem' }
+    put:
+      tags: [player]
+      summary: Update guild voice settings
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VoiceSettingsUpdate' }
+      responses:
+        '200':
+          description: Updated voice settings
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VoiceSettings' }
+        '400': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/voice/reset:
+    post:
+      tags: [player]
+      summary: Reset guild voice settings to defaults
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Default voice settings
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VoiceSettings' }
+        '400': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/voice/logs:
+    get:
+      tags: [player]
+      summary: Get recent voice command logs
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 500, default: 50 }
+      responses:
+        '200':
+          description: Voice log page
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [logs]
+                properties:
+                  logs: { type: array, items: { type: object, additionalProperties: true } }
+        '400': { $ref: '#/components/responses/Problem' }
+    delete:
+      tags: [player]
+      summary: Clear voice command logs
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Logs cleared
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '400': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/voice/join:
+    post:
+      tags: [player]
+      summary: Join a voice channel
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                channelId: { type: string, pattern: '^\d{17,20}$' }
+                userId: { type: string, pattern: '^\d{17,20}$' }
+      responses:
+        '200':
+          description: Joined voice channel
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VoiceMutationResult' }
+        '400': { $ref: '#/components/responses/Problem' }
+  /api/v1/guilds/{guildId}/voice/leave:
+    post:
+      tags: [player]
+      summary: Leave the guild voice channel
+      parameters:
+        - $ref: '#/components/parameters/GuildId'
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Left voice channel
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VoiceMutationResult' }
+        '400': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '500': { $ref: '#/components/responses/Problem' }
+  /api/v1/user/dev-mode:
+    get:
+      tags: [player]
+      summary: Read developer mode for the acting user
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Developer mode state
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DevMode' }
+    post:
+      tags: [player]
+      summary: Set developer mode for the acting user
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [enabled]
+              properties:
+                enabled: { type: boolean }
+      responses:
+        '200':
+          description: Updated developer mode state
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DevMode' }
+        '400': { $ref: '#/components/responses/Problem' }
 
 components:
   securitySchemes:
@@ -357,3 +668,125 @@ components:
         duration: { type: integer }
         thumbnail: { type: string, format: uri }
         source: { type: string, enum: [youtube, spotify] }
+    Success:
+      type: object
+      required: [success]
+      properties:
+        success: { type: boolean, const: true }
+    VoiceStatus:
+      type: object
+      additionalProperties: true
+      description: Voice status fields depend on the connected guild state.
+    VoiceChannel:
+      type: object
+      properties:
+        id: { type: string, pattern: '^\d{17,20}$' }
+        name: { type: string }
+    VoiceChannelDetails:
+      type: object
+      required: [id, name, bitrate, userLimit, userCount, botPresent, members]
+      properties:
+        id: { type: string, pattern: '^\d{17,20}$' }
+        name: { type: string }
+        bitrate: { type: integer, minimum: 0 }
+        userLimit: { type: integer, minimum: 0 }
+        userCount: { type: integer, minimum: 0 }
+        botPresent: { type: boolean }
+        members:
+          type: array
+          maxItems: 25
+          items:
+            type: object
+            required: [id, username, avatar, bot]
+            properties:
+              id: { type: string, pattern: '^\d{17,20}$' }
+              username: { type: string }
+              avatar: { type: [string, 'null'] }
+              bot: { type: boolean }
+    TrackSnapshot:
+      type: object
+      required: [id, title, artist, albumArt, coverUrl, duration, formattedDuration, source, url, category, isLive, isLyric]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        artist: { type: string }
+        albumArt: { type: string }
+        coverUrl: { type: [string, 'null'] }
+        duration: { type: integer, minimum: 0 }
+        formattedDuration: { type: string }
+        source: { type: string, enum: [youtube, spotify] }
+        url: { type: string }
+        category: { type: string }
+        isLive: { type: boolean }
+        isLyric: { type: boolean }
+    RankedTrack:
+      allOf:
+        - $ref: '#/components/schemas/TrackSnapshot'
+        - type: object
+          required: [isAutoplay, playCount, rank, lastPlayed]
+          properties:
+            isAutoplay: { type: boolean, const: false }
+            playCount: { type: integer, minimum: 0 }
+            rank: { type: integer, minimum: 1 }
+            lastPlayed: { type: [string, 'null'], format: date-time }
+    Recommendations:
+      type: object
+      required: [success, source, basedOn, songs]
+      properties:
+        success: { type: boolean, const: true }
+        source: { type: string, enum: [radio, top, empty] }
+        basedOn:
+          anyOf: [{ $ref: '#/components/schemas/TrackSnapshot' }, { type: 'null' }]
+        songs:
+          type: array
+          maxItems: 15
+          items:
+            anyOf: [{ $ref: '#/components/schemas/RankedTrack' }, { $ref: '#/components/schemas/TrackSnapshot' }]
+    ResolvedPlaylist:
+      type: object
+      required: [success, kind, name, source, count, truncated, tracks]
+      properties:
+        success: { type: boolean, const: true }
+        kind: { type: string, enum: [playlist, track] }
+        name: { type: string }
+        source: { type: string, enum: [youtube, spotify, generic] }
+        count: { type: integer, minimum: 0 }
+        truncated: { type: boolean }
+        tracks: { type: array, items: { $ref: '#/components/schemas/TrackSnapshot' } }
+    PlaylistSearchResult:
+      type: object
+      required: [id, title, name, uploader, author, thumbnail, cover, trackCount, url, source]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        name: { type: string }
+        uploader: { type: string }
+        author: { type: string }
+        thumbnail: { type: string }
+        cover: { type: string }
+        trackCount: { type: integer, minimum: 0 }
+        url: { type: string, format: uri }
+        source: { type: string, const: youtube }
+    VoiceSettings:
+      type: object
+      additionalProperties: true
+      description: Guild voice settings; properties evolve with the voice configuration schema.
+    VoiceSettingsUpdate:
+      type: object
+      additionalProperties: true
+      description: Partial guild voice settings update.
+    VoiceMutationResult:
+      type: object
+      properties:
+        success: { type: boolean }
+        message: { type: string }
+        channel: { $ref: '#/components/schemas/VoiceChannel' }
+    DevMode:
+      type: object
+      required: [success, devMode, userId]
+      properties:
+        success: { type: boolean }
+        devMode: { type: boolean }
+        userId:
+          type: [string, 'null']
+          pattern: '^\d{17,20}$'

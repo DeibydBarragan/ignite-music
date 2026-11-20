@@ -1,0 +1,21 @@
+[
+  {"request":{"action":"volume","value":101},"response":{"success":false,"message":"Volume must be a number between 0-100!"},"state":{}},
+  {"request":{"action":"volume","value":-1},"response":{"success":false,"message":"Volume must be a number between 0-100!"},"state":{}},
+  {"request":{"action":"volume","value":4.5},"response":{"success":false,"message":"Volume must be a number between 0-100!"},"state":{}},
+  {"request":{"action":"volume"},"response":{"success":false,"message":"Volume must be a number between 0-100!"},"state":{}},
+  {"request":{"action":"volume","value":" 42 "},"response":{"success":true,"message":"Volume has been set to **42%**!"},"state":{"volume":42}},
+  {"request":{"action":"volume","value":null},"response":{"success":true,"message":"Volume has been set to **0%**!"},"state":{"volume":0}},
+  {"request":{"action":"volume","value":100},"response":{"success":true,"message":"Volume has been set to **100%**!"},"state":{"volume":100}},
+  {"request":{"action":"filter","value":"bassboost"},"response":{"success":true,"message":"Filter: Bass Boost"},"state":{"filter":"bassboost"}},
+  {"request":{"action":"filter","value":"bassboost"},"response":{"success":true,"message":"Filter: Bass Boost"},"state":{}},
+  {"request":{"action":"filter","value":true},"response":{"success":false,"messageKey":"errors.unknown"},"state":{}},
+  {"request":{"action":"filter","value":"none"},"response":{"success":true,"message":"Filter: No filter"},"state":{"filter":null}},
+  {"request":{"action":"seek","value":-3},"response":{"success":false,"message":"Use a time like 1:30 or 90 that is within the song length."},"state":{}},
+  {"request":{"action":"seek","value":213},"response":{"success":false,"message":"Use a time like 1:30 or 90 that is within the song length."},"state":{}},
+  {"request":{"action":"seek","value":"90"},"response":{"success":true,"message":"Jumped to 1:30."},"state":{"currentTime":90}},
+  {"request":{"action":"pause"},"response":{"success":true,"message":"Music Paused"},"state":{"isPaused":true,"isPlaying":false}},
+  {"request":{"action":"pause"},"response":{"success":false,"message":"The music is already paused."},"state":{}},
+  {"request":{"action":"resume"},"response":{"success":true,"message":"Music Resumed"},"state":{"isPaused":false,"isPlaying":true}},
+  {"request":{"action":"loop","value":"queue"},"response":{"success":true,"messageKey":"buttonhandler.loop_mode_queue"},"state":{"repeatMode":"queue"}},
+  {"request":{"action":"autoplay"},"response":{"success":true,"messageKey":"buttons.autoplay_on"},"state":{"autoplay":true}}
+]

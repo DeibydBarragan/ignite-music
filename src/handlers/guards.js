@@ -3,6 +3,22 @@
 const { PermissionFlagsBits, MessageFlags, RESTJSONErrorCodes } = require('discord.js');
 const { isTextChannelInstance } = require('distube');
 const views = require('../ui/views');
+const { isDevUser } = require('../core/dev-mode');
+
+function findAvailableVoiceChannel(guild) {
+    if (!guild?.channels?.cache) return null;
+    const me = guild.members.me;
+    const voiceChannels = guild.channels.cache.filter((c) => {
+        if (!c.isVoiceBased()) return false;
+        if (!me) return true;
+        const perms = c.permissionsFor(me);
+        return perms?.has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.Connect, PermissionFlagsBits.Speak]);
+    });
+
+    return voiceChannels.filter((c) => c.members.some((m) => !m.user.bot)).first()
+        || voiceChannels.first()
+        || null;
+}
 
 /**
  * Check that the user may control music: in a voice channel, and in the bot's channel if it is connected.
@@ -10,11 +26,25 @@ const views = require('../ui/views');
  */
 function checkVoice(interaction, manager, t, { requireQueue = true, join = false } = {}) {
     const guild = interaction.guild;
-    const channel = interaction.member?.voice?.channel;
-    if (!channel) return { error: t('commands.play.voice_channel_required') };
+    const userId = interaction.user?.id;
+    const isDev = isDevUser(userId);
+    let channel = interaction.member?.voice?.channel;
+    if (!channel) {
+        if (isDev) {
+            const botVoiceChannel = guild.members.me?.voice?.channel;
+            const existingQueue = manager.getQueue(guild.id);
+            channel = botVoiceChannel
+                || existingQueue?.voiceChannel
+                || (join ? findAvailableVoiceChannel(guild) : null);
+
+            if (!channel) return { error: t('commands.play.voice_channel_required') };
+        } else {
+            return { error: t('commands.play.voice_channel_required') };
+        }
+    }
 
     const botChannelId = guild.members.me?.voice?.channelId;
-    if (botChannelId && botChannelId !== channel.id) return { error: t('commands.play.same_channel_required') };
+    if (botChannelId && botChannelId !== channel.id && !isDev) return { error: t('commands.play.same_channel_required') };
 
     const queue = manager.getQueue(guild.id);
     if (requireQueue && (!queue || !queue.songs.length)) return { error: t('commands.nowplaying.no_track') };

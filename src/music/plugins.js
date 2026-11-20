@@ -173,7 +173,7 @@ class YouTubePlugin extends ExtractorPlugin {
         if (direct) return direct;
 
         const result = await this.run(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}&sp=EgIQAw%253D%253D`, ['--flat-playlist'], { proxy: ytdlp.proxyFor(guildId) });
-        return (result?.entries || []).filter((entry) => entry?.id).map((entry) => ({
+        return (result?.entries || []).filter((entry) => entry?.id).slice(0, limit).map((entry) => ({
             id: entry.id,
             title: entry.title || 'Unknown Playlist',
             name: entry.title || 'Unknown Playlist',

@@ -1,0 +1,15 @@
+{
+  "hasQueue": false,
+  "isPlaying": false,
+  "isPaused": false,
+  "currentTime": 0,
+  "duration": 0,
+  "volume": 100,
+  "repeatMode": "off",
+  "autoplay": false,
+  "filter": null,
+  "voiceChannel": null,
+  "currentSong": null,
+  "queue": [],
+  "disconnectReason": null
+}

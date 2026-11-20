@@ -77,12 +77,24 @@ function setDevMode(userId, enabled) {
  * Returns all user IDs currently in dev mode.
  * @returns {string[]}
  */
+/**
+ * Checks whether a Discord user ID belongs to an authorized developer.
+ * @param {string} userId - Discord snowflake user ID.
+ * @returns {boolean}
+ */
+function isDevUser(userId) {
+    if (!userId) return false;
+    const uid = String(userId).trim();
+    return (config.devUserIds || []).includes(uid) || isDevMode(uid);
+}
+
 function getDevUsers() {
     return Array.from(activeDevUsers);
 }
 
 module.exports = {
     isDevMode,
+    isDevUser,
     setDevMode,
     getDevUsers,
 };

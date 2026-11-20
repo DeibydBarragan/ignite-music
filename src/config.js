@@ -44,6 +44,9 @@ const shardList = () => {
 };
 
 const dnsServers = list('DNS_SERVERS');
+const devUserIds = list('DEV_USER_IDS').length
+    ? list('DEV_USER_IDS')
+    : (list('NEXT_PUBLIC_DEV_USER_IDS').length ? list('NEXT_PUBLIC_DEV_USER_IDS') : ['472144161357824000']);
 
 const config = {
     root: path.join(__dirname, '..'),
@@ -52,6 +55,7 @@ const config = {
     debug: bool('DEBUG'),
     noColor: Boolean(env('NO_COLOR')),
     shardId: env('SHARDS') || null,
+    devUserIds,
 
     discord: {
         token: env('DISCORD_TOKEN'),

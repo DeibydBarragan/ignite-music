@@ -2,9 +2,26 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const { VoiceSettingsStore } = require('../src/voice/settings-store');
+const { voiceSettingsStore } = require('../src/voice/settings-store');
 const { schemas } = require('../src/api/middleware/validate');
 const { register } = require('../src/api/v1/ops/voice');
+
+test('real voice.get operation matches the shared Rust default-settings contract', async () => {
+    const expected = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/api-contract/voice-settings-default.json'), 'utf8'));
+    const previousSupabase = voiceSettingsStore.supabase;
+    voiceSettingsStore.supabase = null;
+    try {
+        const registry = new Map();
+        register({ register: (name, fn) => registry.set(name, fn) });
+        const actual = await registry.get('voice.get')(null, { guildId: 'contract-default-settings' });
+        assert.deepEqual(actual, expected);
+    } finally {
+        voiceSettingsStore.supabase = previousSupabase;
+    }
+});
 
 test('VoiceSettingsStore: returns defaults and manages in-memory cache', async () => {
     const store = new VoiceSettingsStore();

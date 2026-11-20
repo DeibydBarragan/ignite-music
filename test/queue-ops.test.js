@@ -5,6 +5,12 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { ids } = require('./helpers');
 const queueOps = require('../src/api/v1/ops/queue');
+const fs = require('node:fs');
+const path = require('node:path');
+
+function contract(name) {
+    return JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/api-contract', `${name}.json`), 'utf8'));
+}
 
 function fakeSong(n, extra = {}) {
     return {
@@ -47,6 +53,30 @@ function isApiError(status, code) {
         return true;
     };
 }
+
+test('real queue operations satisfy the shared Rust contract', async () => {
+    const songs = [fakeSong(1), fakeSong(2, { trackId: 'track_id_test_2' }), fakeSong(3), fakeSong(4)];
+    const { music, queue } = fakeMusic(songs);
+    const removedIndex = await queueOps.removeIndex(music, { guildId: ids.guild, index: 2 });
+    assert.deepEqual({ status: 200, success: removedIndex.success, removedTitle: removedIndex.removed.title }, contract('queue-remove-index'));
+    const removedTrack = await queueOps.removeTrack(music, { guildId: ids.guild, trackId: 'track_id_test_2' });
+    assert.deepEqual({ status: 200, success: removedTrack.success, removedTitle: removedTrack.removed.title }, contract('queue-remove-track'));
+    assert.deepEqual(queue.songs.map((s) => s.name), ['Song 1', 'Song 4']);
+});
+
+test('real order and undo operations satisfy the shared Rust contract', async () => {
+    const songs = [fakeSong(1), fakeSong(2, { trackId: 'track-2' }), fakeSong(3, { trackId: 'track-3' }), fakeSong(4, { trackId: 'track-4' })];
+    const { music, queue } = fakeMusic(songs);
+    const ordered = await queueOps.order(music, { guildId: ids.guild, trackId: 'track-4', to: 1 });
+    assert.deepEqual({ status: 200, success: ordered.success }, contract('queue-order'));
+    assert.deepEqual(queue.songs.map((song) => song.id), ['vid1', 'vid4', 'vid2', 'vid3']);
+
+    const cleared = await queueOps.clear(music, { guildId: ids.guild });
+    assert.deepEqual(cleared, contract('queue-clear'));
+    const undone = await queueOps.undo(music, { guildId: ids.guild });
+    assert.deepEqual({ status: 200, success: undone.success, restored: undone.restored }, contract('queue-undo'));
+    assert.deepEqual(queue.songs.map((song) => song.id), ['vid1', 'vid4', 'vid2', 'vid3']);
+});
 
 test('removeIndex splices under the play lock and serializes the removed song', async () => {
     const { music, queue, events } = fakeMusic([fakeSong(1), fakeSong(2), fakeSong(3)]);

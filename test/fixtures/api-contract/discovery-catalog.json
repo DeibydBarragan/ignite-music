@@ -1,0 +1,85 @@
+{
+  "topSongs": {
+    "success": true,
+    "guildId": "123456789012345678",
+    "timeframe": "all",
+    "total": 2,
+    "songs": [
+      {
+        "id": "song_abc",
+        "title": "Never Gonna Give You Up",
+        "artist": "Rick Astley",
+        "albumArt": "https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg",
+        "coverUrl": "https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg",
+        "duration": 212,
+        "formattedDuration": "3:32",
+        "source": "youtube",
+        "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "category": "hits",
+        "isLive": false,
+        "isLyric": false,
+        "isAutoplay": false,
+        "playCount": 42,
+        "rank": 1,
+        "lastPlayed": "2026-10-18T15:30:00.000Z"
+      },
+      {
+        "id": "song_def",
+        "title": "Together Forever",
+        "artist": "Rick Astley",
+        "albumArt": "https://img.youtube.com/vi/yPYZpwSpKmA/0.jpg",
+        "coverUrl": "https://img.youtube.com/vi/yPYZpwSpKmA/0.jpg",
+        "duration": 204,
+        "formattedDuration": "3:24",
+        "source": "youtube",
+        "url": "https://www.youtube.com/watch?v=yPYZpwSpKmA",
+        "category": "hits",
+        "isLive": false,
+        "isLyric": false,
+        "isAutoplay": false,
+        "playCount": 18,
+        "rank": 2,
+        "lastPlayed": "2026-10-17T20:15:00.000Z"
+      }
+    ]
+  },
+  "playlistSearch": {"id":"PL_FOUND","title":"Found Playlist","name":"Found Playlist","uploader":"Curator","author":"Curator","thumbnail":"https://thumb/1.jpg","cover":"https://thumb/1.jpg","trackCount":37,"url":"https://www.youtube.com/playlist?list=PL_FOUND","source":"youtube"},
+  "playlist": {
+    "success": true,
+    "kind": "playlist",
+    "name": "Album",
+    "source": "generic",
+    "count": 2,
+    "truncated": false,
+    "tracks": [
+      {
+        "id": "1",
+        "title": "a",
+        "artist": "Unknown Artist",
+        "albumArt": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&q=80",
+        "coverUrl": null,
+        "duration": 0,
+        "formattedDuration": "00:00",
+        "source": "youtube",
+        "url": "https://x/1",
+        "category": "hits",
+        "isLive": false,
+        "isLyric": false
+      },
+      {
+        "id": "2",
+        "title": "b",
+        "artist": "Unknown Artist",
+        "albumArt": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&q=80",
+        "coverUrl": null,
+        "duration": 0,
+        "formattedDuration": "00:00",
+        "source": "youtube",
+        "url": "https://x/2",
+        "category": "hits",
+        "isLive": false,
+        "isLyric": false
+      }
+    ]
+  }
+}

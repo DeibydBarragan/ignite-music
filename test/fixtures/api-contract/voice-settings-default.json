@@ -1,0 +1,26 @@
+{
+  "enabled": true,
+  "wake_word": "ignite",
+  "language": "es",
+  "tts_feedback_enabled": true,
+  "tts_voice": "es-MX-DaliaNeural",
+  "tts_pitch": 1.0,
+  "tts_rate": 1.0,
+  "tts_templates": {
+    "play": "Reproduciendo {query}",
+    "play_next": "Añadida {query} a continuación",
+    "enqueue": "Añadida {query} a la lista",
+    "skip": "Saltando canción",
+    "pause": "Música pausada",
+    "resume": "Reanudando música",
+    "stop": "Reproducción detenida",
+    "previous": "Canción anterior",
+    "shuffle": "Lista en modo aleatorio",
+    "autoplay_on": "Autoplay activado",
+    "autoplay_off": "Autoplay desactivado",
+    "volume": "Volumen ajustado al {query}",
+    "queue": "Mostrando la lista",
+    "hola_que_hace": "Hola que hace"
+  },
+  "bindings": []
+}

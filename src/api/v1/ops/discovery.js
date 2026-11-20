@@ -11,6 +11,7 @@ const { TTLCache } = require('../../../core/cache');
 const { unsupportedUrlReason } = require('../../../core/youtube-guards');
 const { searchVideosDirect, searchPlaylistsDirect } = require('../../../music/innertube');
 const { ApiError, serializeTrack, serializePlaylist } = require('../../contracts');
+const { isDevUser } = require('../../../core/dev-mode');
 
 const log = logger.createLogger('api-ops');
 
@@ -58,8 +59,6 @@ async function search(music, { q = '', limit = 6 }) {
         return { query, results: [] };
     }
 }
-
-
 async function searchPlaylists(music, { q = '', limit = 6 }) {
     const query = String(q).trim();
     const capped = Math.min(Math.max(Number(limit) || 6, 1), 15);
@@ -180,7 +179,7 @@ async function voiceStatus(music, { guildId, userId = null }) {
             serverDeaf: Boolean(botVoice?.serverDeaf),
         } : null,
         user: userChannel ? { id: userChannel.id, name: userChannel.name } : null,
-        canControl: Boolean(botChannel && userChannel && botChannel.id === userChannel.id),
+        canControl: isDevUser(userId) || Boolean(botChannel && userChannel && botChannel.id === userChannel.id),
     };
 }
 
@@ -191,8 +190,9 @@ async function channels(music, { guildId }) {
     await guild.channels.fetch().catch(() => null);
 
     const botId = music.client.user?.id;
+    const byId = (a, b) => a.id.length - b.id.length || a.id.localeCompare(b.id);
     const list = [...guild.channels.cache.filter((channel) => channel.isVoiceBased()).values()]
-        .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+        .sort((a, b) => (a.position ?? 0) - (b.position ?? 0) || byId(a, b))
         .map((channel) => {
             const humans = channel.members.filter((member) => !member.user.bot);
             return {
@@ -202,7 +202,7 @@ async function channels(music, { guildId }) {
                 userLimit: channel.userLimit || 0,
                 userCount: humans.size,
                 botPresent: botId ? channel.members.has(botId) : false,
-                members: [...humans.values()].slice(0, 25).map((member) => ({
+                members: [...humans.values()].sort(byId).slice(0, 25).map((member) => ({
                     id: member.id,
                     username: member.user.username,
                     avatar: typeof member.user.displayAvatarURL === 'function' ? member.user.displayAvatarURL() : null,
@@ -247,5 +247,4 @@ function register(apiOps) {
     apiOps.register('guild.channels', channels);
     apiOps.register('playlist.resolve', resolvePlaylist);
 }
-
 module.exports = { register, suggest, search, searchPlaylists, recommendations, topSongs, voiceStatus, channels, resolvePlaylist };

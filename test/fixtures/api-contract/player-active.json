@@ -1,0 +1,31 @@
+{
+  "hasQueue": true,
+  "isPlaying": true,
+  "isPaused": false,
+  "currentTime": 42,
+  "duration": 120,
+  "volume": 65,
+  "repeatMode": "track",
+  "autoplay": true,
+  "filter": "bassboost",
+  "voiceChannel": { "id": "111222333444555666", "name": "General" },
+  "currentSong": {
+    "trackId": "track-contract-1",
+    "id": "song-id",
+    "title": "Song",
+    "artist": "Artist",
+    "albumArt": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&q=80",
+    "coverUrl": null,
+    "duration": 120,
+    "formattedDuration": "2:00",
+    "source": "youtube",
+    "url": "https://youtube.com/watch?v=song-id",
+    "category": "hits",
+    "isLive": false,
+    "isLyric": false,
+    "isAutoplay": true,
+    "requestedBy": null
+  },
+  "queue": [],
+  "disconnectReason": null
+}
