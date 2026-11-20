@@ -1,6 +1,6 @@
 # Spec S-29: Túnel de Cloudflare y anuncio de la URL
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F6
 - Módulo: M6
 - Origen en Node (solo lectura): `src/api/tunnel.js` (`startTunnel`, `stopTunnel`, `getTunnelUrl`), `src/api/announce.js` (`publicUrl`, `beat`, `startAnnouncer`), `src/setup/launcher.js` (arranque y parada del túnel), `src/core/binaries` (`ensureCloudflared`, ver S-32).

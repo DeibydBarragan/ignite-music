@@ -1,6 +1,6 @@
 # Spec S-01: Config y arranque
 
-- Estado: borrador
+- Estado: implementada
 - Fase: F1
 - Módulo: M1
 - Origen en Node (solo lectura): `index.js` (arranque), `src/config.js` (todo el archivo), `src/setup/preflight.js` (`run`), `src/setup/preflight-checks.js` (`ensureEnvFile`, `validateProxy`, `checkToken`, `canWrite`), `src/setup/report.js`, `src/setup/setup-error.js`, `.env.example`.

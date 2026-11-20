@@ -1,6 +1,6 @@
 # Spec S-18: Filtros de audio con ffmpeg
 
-- Estado: borrador
+- Estado: implementado en el pipeline de reproducción; validación audible en Discord pendiente
 - Fase: F4
 - Módulo: M4
 - Origen en Node (solo lectura): `src/music/filters.js` (`FILTERS`, `FILTER_LABELS`), `src/music/actions.js` (`setFilter`), `node_modules/distube/dist/index.js` (argumentos de ffmpeg de cada filtro, DisTube 5.2.3), `src/music/manager.js` (opciones de entrada de ffmpeg), `test/actions.test.js` (filtros).
@@ -13,11 +13,13 @@ No incluye la cola (S-17) ni la entrada de los flujos (S-14 y S-16).
 
 ## Archivos
 
-- Crear: `rust/crates/player/src/filtros.rs` (catálogo, etiquetas y argumentos de ffmpeg)
-- Crear: `rust/crates/player/src/filtros_ffmpeg.rs` (proceso ffmpeg y lectura de su salida)
-- Crear: `rust/crates/player/tests/filtros.rs`
-- Crear: `rust/crates/player/tests/data/filtros-casos.json` (generado con Node)
-- Crear: `scripts/filtros-paridad-ref.js` (debe pasar `npm run lint`)
+- Creado: `rust/crates/player/src/filtros.rs` (catálogo, etiquetas y argumentos de ffmpeg)
+- Creado: `rust/crates/player/src/filtros_ffmpeg.rs` (proceso ffmpeg y lectura de su salida)
+- Creado: `rust/crates/player/src/pipeline_audio.rs` (yt-dlp → ffmpeg → WAV detectado por Songbird)
+- Integrado: `rust/crates/player/src/driver_reproduccion.rs` y `rust/crates/player/src/reproduccion.rs`
+- Creado: `rust/crates/player/tests/filtros.rs`
+- Creado: `rust/crates/player/tests/data/filtros-casos.json` (generado con Node)
+- Creado: `scripts/filtros-paridad-ref.js` (pasa `npm run lint`)
 - No tocar: `src/music/filters.js`, `src/music/actions.js`, `node_modules/distube/`.
 
 Cada archivo tiene como máximo 250 líneas.
@@ -47,12 +49,13 @@ Cada archivo tiene como máximo 250 líneas.
 7. Los mensajes llevan la etiqueta del filtro.
 8. Opciones de entrada de ffmpeg para flujos por red: `reconnect 1`, `reconnect_streamed 1` y `reconnect_delay_max 5`. Se mantienen.
 9. Ejecutable de ffmpeg: `FFMPEG_PATH` si está definido. Si no, `bin/ffmpeg.exe` (S-32). Si no, `ffmpeg` del PATH. Node busca en su lugar `node_modules/ffmpeg-static`.
-10. En Rust, el filtro va en un proceso ffmpeg que lee la fuente y escribe PCM. songbird trae `ChildContainer`, que permite usar un proceso hijo como entrada (`src/input/adapters/child.rs`). Se confirma al implementar F4, porque S-16 no lo cubre.
+10. La reproducción abre una tubería perezosa `yt-dlp → ffmpeg → WAV PCM s16le` y Songbird detecta el WAV desde el stream. `ProcesoAudio` mantiene ambos procesos, los mata y los espera al liberar la pista. FFmpeg descarta los frames anteriores para cumplir un seek sobre el pipe no seekable. stderr se descarta para evitar bloquear la tubería; falta mejorar diagnóstico de fallos del proceso.
+11. REST, `/filter` y el selector del panel comparten `player::reproduccion::fijar_filtro_con_driver`: reinstalan la pista desde su posición actual al cambiar el filtro, y no reinician si se repite. Seek REST/Discord comparte `buscar_con_driver`; la recuperación de corte inicia el pipeline en la posición calculada.
 
 ## Tests
 
 - Unitarios de `test/actions.test.js`: fijar un filtro, ignorar volver a fijar el mismo, y quitar.
-- Propios de Rust: cada filtro da los argumentos del punto 2; un nombre desconocido falla; `none` quita el filtro; el orden del catálogo coincide.
+- Propios de Rust: cada filtro da los argumentos del punto 2; un nombre desconocido falla; `none` quita el filtro; el orden del catálogo coincide; el WAV PCM del nuevo pipeline conserva los hashes PCM de Node.
 - Paridad con Node: `scripts/filtros-paridad-ref.js` guarda los argumentos de DisTube para cada filtro. El test de Rust compara.
 - Prueba de sonido en F4: la salida de ffmpeg con cada filtro, sobre el mismo fragmento de audio, se compara por hash con la de Node.
 - Gates: `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test`, y `npm test` sin cambios.

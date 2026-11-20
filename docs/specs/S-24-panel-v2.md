@@ -1,6 +1,6 @@
 # Spec S-24: Panel en Components V2
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F5
 - Módulo: M5
 - Origen en Node (solo lectura): `src/music/panel.js` (`sendPanel`, `refreshPanel`, `endPanel`, `replacePanel`, `isCurrentPanel`, `adoptPanel`, `startRefresh`, `snapshot`, `panelPayload`, `PANEL_DEBOUNCE_MS`), `src/ui/views.js` (`ID`, `playerPanel`, `endedPanel`, `notice`, `baseView`), `src/handlers/interactions.js` (`handlePanel`, `updatePanel`, `volumeModal`, `handleVolumeModal`, `asUpdate`), `src/handlers/favorite.js` (`handleFavorite`), `src/commands/nowplaying.js`. Pruebas: `test/views.test.js` (panel) y `test/manager.test.js` (el panel se envía una vez).

@@ -1,6 +1,6 @@
 # Spec S-15: Qué hacer con innertube, relay y pot.js
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F4
 - Módulo: M3
 - Origen en Node (solo lectura): `src/music/innertube.js` (`searchVideosDirect`, `searchPlaylistsDirect`, `getRelatedMixDirect`, `getPlaylistVideosDirect`), `src/music/innertube-util.js`, `src/music/relay.js` (`StreamRelay`, `trimInfo`, `parseRange`, `getRelay`), `src/music/pot.js` (`currentPoToken`, `currentPoTokenAsync`, `startPoTokenRenewal`), `src/setup/launcher.js` (`StreamRelay.cleanAll`), `src/setup/preflight.js` (arranque de pot.js).
@@ -14,13 +14,27 @@ No escribe código. Define qué se mide en F7 antes de decidir si hace falta alg
 
 ## Archivos
 
-- Ninguno de código en esta spec.
+- Ninguno de código en esta spec (S-13 y S-14 implementan los sustitutos en el crate `medios`).
 - Las mediciones de F7 se anotan en el plan de paridad de S-33.
 
 ## Contrato
 
 - Entrada: las decisiones de este documento.
 - Salida: lista de funciones retiradas y lo que las sustituye en Rust.
+
+### Tabla de sustituciones
+
+| Componente en Node | Función / Elemento | Estado en Rust | Sustituto en Rust |
+| :--- | :--- | :--- | :--- |
+| `innertube.js` | `searchVideosDirect` | Retirado | `medios::buscar_cancion` / `buscar` con `ytsearch` (S-14) |
+| `innertube.js` | `searchPlaylistsDirect` | Retirado | `medios::buscar_listas` con filtro de listas y `--flat-playlist` (S-14) |
+| `innertube.js` | `getRelatedMixDirect` | Retirado | `medios::relacionados` con `watch?v=<id>&list=RD<id>` (S-14) |
+| `innertube.js` | `getPlaylistVideosDirect` | Retirado | `medios::resolver_youtube` con `--flat-playlist` (S-14) |
+| `suggest.js` | Sugerencias directas | Retirado | Autocompletado vía caché de búsquedas y yt-dlp (S-24) |
+| `relay.js` | Servidor HTTP relay (`127.0.0.1`) | Retirado | Songbird reproduce stream URL directamente o vía pipe (S-16, F4). Plan B en F7 si hay 403. |
+| `relay.js` | `errorFor(url)` | Retirado | `medios::ytdlp` captura y limpia stderr con `describe_error` (S-13) |
+| `relay.js` | `StreamRelay.cleanAll` | Retirado | Innecesario; no se generan ficheros temporales en `DATA_DIR/relay` |
+| `pot.js` | Renovador background Node | Retirado en F4 | Soporte de `YOUTUBE_PO_TOKEN` estático en `YtDlpSettings` (S-13). Medición en F7 (S-33). |
 
 ## Comportamiento
 
@@ -67,4 +81,4 @@ No escribe código. Define qué se mide en F7 antes de decidir si hace falta alg
 
 ## Preguntas abiertas
 
-- Generador de tokens: si pot.js se mantiene, ¿se sigue usando el script de Node o se busca otra implementación? Un script de Node obliga a tener Node después de F8.
+- Generador de tokens: si pot.js se mantiene tras F7, se evaluará un generador nativo o externo sin depender del runtime de Node. La decisión final se tomará con la telemetría de 24h de F7 (S-33).

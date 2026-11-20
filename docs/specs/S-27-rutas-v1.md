@@ -1,6 +1,6 @@
 # Spec S-27: Rutas v1
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F6
 - Módulo: M6
 - Origen en Node (solo lectura): `src/api/v1/router.js`, `src/api/v1/player.routes.js`, `queue.routes.js`, `discovery.routes.js`, `voice.routes.js`, `dev.routes.js`; operaciones en `src/api/v1/ops/` (`player.js`, `queue.js`, `discovery.js`, `voice.js`); validación en `src/api/middleware/validate.js`; formas en `src/api/contracts.js`; contrato en `openapi.yaml`. `player.js` y `discovery.js` tienen cambios sin commit del usuario (modo dev). Esta spec sigue el archivo de trabajo.
@@ -90,10 +90,10 @@ Validación (se rechaza antes de la operación):
 5. `player.state`: `repeatMode` vale `off`, `track` o `queue`, no `song`. Sin cola: `hasQueue: false`, volumen por defecto y `queue: []`.
 6. Cola: cada mutación corre bajo el bloqueo del servidor (S-17). Errores: `NO_QUEUE` 404, `INVALID_INDEX` 400, `TRACK_NOT_FOUND` 404, `INVALID_MOVE` 400 e `INVALID_JUMP` 400. `DELETE /queue` guarda la cola 60 segundos para deshacer. `POST /queue/undo` responde `UNDO_EMPTY` 400 (sin datos), `UNDO_EXPIRED` 400, `NO_ACTIVE_PLAYER` 404, `guild_not_found` 404 o `UNDO_FAILED` 422.
 7. Búsqueda: `GET /search` lee `q` (no `query`), con `limit` 6 por defecto, y responde `{query, results}`. Si la búsqueda falla, responde 200 con `results: []`, así que el error no llega al cliente. `GET /search/suggest` responde `{query, suggestions}`. `GET /guilds` responde `{guilds: [{id, name, icon, memberCount}]}`.
-8. `top-songs`: `timeframe` por defecto `week`, y `limit` por defecto 100. El resultado tiene como máximo 50 canciones. Responde `{success, guildId, timeframe, total, songs}`.
-9. `recommendations`: con `force=true` o `refresh=true` borra la caché de 20 minutos de esa canción. Con canción actual responde `source: "radio"`. Si no hay radio, responde el top del servidor (`"top"`). Si no hay nada, `"empty"`.
+8. `top-songs`: `timeframe` por defecto `week`, y `limit` por defecto 100. El resultado tiene como máximo 50 canciones. Responde `{success, guildId, timeframe, total, songs}`. Cada canción incluye `playCount`, `rank` y `lastPlayed`. El campo `total` coincide con la cantidad devuelta.
+9. `recommendations`: con `force=true` o `refresh=true` borra la caché de 20 minutos de esa canción. Con resultados relacionados responde `source: "radio"` y `basedOn` describe la pista activa. Si no hay radio, devuelve el ranking con los mismos campos de `top-songs`, incluso si el ranking está vacío. `"empty"` indica un fallo al obtener el ranking.
 10. `voice-status`: responde `{bot, user, canControl}`. Si el bot está ensordecido en el servidor, intenta quitárselo con `setDeaf(false)`. Es un efecto secundario de un GET (ver Preguntas).
-11. `playlist/resolve`: si falla, responde 422 `UNSUPPORTED_URL` o `RESOLVE_FAILED`. En `play`, el mismo caso responde 400.
+11. `playlist/resolve`: devuelve `{success, kind, name, source, count, truncated, tracks}` con los IDs y metadatos del extractor. Las pistas resueltas no incluyen campos de cola. Si falla, responde 422 `UNSUPPORTED_URL` o `RESOLVE_FAILED`. En `play`, una URL no soportada responde 400.
 12. Voz: `join` elige el canal indicado, o el del usuario, o uno con personas, o cualquiera. Sin canal, responde 400 `no_voice_channel`. Sin permiso Connect, 403 `voice_permission_denied`. Responde `{success, channel, message}`. `leave` para la cola, sale del canal y responde `{success, message}`. `logs` responde `{logs}` y acepta `limit`, con tope de 100. `clearLogs` responde `{ok: true}`. Los ajustes de voz están en S-30.
 13. Modo dev: `GET /user/dev-mode` responde `{success, devMode, userId}`. `POST` con `enabled` cambia el modo y responde lo mismo. Sin usuario, `POST` responde 400 `MISSING_USER_ID` (ver Preguntas). La lista se guarda en `DATA_DIR/dev_users.json`. Esta parte está en el archivo de trabajo del usuario, sin commit.
 

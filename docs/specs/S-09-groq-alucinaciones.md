@@ -1,6 +1,6 @@
 # Spec S-09: Cliente de Groq y filtro de alucinaciones
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F3
 - Módulo: M2
 - Origen en Node (solo lectura): `src/voice/groq-client.js` (`transcribeAudio`, `isLikelyHallucination`, `normalizeForHallucination`, `HALLUCINATION_PHRASES`, `GROQ_API_URL`), `src/voice/stt.js` (`transcribeUtterance`), `src/voice/receiver.js` (uso del filtro, líneas 144 a 162), `test/voice.test.js` (grupo groqClient), `test/wake-gate.test.js` (prueba de `isLikelyHallucination`).
@@ -45,21 +45,22 @@ Cada archivo tiene como máximo 250 líneas.
 ## Comportamiento
 
 1. Clave vacía: error `SinClave`, sin petición.
-2. WAV de 44 bytes o menos: texto vacío, sin petición.
+2. WAV que no sea buffer, o de 44 bytes o menos: texto vacío, sin petición.
 3. Petición POST multipart a `https://api.groq.com/openai/v1/audio/transcriptions`, con estas partes:
    - `file`: nombre `command.wav`, tipo `audio/wav`.
    - `model`, `response_format` = `verbose_json`, `temperature` = `0.0`.
    - `language`, si hay idioma. `prompt`, si hay prompt.
-4. Cabeceras: `Authorization: Bearer <clave>` y `User-Agent` (ver Preguntas).
+4. Cabeceras: `Authorization: Bearer <clave>` y `User-Agent` (ver Decisiones).
 5. Tiempo límite de 10 000 ms por defecto. Al agotarse, error `Tiempo` con el texto `Groq STT timed out after <ms>ms`.
 6. Respuesta no 2xx: error `Estado` con código y cuerpo. Se registra un aviso con el cuerpo.
 7. Respuesta correcta: `texto` recortado. `segmentos` es el array del JSON, o vacío.
-8. Antes de enviar se registra información con el modelo y el tamaño del audio. No se registra ningún dato de la clave (ver Decisiones).
+8. Antes de enviar se registra información con el modelo. Node además registra los 7 primeros caracteres de la clave y su longitud; Rust no registra ningún dato de la clave (ver Decisiones).
 9. `transcribir_enunciado`:
-   a. Con clave, llama a Groq. Si devuelve texto, lo usa.
-   b. Si Groq falla, registra un aviso y sigue.
-   c. Si no hay texto y Vosk está listo, toma un reconocedor del pool de S-05, transcribe el PCM y lo libera. Los segmentos quedan vacíos.
-   d. Devuelve `texto`, `ms` y `segmentos`.
+   a. Con clave, llama a Groq. Si no llega `prompt`, usa el de la configuración (`VOICE_PROMPT`). El valor por defecto, igual en `stt.js` y en `config.js`, es `Ignite, mierdabot, bot mierda, reproduce, pon, toca, pausa, salta, siguiente, anterior, agrega, añade, cola, lista, volumen, activa autoplay, desactiva autoplay, autoplay on, autoplay off.`
+   b. Si Groq devuelve texto, lo usa.
+   c. Si Groq falla, registra un aviso y sigue.
+   d. Si no hay texto y Vosk está listo, toma un reconocedor del pool de S-05, transcribe el PCM y lo libera. Los segmentos quedan vacíos.
+   e. Devuelve `texto`, `ms` y `segmentos`.
 10. Filtro `es_alucinacion(texto, segmentos)`:
     a. Normaliza el texto: minúsculas, quita acentos, cambia por espacio todo lo que no sea a-z, 0-9 o espacio, colapsa espacios y recorta.
     b. Vacío: es alucinación.
@@ -68,7 +69,7 @@ Cada archivo tiene como máximo 250 líneas.
     e. Si todos los segmentos cumplen `no_speech_prob > 0,6` y `avg_logprob < -1`: es alucinación. Un valor que falte cuenta como 0.
     f. En otro caso, no es alucinación.
 11. Lista de frases, ya normalizadas: `gracias`, `muchas gracias`, `gracias por ver el video`, `gracias por ver`, `thank you`, `thanks`, `thanks for watching`, `thank you for watching`, `suscribete`, `suscribete al canal`, `no olvides suscribirte`, `subtitulos por la comunidad de amara org`, `subtitulado por la comunidad de amara org`, `subtitulos realizados por la comunidad de amara org`, `amara org`, `you`, `bye`, `adios`, `hasta la proxima`.
-12. S-08 descarta el enunciado si el texto está vacío o si `es_alucinacion` da verdadero. Ese estado se registra como `hallucination` (S-12).
+12. S-08 descarta el enunciado si el texto está vacío o si `es_alucinacion` da verdadero. Con texto vacío no se registra ningún evento. Con texto no vacío que es alucinación, el evento se registra con estado `hallucination` (S-12).
 
 ## Tests
 
@@ -102,8 +103,10 @@ Cada archivo tiene como máximo 250 líneas.
 ## Decisiones
 
 - Clave de Groq en el log: no se registra ningún dato de la clave. Node registra los 7 primeros caracteres y la longitud (`groq-client.js`). No hace falta rotar la clave por eso, porque solo salía un prefijo. Conviene revisar dónde se guardan los logs.
+- User-Agent: se mantiene el mismo que Node (`Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36`). El código no explica por qué imita Chrome, pero cambiarlo no aporta nada y añade una variable a la paridad de la petición.
+- Lista de frases: se mantienen las 19 fijas. Se amplía solo si los registros de F7 muestran alucinaciones nuevas, como cambio aparte (rompe la paridad del filtro).
 
-## Preguntas abiertas
+## Preguntas resueltas
 
-- User-Agent de navegador: el código imita Chrome y no dice por qué. ¿Se mantiene?
-- Lista de frases: son 19 fijas. ¿Se amplía con lo que salga en los registros de F7, o se queda igual?
+- User-Agent de navegador: ver Decisiones.
+- Lista de frases: ver Decisiones.

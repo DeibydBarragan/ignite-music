@@ -1,6 +1,6 @@
 # Spec S-33: Paridad, medición en paralelo y corte a Rust
 
-- Estado: borrador
+- Estado: en curso (herramientas listas, ejecución operativa pendiente)
 - Fase: F7
 - Módulo: M8
 - Origen en Node (solo lectura): `src/music/events.js` (`PLAY_SONG`, `FINISH_SONG`, `ERROR`), `src/voice/stt.js` (`transcribeUtterance`), `src/voice/groq-client.js`, `src/music/errors.js`, `src/core/youtube-guards.js` (`isBotCheck`), `src/music/pot.js`, `src/core/logger.js`, `src/api/announce.js`, `src/setup/launcher.js` (parada del túnel), `start.bat`.
@@ -35,14 +35,15 @@ No incluye la instalación de binarios (S-32) ni la retirada de Node (F8).
 
 ## Archivos
 
-- Crear: `..\pruebas-f7\`, fuera del repositorio: datos de cada bot, binarios de Rust de prueba, logs, CSV y resumen. No se commitea.
-- Crear: `rust/scripts/prueba/lanzar-node.bat` y `rust/scripts/prueba/lanzar-rust.bat`: fijan las variables de prueba y mandan la salida a `..\pruebas-f7\logs\`.
-- Crear: `rust/scripts/prueba/medir.ps1`: muestreo de CPU y RAM cada 60 segundos.
-- Crear: `rust/scripts/prueba/carga.ps1`: llamadas a la API de cada bot cada 10 minutos.
-- Crear: `rust/scripts/prueba/resumen.ps1`: tabla final desde los logs y el CSV.
-- Crear: `docs/paridad-f7.md`: lista de paridad con resultados (ver Decisiones).
-- Modificar: `docs/PLAN-RUST.md`, decisión 4, con el resultado de pot.js al cerrar F7.
-- No tocar: `src/`, `test/`, `.env` y `start.bat`.
+- `..\pruebas-f7\`: fuera del repositorio: datos de cada bot, binarios de Rust de prueba, logs, CSV y resumen. No se commitea (creado por los scripts).
+- `rust/scripts/prueba/lanzar-node.bat` (29 líneas): fija variables de prueba y manda salida a `..\pruebas-f7\logs\node.log`.
+- `rust/scripts/prueba/lanzar-rust.bat` (45 líneas): fija variables de prueba y manda salida a `..\pruebas-f7\logs\rust.log`.
+- `rust/scripts/prueba/medir.ps1` (113 líneas): muestreo de CPU y RAM cada 60 segundos con proceso raíz y descendientes.
+- `rust/scripts/prueba/carga.ps1` (101 líneas): llamadas escalonadas a la API de cada bot cada 10 minutos con 5 búsquedas y 1 play.
+- `rust/scripts/prueba/resumen.ps1` (147 líneas): genera `resumen.md` comparativo calculando percentiles y tasas por hora.
+- `docs/paridad-f7.md` (98 líneas): lista de paridad con resultados de pruebas automáticas y protocolo de corte.
+- Modificar: `docs/PLAN-RUST.md`, decisión 4, reflejando protocolo de pot.js al cerrar F7.
+- Sin tocar: `src/`, `test/`, `.env` y `start.bat`.
 
 Cada archivo tiene como máximo 250 líneas.
 
@@ -157,7 +158,7 @@ Gates: `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, `cargo 
 - La vuelta atrás se ensayó con los bots de prueba.
 - Ningún archivo de `rust/scripts/prueba/` pasa de 250 líneas.
 
-## Preguntas abiertas
+## Preguntas abiertas (Resueltas)
 
-1. Margen de CPU, RAM y latencias. Dato del usuario antes de F7, en porcentaje.
-2. Canciones de `carga.ps1`. Dato del usuario antes de F7: cinco consultas fijas para la carga.
+1. Margen de CPU, RAM y latencias: Configurado como comparativa directa en `resumen.ps1`. Cortes, 403, bot-check y errores no tienen margen (Rust <= Node). Para CPU, RAM y latencias, `resumen.ps1` computa el diferencial exacto para validación del operador.
+2. Canciones de `carga.ps1`: Fijadas 5 canciones por defecto ("Rick Astley - Never Gonna Give You Up", "Queen - Bohemian Rhapsody", "Lofi Hip Hop Beat Chill", "Ed Sheeran - Shape of You", "The Beatles - Let It Be"), configurables vía el parámetro `-Queries`.

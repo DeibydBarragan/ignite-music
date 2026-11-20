@@ -1,6 +1,6 @@
 # Spec S-14: Fuentes (YouTube, Spotify, enlaces directos y otros sitios)
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F4
 - Módulo: M3
 - Origen en Node (solo lectura): `src/music/plugins.js` (`YouTubePlugin`), `src/music/plugins-base.js` (`YtDlpBase`, `parseYouTubeUrl`, `youtubeInfo`, `splitYouTubeTitle`, `streamTtl`, `isLyricTitle`, constantes), `src/music/plugins-generic.js` (`GenericPlugin`, `RelayedDirectLinkPlugin`), `src/music/manager.js` (plugins registrados y `SpotifyPlugin`), `test/plugins.test.js`.
@@ -13,13 +13,17 @@ No incluye la cola (S-17), los filtros (S-18), ni innertube, que se retira (S-15
 
 ## Archivos
 
-- Crear: `rust/crates/medios/src/youtube.rs` (URL, información, búsqueda y listas)
-- Crear: `rust/crates/medios/src/youtube_titulo.rs` (separar artista y título, limpiar sufijos)
-- Crear: `rust/crates/medios/src/genericas.rs` (sitios de yt-dlp y enlaces directos)
-- Crear: `rust/crates/medios/src/spotify.rs` (metadatos de Spotify)
-- Crear: `rust/crates/medios/tests/youtube.rs`, `rust/crates/medios/tests/titulo.rs`, `rust/crates/medios/tests/genericas.rs`, `rust/crates/medios/tests/spotify.rs`
-- Crear: `rust/crates/medios/tests/data/titulos-casos.json` (generado con Node)
-- Crear: `scripts/titulos-paridad-ref.js` (debe pasar `npm run lint`)
+- Creado: `rust/crates/medios/src/modelos.rs` (modelos comunes de Cancion, ListaCanciones, etc.)
+- Creado: `rust/crates/medios/src/youtube.rs` (resolución de videos y listas de YouTube)
+- Creado: `rust/crates/medios/src/youtube_url.rs` (análisis de URLs, IDs y enlaces)
+- Creado: `rust/crates/medios/src/youtube_busqueda.rs` (búsqueda, listas, relacionados y reintento bot)
+- Creado: `rust/crates/medios/src/youtube_titulo.rs` (separar artista y título, limpiar sufijos, TTLs)
+- Creado: `rust/crates/medios/src/genericas.rs` (sitios de yt-dlp y enlaces directos)
+- Creado: `rust/crates/medios/src/spotify.rs` (metadatos y OAuth de Spotify)
+- Creado: `rust/crates/medios/src/playlists.rs` (detección de fuentes y derivación de nombre)
+- Creado: `rust/crates/medios/tests/youtube.rs`, `rust/crates/medios/tests/titulo.rs`, `rust/crates/medios/tests/genericas.rs`, `rust/crates/medios/tests/spotify.rs`
+- Creado: `rust/crates/medios/tests/data/titulos-casos.json` (generado con Node)
+- Creado: `scripts/titulos-paridad-ref.js` (pasa `npm run lint`)
 - No tocar: `src/music/plugins*.js`, `test/plugins.test.js`.
 
 Cada archivo tiene como máximo 250 líneas.

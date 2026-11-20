@@ -1,6 +1,6 @@
 # Spec S-23: Guards y permisos
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F5
 - Módulo: M5
 - Origen en Node (solo lectura): `src/handlers/guards.js` (`checkVoice`, `panelChannel`, `respond`, `say`, `IGNORED_CODES`), versión de HEAD. Los cambios sin commit de ese archivo, `src/core/dev-mode.js`, `src/config.js` y `test/dev-mode.test.js` se tratan en Preguntas abiertas.

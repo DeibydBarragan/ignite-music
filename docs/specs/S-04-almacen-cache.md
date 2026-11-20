@@ -1,6 +1,6 @@
 # Spec S-04: Almacén atómico y caché TTL
 
-- Estado: borrador
+- Estado: implementada
 - Fase: F1
 - Módulo: M1
 - Origen en Node (solo lectura): `src/core/store.js` (`JsonStore`: `initialize`, `get`, `set`, `delete`, `keys`, `flush`, `drain`), `src/core/cache.js` (`TTLCache`: `get`, `has`, `set`, `delete`, `clear`, `sweep`, `wrap`, y el barrido compartido), `test/core.test.js` (grupos TTLCache y JsonStore).

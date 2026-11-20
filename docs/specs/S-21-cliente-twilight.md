@@ -1,6 +1,6 @@
 # Spec S-21: Cliente twilight (un shard)
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F5
 - Módulo: M5
 - Origen en Node (solo lectura): `src/bot.js` (`createClient`, `start`, `shutdown`, eventos `ClientReady`, `InteractionCreate` y `VoiceStateUpdate`), `src/setup/launcher.js` (`main`, `stop`, `buildShardEnv`, `ShardingManager`).
@@ -15,11 +15,11 @@ Reiniciar el proceso corta la música, como hoy. Al arrancar, S-19 restaura las 
 
 ## Archivos
 
-- Modificar: `rust/crates/bot/src/main.rs` (hoy solo tiene `fn main() {}`): arranque, orden de pasos y señales de cierre.
-- Crear: `rust/crates/bot/src/cliente.rs`: cliente HTTP, shard, intents, presencia y despacho de eventos.
-- Crear: `rust/crates/bot/src/apagado.rs`: orden del apagado y tiempo límite.
-- Modificar: `rust/crates/bot/Cargo.toml`: `twilight-gateway`, `twilight-http`, `twilight-model` y `twilight-cache-inmemory` (feature `permission-calculator`), todas en 0.17, y `tokio`.
-- Crear: `rust/crates/bot/tests/cliente.rs`.
+- Modificado: `rust/crates/bot/src/main.rs`: arranque, orden de pasos y señales de cierre.
+- Creado: `rust/crates/bot/src/cliente.rs`: cliente HTTP, shard, intents, presencia y despacho de eventos.
+- Creado: `rust/crates/bot/src/apagado.rs`: orden del apagado y tiempo límite.
+- Modificado: `rust/crates/bot/Cargo.toml`: `twilight-gateway`, `twilight-http`, `twilight-model` y `twilight-cache-inmemory` (feature `permission-calculator`), todas en 0.17, `tokio`, y dependencias de `nucleo`, `player`, `medios` y `voice`.
+- Creado: `rust/crates/bot/tests/cliente.rs`: 7 tests unitarios y de paridad.
 - No tocar: `src/bot.js`, `src/setup/launcher.js`, el resto de `src/` (incluidos los cambios sin commit del usuario), `rust/crates/voice/` y `rust/crates/player/`.
 
 Cada archivo tiene como máximo 250 líneas.

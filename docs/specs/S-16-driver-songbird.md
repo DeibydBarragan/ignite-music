@@ -1,6 +1,6 @@
 # Spec S-16: Driver de songbird
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F2 (solo lo que F2 necesita; el resto va en F4)
 - Módulo: M4
 - Fuente leída: songbird v0.6.0, commit `3f77b5f`.

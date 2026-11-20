@@ -1,6 +1,6 @@
 # Spec S-12: Registro de eventos de voz y CSV
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F3
 - Módulo: M2
 - Origen en Node (solo lectura): `src/voice/event-log.js` (`VoiceEventLogStore`: `record`, `getLogs`, `clear`), `src/voice/csv-exporter.js` (`VoiceCsvExporter`: `add`, `flush`, `flushAll`; `buildCsv`, `toCsvCell`, `CSV_COLUMNS`), `src/bot.js` (`flushAll` al apagar), `test/voice-csv.test.js`.
@@ -34,6 +34,7 @@ Cada archivo tiene como máximo 250 líneas.
 - Salida de `registrar`: la entrada normalizada, con `id` (`vlog_<milisegundos>_<5 caracteres>`) y `timestamp` (ISO 8601).
 - Salida de `obtener(servidor, limite = 50)`: hasta `limite` eventos, el más reciente primero.
 - Entrada de `fijar_csv(servidor, activo)`: la llama S-30 al cargar o cambiar el ajuste del servidor. Por defecto, el CSV está desactivado en todos los servidores.
+- El procesador de voz lee el opt-in persistido en `guild_voice_settings.tts_templates._csv` y lo aplica antes de registrar fragmentos. Ese valor es metadata interna del servidor y las ediciones de plantillas lo conservan. El audio PCM no se escribe en el CSV.
 - Columnas del CSV, en este orden: `id`, `timestamp`, `guildId`, `userId`, `audioBytes`, `voskHeard`, `wakeWordSpotted`, `matchedWakeWord`, `gateReason`, `groqEngaged`, `groqText`, `groqElapsedMs`, `commandId`, `query`, `ttsMessage`, `status`. Son los nombres de Node, no los de Rust.
 - Errores: un fallo al escribir el CSV se registra como aviso. No detiene el registro en memoria.
 
@@ -44,7 +45,7 @@ Cada archivo tiene como máximo 250 líneas.
 3. `limpiar(servidor)` vacía el anillo de ese servidor.
 4. Cada evento registrado se publica por SSE en el servidor, con el nombre `voice.log` (S-28). Si el hub SSE no existe, se ignora.
 5. Si el servidor tiene el CSV activo, cada evento se pasa al exportador. Un fallo del exportador se ignora.
-6. Normalización: `userId` sin dato es nulo. `audioBytes` que no sea número es 0. Los booleanos que falten son falso. `status` que falte es `filtered_out`.
+6. Normalización, igual que Node en `event-log.js`: `id` es `vlog_<milisegundos>_<5 caracteres>` y `timestamp` es ISO 8601. `servidor` se guarda como texto. `userId` sin dato es nulo. `bytes_audio` que no sea número es 0. `vosk_oyo` sin dato es cadena vacía. Los booleanos que falten son falso. `palabra`, `motivo_puerta`, `texto_groq`, `ms_groq`, `comando`, `consulta` y `mensaje_tts` sin dato son nulos (`ms_groq` en 0 también es nulo). `estado` que falte es `filtered_out`.
 7. Lote CSV: cuando un servidor con el CSV activo acumula 50 eventos nuevos, se escribe un archivo con esos 50 y su lote queda vacío.
 8. Nombre del archivo: `<servidor>-<fecha ISO con : y . cambiados por ->.csv`, dentro de `DATA_DIR/voice-logs/`. La carpeta se crea si falta.
 9. Contenido: cabecera con las 16 columnas, una fila por evento en orden de llegada, y salto de línea al final.
@@ -89,7 +90,8 @@ Cada archivo tiene como máximo 250 líneas.
 
 - Inyección de fórmulas: se aplica el apóstrofe de la regla 10. Node no lo hace, así que el CSV de Rust se aparta de Node en esas celdas.
 - Activación y retención: el CSV se escribe solo si el servidor lo activa (S-30), y no está activo por defecto. Los archivos con más de 30 días se borran (regla 13). Node escribe siempre y no borra nunca.
+- Identificador: se mantiene el formato de Node, `vlog_<milisegundos>_<5 caracteres>` con `Date.now()` y un número aleatorio en base 36 (decisión del plan, 9.7). El reloj de Rust da los milisegundos igual que Node; los 5 caracteres aleatorios son alfanuméricos en minúsculas.
 
-## Preguntas abiertas
+## Preguntas resueltas
 
-- Identificador: Node usa `Date.now()` y un número aleatorio. Propuesta: mantener el mismo formato.
+- Identificador: ver Decisiones. La llamada de `fijar_csv` al cargar o cambiar el ajuste es de S-30; esta spec solo expone la función.

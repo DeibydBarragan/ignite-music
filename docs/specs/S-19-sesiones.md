@@ -1,6 +1,6 @@
 # Spec S-19: Sesiones y restauración al arrancar
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F4
 - Módulo: M4
 - Origen en Node (solo lectura): `src/music/session.js` (`SessionStore`: `serialize`, `save`, `load`, `buildSongs`, `remove`), `src/music/sessions-restore.js` (`saveAllSessions`, `restoreSessions`), `src/music/manager.js` (temporizador de guardado cada 15 s, `shutdown`), `test/session.test.js`.

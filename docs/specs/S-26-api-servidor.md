@@ -1,6 +1,6 @@
 # Spec S-26: Servidor de la API y seguridad
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F6
 - Módulo: M6
 - Origen en Node (solo lectura): `src/api/server.js` (`startApiServer`), `src/api/middleware/auth.js` (`requireAuth`, `requireUser`, `extractBearer`, `safeEqual`), `src/api/v1/router.js` (`createRouter`), `src/api/contracts.js` (`sendError`; el formato de errores está en S-02), `src/api/shard-proxy.js` (se retira). Pruebas: `test/api.test.js`.
@@ -22,11 +22,13 @@ No incluye las rutas (S-27), el SSE (S-28), el túnel y el anuncio (S-29) ni los
 
 ## Archivos
 
-- Crear: `rust/crates/bot/src/api/mod.rs`: arranque del servidor y orden de las capas.
-- Crear: `rust/crates/bot/src/api/seguridad.rs`: Bearer, `X-User-Discord-Id` y comparación en tiempo constante.
-- Crear: `rust/crates/bot/src/api/capas.rs`: cabeceras, CORS, límite de cuerpo, identificador de petición y límite de peticiones.
-- Modificar: `rust/crates/bot/Cargo.toml`: `axum`, `tower-http` y `tokio`, con versiones fijadas al añadirlas.
-- Crear: `rust/crates/bot/tests/api_seguridad.rs` y `rust/crates/bot/tests/api_capas.rs`.
+- Creado: `rust/crates/bot/src/api/mod.rs`: arranque del servidor y orden de las capas.
+- Creado: `rust/crates/bot/src/api/seguridad.rs`: Bearer, `X-User-Discord-Id` y comparación en tiempo constante.
+- Creado: `rust/crates/bot/src/api/capas.rs`: cabeceras de seguridad, CORS, límite de cuerpo, identificador de petición y manejo de errores.
+- Creado: `rust/crates/bot/src/api/rate_limit.rs`: límite de peticiones con ventana fija de 60s por IP y cabeceras `X-RateLimit-*`.
+- Modificado: `rust/crates/bot/Cargo.toml`: `axum` (=0.8.9) y `tower-http` (=0.6.11 con feature `cors`).
+- Creado: `rust/crates/bot/tests/api_seguridad.rs`: 7 tests de autenticación y validación de usuario.
+- Creado: `rust/crates/bot/tests/api_capas.rs`: 6 tests de salud, cabeceras, CORS, límites y ciclo de vida.
 - No tocar: `src/api/`, `test/api.test.js`, `openapi.yaml`.
 
 Cada archivo tiene como máximo 250 líneas.

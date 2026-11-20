@@ -1,6 +1,6 @@
 # Spec S-20: Presencia y salida automática
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F4
 - Módulo: M4
 - Origen en Node (solo lectura): `src/music/presence.js` (`scheduleLeave`, `clearLeave`, `listenerCount`, `handleVoiceStateUpdate`), `src/music/manager.js` (`listenerCount`, `handleVoiceStateUpdate`, `shutdown`), `src/music/events.js` (`FINISH`, `DELETE_QUEUE`), `test/manager.test.js` (grupo de canal vacío).

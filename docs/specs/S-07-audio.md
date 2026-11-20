@@ -1,6 +1,6 @@
 # Spec S-07: Audio PCM
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F2
 - Módulo: M2
 - Origen en Node (solo lectura): `src/voice/audio-transcoder.js` (`downsample48kStereoTo16kMono`, `pcmRms`, `pcmToWav`, `slicePcmWav`)

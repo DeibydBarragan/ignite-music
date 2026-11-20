@@ -1,6 +1,6 @@
 # Spec S-02: Logs y errores
 
-- Estado: borrador
+- Estado: implementada
 - Fase: F1
 - Módulo: M1
 - Origen en Node (solo lectura): `src/core/logger.js` (`createLogger`, `normalize`, `setDebug`), `src/api/contracts.js` (`ApiError`, `problem`, `sendProblem`, `sendError`, `sendOpResult`, `STATUS_BY_CODE`, `ERROR_TITLES`), `src/api/server.js` (manejador final de errores), `test/contracts.test.js`.

@@ -1,6 +1,6 @@
 # Spec S-22: Slash commands y su registro
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F5
 - Módulo: M5
 - Origen en Node (solo lectura): `src/commands/*.js` (25 comandos), `src/commands/_shared.js` (`command`, `queueAction`), `src/commands/index.js` (`loadCommands`), `src/deploy.js` (`deployCommands`, `commandBodies`), `src/handlers/interactions.js` (`route`, `onInteraction`), `src/bot.js` (IDs de comandos en `ClientReady`), `test/commands.test.js`.
@@ -13,14 +13,14 @@ La lógica de cada comando queda en la spec de su módulo: acciones de cola (S-1
 
 ## Archivos
 
-- Crear: `rust/crates/bot/src/comandos/mod.rs`: lista de los 25 comandos, `Contexto` (traductor del servidor y reproductor) y despacho por nombre.
-- Crear: `rust/crates/bot/src/comandos/definiciones/mod.rs`, `reproduccion.rs` (17 comandos), `cola.rs` (6) y `ajustes.rs` (2): constructores de cada comando.
-- Crear: `rust/crates/bot/src/comandos/acciones.rs`: `accion_de_cola` (equivalente a `queueAction`) y los comandos que la usan.
-- Crear: `rust/crates/bot/src/comandos/reproducir.rs`: `play`, `playnext`, `reproducir_desde_interaccion` y autocompletado.
-- Crear: `rust/crates/bot/src/comandos/registro.rs`: registro en Discord, marcador y IDs de comandos.
-- Crear: `rust/crates/bot/src/interacciones.rs`: router de interacciones. Comandos y autocompletado van aquí. Los componentes se pasan a S-24 (`m:*`) y S-25 (`q:`, `ly:`, `s:`, `lang:set`).
-- Crear: `rust/crates/bot/tests/comandos.rs` y `rust/crates/bot/tests/fixtures/comandos-node.json`.
-- No tocar: `src/commands/`, `src/deploy.js`, `src/handlers/interactions.js`.
+- Creado: `rust/crates/bot/src/comandos/mod.rs`: lista de los 25 comandos, `Contexto` (traductor del servidor y reproductor) y despacho por nombre.
+- Creado: `rust/crates/bot/src/comandos/definiciones/mod.rs`, `reproduccion.rs`, `reproduccion_a.rs`, `reproduccion_b.rs` (17 comandos), `cola.rs` (6) y `ajustes.rs` (2): constructores de cada comando.
+- Creado: `rust/crates/bot/src/comandos/acciones.rs`: `accion_de_cola` (equivalente a `queueAction`) y los comandos que la usan.
+- Creado: `rust/crates/bot/src/comandos/reproducir.rs`: `play`, `playnext`, `reproducir_desde_interaccion` y autocompletado.
+- Creado: `rust/crates/bot/src/comandos/registro.rs`: registro en Discord, marcador y IDs de comandos.
+- Creado: `rust/crates/bot/src/interacciones.rs`: router de interacciones. Comandos y autocompletado van aquí. Los componentes se pasan a S-24 (`m:*`) y S-25 (`q:`, `ly:`, `s:`, `lang:set`).
+- Creado: `rust/crates/bot/tests/comandos.rs` y `rust/crates/bot/tests/fixtures/comandos-node.json`.
+- No tocado: `src/commands/`, `src/deploy.js`, `src/handlers/interactions.js`.
 
 Cada archivo tiene como máximo 250 líneas.
 

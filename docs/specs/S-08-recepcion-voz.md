@@ -1,6 +1,6 @@
 # Spec S-08: Recepción de voz
 
-- Estado: borrador
+- Estado: integrado en el driver. Aceptación con voz real en DAVE pendiente
 - Fase: F2
 - Módulo: M2
 - Origen en Node (solo lectura): `src/voice/receiver.js`, `src/voice/speaker-filter.js`, `src/voice/admission.js`. Valores por defecto en `src/config.js`.
@@ -13,7 +13,7 @@ Fuera de esta spec: la compuerta de wake word (S-06), Groq (S-09), el matcher (S
 
 ## Decisiones
 
-- El dato de bot sale de `twilight-http` (`client.guild_member(guild_id, user_id)`), no de la caché. La caché de twilight solo guarda miembros que llegan por eventos (MemberAdd, MemberUpdate, MemberChunk) y un miembro que no cambia nunca es invisible. Node hace lo mismo: primero caché y después `guild.members.fetch(userId)`. En F2 basta con el REST. No pide el intent privilegiado `GUILD_MEMBERS`.
+- Se reutiliza el dato del miembro cuando Discord lo incluye en el estado de voz. Para hablantes desconocidos se consulta `twilight-http` con `client.guild_member(guild_id, user_id)`. Si falla la identificación, se descarta el audio hasta poder identificar al hablante. Node también combina caché con una consulta de miembro. La implementación no pide el intent privilegiado `GUILD_MEMBERS`.
 
 ## Archivos
 
@@ -64,6 +64,8 @@ Salida: fragmento por usuario, en 48 kHz estéreo, con `guild_id`, `user_id` y d
   - Compuerta cerrada: `filtered_out`.
   - Dos peticiones a menos de 2 000 ms: la segunda da `rate_limited`.
 - Paridad con Node: `admitAudio` de Node con `offlineGating: false`, que no necesita Vosk. Con los WAV de fixtures (16 kHz mono, como los recibe `admitAudio`) y los mismos instantes, las decisiones de RMS y de cooldown deben coincidir.
+- El test del gateway entrega los dos eventos de Discord al adaptador real de Songbird mientras una interacción espera la conexión. Otra interacción progresa antes del segundo evento.
+- La prueba manual `cargo test -p bot --test recepcion_manual -- --ignored --nocapture` utiliza `IGNITE_VOICE_TEST_TOKEN`, `IGNITE_VOICE_TEST_GUILD_ID`, `IGNITE_VOICE_TEST_CHANNEL_ID`, `IGNITE_VOICE_TEST_SPEAKER_ID` y `IGNITE_VOICE_TEST_EXPECTED_MS` (diez duraciones de referencia separadas por comas). Exige un canal de prueba con DAVE y un locutor humano. Comprueba muestras PCM con señal, hablante, duración y ausencia de fragmentos adicionales mientras el WAV se reproduce. Repite el ciclo después de salir y volver a entrar.
 
 ## Criterio de aceptación
 

@@ -1,6 +1,6 @@
 # Spec S-17: Cola con bloqueo por guild
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F4
 - Módulo: M4
 - Origen en Node (solo lectura): `src/music/playback.js` (`play`, `prefetchNext`, `remaining`, `queueFull`), `src/music/manager.js` (`state`, `withPlayLock`, `changed`, `publishSync`, `shutdown`), `src/music/events.js` (`bindDisTubeEvents`: `PLAY_SONG`, `FINISH_SONG`, `ADD_SONG`, `FINISH`, `DISCONNECT`, `DELETE_QUEUE`, `ERROR`), `src/music/actions.js` (controles y acciones de cola), `src/api/v1/ops/queue.js` (quitar, mover, ordenar, saltar, limpiar y deshacer), `test/manager.test.js`, `test/actions.test.js`, `test/queue-ops.test.js`.
@@ -13,13 +13,13 @@ No incluye las fuentes (S-14), los filtros (S-18), las sesiones (S-19) ni la pre
 
 ## Archivos
 
-- Crear: `rust/crates/player/src/cola.rs` (estado por servidor y bloqueo)
-- Crear: `rust/crates/player/src/musica.rs` (trait `Musica`, `EstadoCola` y `ErrorMusica`). Lo usa S-10. Se crea en F3 con pausa y reanudación, y F4 lo completa.
-- Crear: `rust/crates/player/src/cola_operaciones.rs` (quitar, mover, ordenar, saltar, limpiar y deshacer)
-- Crear: `rust/crates/player/src/acciones.rs` (pausa, reanudar, saltar, anterior, parar, mezclar, bucle, autoplay, volumen y búsqueda)
-- Crear: `rust/crates/player/src/reproducir.rs` (capacidad, truncado, NSFW y arranque)
-- Crear: `rust/crates/player/src/eventos_cola.rs` (auto-recuperación de cortes y eventos)
-- Crear: `rust/crates/player/tests/cola.rs`, `rust/crates/player/tests/acciones.rs`, `rust/crates/player/tests/cola_operaciones.rs`, `rust/crates/player/tests/reproducir.rs`
+- Creado: `rust/crates/player/src/cola.rs` (estado por servidor y bloqueo)
+- Creado: `rust/crates/player/src/musica.rs` (trait `Musica`, `EstadoCola`, `ResultadoReproducir` y `ErrorMusica`). Usado por S-10.
+- Creado: `rust/crates/player/src/cola_operaciones.rs` (quitar, mover, ordenar, saltar, limpiar y deshacer)
+- Creado: `rust/crates/player/src/acciones.rs` (pausa, reanudar, saltar, anterior, parar, mezclar, bucle, autoplay, volumen y búsqueda)
+- Creado: `rust/crates/player/src/reproducir.rs` (capacidad, truncado, NSFW y arranque)
+- Creado: `rust/crates/player/src/eventos_cola.rs` (auto-recuperación de cortes y eventos)
+- Creado: `rust/crates/player/tests/cola.rs`, `rust/crates/player/tests/acciones.rs`, `rust/crates/player/tests/cola_operaciones.rs`, `rust/crates/player/tests/reproducir.rs`
 - No tocar: `src/music/*.js`, `src/api/v1/ops/queue.js`, `test/manager.test.js`, `test/actions.test.js`, `test/queue-ops.test.js`.
 
 Cada archivo tiene como máximo 250 líneas.

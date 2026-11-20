@@ -1,6 +1,6 @@
 # Spec S-11: Respuesta por TTS
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F3
 - Módulo: M2
 - Origen en Node (solo lectura): `src/voice/tts-feedback.js` (`DEFAULT_TTS_TEMPLATES`, `interpolateTemplate`, `resolveFeedbackMessage`, `sendTtsFeedback`), `src/voice/dispatcher.js` (llamadas), `src/voice/settings-store.js` (voz, tono y velocidad por defecto), `test/voice.test.js` (grupo ttsFeedback).
@@ -51,7 +51,7 @@ Cada archivo tiene como máximo 250 líneas.
 | hola_que_hace | `Hola que hace` |
 
 2. Plantillas del servidor: se suman a las de por defecto. Si el servidor define el mismo comando, gana su plantilla.
-3. Interpolación: cada `{nombre}` se cambia por el valor de `parametros`. Si el valor falta o es nulo, se cambia por texto vacío. El resultado se recorta.
+3. Interpolación: cada `{nombre}` se cambia por el valor de `parametros`. Un marcador es una secuencia de letras, números o guion bajo (`\{(\w+)\}` en Node). Si el valor falta o es nulo, se cambia por texto vacío. El resultado se recorta.
 4. Sin plantilla para el comando: no se envía.
 5. Activación: si se pasa `activado`, manda ese valor. Si no, `VOICE_TTS_FEEDBACK_ENABLED`. Si está apagado, no se envía.
 6. Dirección: `url` si se pasa, o `IGNITE_SOUND_API_URL`. Si está vacía, no se envía.
@@ -87,8 +87,11 @@ Cada archivo tiene como máximo 250 líneas.
 - `cargo test` pasa sin ignite-sound real.
 - Ningún archivo pasa de 250 líneas.
 
+## Decisiones
+
+- Las plantillas están fijas en español. Node no las pasa por i18n (S-03). Se mantienen por paridad (decisión del plan, 9.7).
+- Node no espera la respuesta de ignite-sound: el despacho llama a `enviar` sin esperar el resultado (regla 12). Se mantiene (decisión del plan, 9.7).
+
 ## Preguntas abiertas
 
-- `.env.example` apunta `IGNITE_SOUND_API_URL` a `http://localhost:3002`. El valor por defecto del código apunta a una URL de AWS. ¿Cuál es la de producción? Hay que confirmarlo.
-- Las plantillas están fijas en español. Node no las pasa por i18n (S-03). Propuesta: mantenerlo.
-- Node no espera la respuesta de ignite-sound. Propuesta: mantenerlo.
+- URL de producción de `IGNITE_SOUND_API_URL`. El código tiene como valor por defecto `https://wsnbbnbdc7.execute-api.us-east-2.amazonaws.com/sound` (`config.voice.soundApiUrl`), pero `.env.example` apunta a `http://localhost:3002`. La confirma el usuario (plan, 9.7). Mientras tanto, Rust usa el mismo valor por defecto que Node.

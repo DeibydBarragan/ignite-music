@@ -1,6 +1,6 @@
 # Spec S-30: Supabase (ajustes de voz, historial y datos de usuario)
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F6
 - Módulo: M7
 - Origen en Node (solo lectura): `src/core/supabase.js` (`supabase`, `verifyConnection`), `src/voice/settings-store.js` (`VoiceSettingsStore`, `sanitizeWakeWord`), `src/music/history.js` (`recordPlay`, `loadExclusions`, `getExcludedDates`), `src/music/top-songs.js` (`getTopSongs`, `aggregatePlays`, `completeSong`), `src/handlers/favorite.js` (`handleFavorite`), `src/music/playlists.js` (`fetchUserPlaylists`, `upsertUserPlaylist`), `supabase/migrations/` (cuatro archivos).

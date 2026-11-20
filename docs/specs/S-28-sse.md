@@ -1,6 +1,6 @@
 # Spec S-28: SSE por servidor
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F6
 - Módulo: M6
 - Origen en Node (solo lectura): `src/api/sse.js` (`SseHub`, `getSseHub`), `src/api/v1/player.routes.js` (`GET /guilds/:guildId/events`), `src/music/manager.js` (`publishSync`), `src/music/events.js` (llamadas a `publishSync`), `src/api/v1/ops/player.js` (`control`), `src/voice/event-log.js` (publica `voice.log`), `openapi.yaml` (solo documenta `player.sync`).

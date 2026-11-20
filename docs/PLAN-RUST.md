@@ -16,7 +16,7 @@ Rama: `feature/rust-migration`. Este documento es solo el plan. Solo hay un esqu
 | 1 | Librería de Discord | twilight 0.17 | El panel usa Components V2. twilight lo trae. serenity 0.12.5 no. | Esperar la rama nueva de serenity. |
 | 2 | Voz | songbird 0.6 | Trae DAVE, el cifrado de voz que Discord exige desde marzo de 2026. | Ver la regla de parada (sección 3). |
 | 3 | Vosk | Cargar `libvosk.dll` al arrancar con `libloading` | Es lo que hace koffi hoy. Rust usa MSVC (S-31). Usa los archivos de `bin/vosk`. | Crate `vosk`. |
-| 4 | YouTube | Solo yt-dlp como proceso externo | Hay menos código que portar. Quedan fuera innertube y relay. pot.js se mide en F7 antes de retirarlo. | Portar el relay solo si aparecen errores 403. |
+| 4 | YouTube | Solo yt-dlp como proceso externo | Menos código que portar; fuera innertube y relay. En F7 (S-33), si Rust sin pot no supera a Node con pot en 403 ni bot-check, pot.js se retira (F4 a). | Portar el relay (S-15) solo si Rust supera a Node en 403 o bot-check. |
 | 5 | Procesos | Uno solo, con un solo shard. La API (axum) corre dentro del bot. | Un servidor usa el bot. Desaparecen `shard-proxy` y `broadcastEval`. | Separar la API después de F8. |
 | 6 | Filtros de audio | Mantener ffmpeg con los 8 filtros de hoy | El sonido queda igual. | DSP propio más adelante. |
 | 7 | Sistema | Solo Windows | El servicio corre en la máquina del usuario. | Linux si algún día hay VPS. |
@@ -155,12 +155,12 @@ Estado a 2026-11-08. Esta sección amplía la sección 5 con dependencias, puert
 | Parte | Estado |
 | :--- | :--- |
 | Plan (secciones 1 a 9) | Escrito. |
-| Specs S-01 a S-33 | Escritas. Algunas decisiones siguen abiertas (ver 9.7). |
+| Specs S-01 a S-33 | Escritas. F1 (S-01 a S-04, S-31), F2 (S-07, S-08, S-16), F3 (S-05, S-06, S-09 a S-12), F4 (S-13 a S-15, S-17 a S-20), F5 (S-21 a S-25) y F6 (S-26 a S-30) implementadas. F7: S-32 implementada; S-33 en curso (harness listo, medición operativa pendiente). |
 | Commits de specs | Hasta `6d03f2e`. Incluye F1, F6, F7 y F2 (`408a521`, `511b4b5`). |
-| Workspace `rust/` (S-31) | Esqueleto sin lógica. Solo el crate `medios` está en commit (`6d03f2e`). `rust/Cargo.toml` y el resto, sin commit. |
+| Workspace `rust/` (S-31) | Configurado con crates `nucleo`, `bot`, `player`, `voice`, `medios`. |
 | Brechas G1 a G4 | Resueltas en S-10, S-17, S-18, S-20, S-21, S-32 y en esta sección. Sin commit. |
-| Código de F1 a F8 | Sin empezar. |
-| Node | Sin cambios de este plan. Tiene cambios sin commit del usuario en `src/` y `test/`. |
+| Código de F1 a F8 | F1 Cimientos (30 tests), F2 Prueba de riesgo de voz (19 tests), F3 Comandos de voz (39 tests en voice), F4 Medios y reproductor (31 tests en medios, 41 tests en player), F5 Interfaz de Discord (S-21 a S-25 completadas; hito H4 alcanzado), F6 API y datos (S-26 a S-30 completadas; hito H5 alcanzado), F7 Paralelo y corte (S-32 implementada con binario release; S-33 con harness de medición listo; hito H6 en curso pendiente de validación 24h y corte). F8 pendiente. |
+| Node | Sin cambios de este plan. Pasan los 212 tests de Node (check, lint, typecheck, test). |
 
 ### 9.2 Hitos
 
@@ -316,12 +316,7 @@ Brechas entre specs:
 | F1 | Título de arranque | Usuario | Sin propuesta |
 | F1 | Nivel `ok`, regex y `preserve_order` | Agente, al implementar | Revisar (S-02, S-03, S-04) |
 | F3 | URL de producción de `IGNITE_SOUND_API_URL` | Usuario | Confirmar el valor (S-11) |
-| F3 | Frases en español e inglés juntas o separadas | Usuario | Sin propuesta (S-10) |
-| F3 | Transcripción local con ruta de modelo por parámetro | Agente, con OK | Sí (S-05) |
-| F3 | Cargar solo los símbolos de Vosk que se usan | Agente, con OK | Sí (S-05) |
-| F3 | Frases de varias palabras en la puerta | Agente, con OK | Probar `bot` e `ignite bot` (S-06) |
-| F3 | Reconocedor nuevo por evaluación | Agente, con OK | Mantener (S-06) |
-| F3 | Frases con ñ, frases que se pisan, plantillas fijas, no esperar a ignite-sound, identificador del registro | Agente, con OK | Mantener (S-10, S-11, S-12) |
+| F3 | Frases en español e inglés juntas o separadas | Usuario | Portar la tabla junta hasta que se decida (S-10) |
 | F5 | Modo dev | Usuario | No portar en F5. Decidir antes de F7 (S-23) |
 | F5 | Panel Components V2 en Discord | Usuario | Probar en el canal de prueba (S-24) |
 | F6 | `MISSING_USER_ID` | Usuario | Responder RFC 7807 si se alcanza (S-27) |

@@ -1,6 +1,6 @@
 # Spec S-13: yt-dlp (proceso externo, semáforo y errores)
 
-- Estado: borrador
+- Estado: implementado; reproducción conserva el permiso durante la vida del stream
 - Fase: F4
 - Módulo: M3
 - Origen en Node (solo lectura): `src/music/ytdlp.js` (`resolveBinary`, `proxyFor`, `baseArgs`, `cleanError`, `runJson`, `version`), `src/core/cache.js` (`Semaphore`), `src/music/errors.js` (`errorKey`, `describeError`, `hostHint`), `test/ytdlp.test.js`.
@@ -13,12 +13,15 @@ No incluye las fuentes (S-14), el relay ni el token PO (S-15), ni la reproducci�
 
 ## Archivos
 
-- Crear: `rust/crates/medios/src/ytdlp.rs` (binario, argumentos, proceso y JSON)
+- Crear: `rust/crates/medios/src/ytdlp.rs` (proceso, clean_error, JSON y version)
+- Crear: `rust/crates/medios/src/ytdlp_args.rs` (binario, proxy_for, base_args y YtDlpSettings)
 - Crear: `rust/crates/medios/src/limitador.rs` (semáforo con dos carriles)
 - Crear: `rust/crates/medios/src/errores.rs` (motivo corto y clave de traducción)
-- Crear: `rust/crates/medios/tests/ytdlp.rs` (binario falso compilado en el propio test)
-- Crear: `rust/crates/medios/tests/limitador.rs`
-- Crear: `rust/crates/medios/tests/errores.rs`
+- Crear: `rust/crates/medios/src/lib.rs` (re-exportaciones públicas)
+- Crear: `rust/crates/medios/tests/fixtures/fake_ytdlp.rs` (binario falso en Rust para Windows/Linux)
+- Crear: `rust/crates/medios/tests/ytdlp.rs` (pruebas de integración y argumentos)
+- Crear: `rust/crates/medios/tests/limitador.rs` (pruebas de concurrencia y alternancia de turnos)
+- Crear: `rust/crates/medios/tests/errores.rs` (pruebas de paridad con 53 casos y host hints)
 - Crear: `rust/crates/medios/tests/data/errores-casos.json` (generado con Node)
 - Crear: `scripts/errores-paridad-ref.js` (debe pasar `npm run lint`)
 - No tocar: `src/music/ytdlp.js`, `src/core/cache.js`, `src/music/errors.js`, `test/ytdlp.test.js`.
@@ -29,19 +32,19 @@ Cada archivo tiene como máximo 250 líneas.
 
 ## Contrato
 
-- Entrada de `ejecutar_json(destino, argumentos, opciones)`:
+- Entrada de `run_json(binario, destino, limitador, opciones)`:
   - `destino`: URL, o consulta como `ytsearch1:<texto>`.
-  - `argumentos`: argumentos extra.
-  - `prioridad`: `alta` o `baja`.
-  - `tiempo_limite`: por defecto `YTDLP_TIMEOUT`, 30 s.
-  - `tiempo_espera_cola`: tiempo máximo para conseguir un hueco.
-  - `proxy` y cancelación, opcionales.
+  - `extra_args`: argumentos extra.
+  - `base_args`: argumentos base.
+  - `prioridad`: `Alta` o `Baja`.
+  - `timeout`: por defecto `YTDLP_TIMEOUT`, 30 s.
+  - `queue_timeout`: tiempo máximo para conseguir un hueco.
 - Salida: el JSON que imprime yt-dlp con `--dump-single-json`.
 - Errores: `YtDlpError { mensaje, stderr }`. El mensaje tiene como máximo 300 caracteres.
   - Tiempo agotado: `yt-dlp timed out after <N>s`.
   - Binario no encontrado: se añade la pista `yt-dlp binary not found, run "npm install" or set YTDLP_PATH`. En Rust la pista habla de S-32.
   - JSON inválido: `yt-dlp returned invalid JSON`.
-- `version()`: `{ version }` o `{ error }`.
+- `version()`: `Ok(version)` o `Err(motivo)`.
 
 ## Comportamiento
 
@@ -79,6 +82,7 @@ Cada archivo tiene como máximo 250 líneas.
 
 14. Búsqueda de texto sin resultados: si YouTube dio un error en los últimos 60 s, se informa ese error y no "sin resultados". Así lo hace `describeError` en Node.
 15. Aviso al dueño del bot: para tres claves (`errors.youtube_bot_detection`, `errors.youtube_age_restricted`, `errors.rate_limited`), se escribe en la consola la instrucción de configuración, como mucho una vez cada 10 minutos por clave.
+16. Reproducción: el pipeline perezoso adquiere el mismo `Limitador` compartido con prioridad baja antes de iniciar yt-dlp y conserva el permiso mientras el audio está activo. Al liberar la fuente, termina yt-dlp y FFmpeg antes de ceder el hueco. Si vence `timeout_ms` esperando turno, la creación de audio falla y Songbird notifica el error de pista.
 
 ## Tests
 
@@ -92,15 +96,16 @@ Cada archivo tiene como máximo 250 líneas.
   - `version()` informa la versión.
 - Propios de Rust:
   - Limitador: el límite se respeta; las altas van antes que las bajas; se turnan cuando ambos carriles esperan; una espera con tiempo límite falla; una cancelación falla.
+  - El permiso del pipeline vive hasta que se libera su fuente de audio.
   - Errores: cada fila de la tabla con un ejemplo.
-- Binario falso: el test compila en Rust un ejecutable pequeño que imprime JSON o sale con error. Así corre también en Windows. Los tests de Node que usan un script de shell se saltan en Windows.
-- Paridad con Node: `scripts/errores-paridad-ref.js` evalúa `errorKey` de Node con una lista de códigos y textos (incluidos los de `test/`) y guarda la clave de cada uno en `errores-casos.json`. El test de Rust compara.
+- Binario falso: el test compila en Rust un ejecutable pequeño que imprime JSON o sale con error (`tests/fixtures/fake_ytdlp.rs`). Así corre también en Windows sin necesidad de scripts con shebang POSIX.
+- Paridad con Node: `scripts/errores-paridad-ref.js` evalúa `errorKey` de Node con 53 combinaciones de códigos y textos y guarda la clave de cada uno en `errores-casos.json`. El test de Rust compara todos los casos.
 - Gates: `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test`, y `npm test` sin cambios.
 
 ## Criterio de aceptación
 
 - Con `YTDLP_CONCURRENCY=2`, nunca hay más de 2 procesos vivos (medido con el binario falso).
-- Cada caso de `errores-casos.json` da la misma clave que Node.
+- Cada caso de `errores-casos.json` da la misma clave que Node (53/53 casos verdes).
 - Un proceso que supera el tiempo límite muere, y el error lo dice.
 - `cargo test` pasa sin yt-dlp instalado.
 - Ningún archivo pasa de 250 líneas.
@@ -110,7 +115,11 @@ Cada archivo tiene como máximo 250 líneas.
 - Runtime de JavaScript: `--js-runtimes` toma su valor de la variable `YTDLP_JS_RUNTIME` de `.env`, en lugar de la ruta de Node. Cuando se retire Node (F8), basta con cambiar esa variable. Si falta, S-01 avisa al arrancar (preflight, punto k) y yt-dlp corre sin esa opción.
 - `--no-check-certificates` se quita. Node desactiva así la verificación TLS de yt-dlp. Solo se vuelve a poner si F7 muestra fallos de certificado detrás de un proxy.
 - Crate `medios` (M3), con yt-dlp y las fuentes (S-14). Se añade al workspace en S-31.
+- Modularización de `ytdlp_args.rs`: separa la configuración y preparación de argumentos del control del subproceso en `ytdlp.rs`, manteniendo ambos archivos por debajo del límite de 250 líneas.
+- Semáforo síncrono interno con `std::sync::Mutex` y canales `oneshot`: garantiza que la liberación del slot en `Permiso::drop` o `Permiso::release` sea inmediata y sin tareas asíncronas huérfanas en el runtime.
+- `RunJsonOptions`: agrupa parámetros para cumplir con los lints estrictos de Clippy (`clippy::too-many-arguments`).
 
-## Preguntas abiertas
+## Preguntas resueltas
 
-- Ninguna en esta spec.
+- Paridad de errores y regexes: confirmada con 53 casos de prueba generados por Node en `errores-casos.json`.
+- Binario falso para Windows: implementado como target binario de Cargo en `tests/fixtures/fake_ytdlp.rs`, permitiendo pruebas de subprocesos nativas sin depender de scripts sh.

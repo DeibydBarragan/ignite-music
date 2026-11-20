@@ -1,6 +1,6 @@
 # Spec S-06: Puerta de palabra de activación
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F3
 - Módulo: M2
 - Origen en Node (solo lectura): `src/voice/wake-gate.js` (`WakeGate`: `initialize`, `buildGrammar`, `tokensFor`, `recognize`, `evaluate`, `destroy`; funciones `splitCompound` y `hasVoicedTail`; constantes `WAKE_DECOYS` y `FILLER_WORDS`), `src/voice/admission.js` (llamada a `evaluate`), `test/wake-gate.test.js`.
@@ -77,18 +77,18 @@ Cada archivo tiene como máximo 250 líneas.
 | `casual-speech-sample.wav` | cerrada | cualquiera |
 | `ignite-sample.wav` | cerrada | `no_command_after` |
 
-- `wake-mb-neg-bot-solo.wav`: sin veredicto esperado hasta verificarlo con Vosk (ver Decisiones).
+- `wake-mb-neg-bot-solo.wav`: el veredicto esperado se fija con el propio Node al generar la referencia (ver Decisiones).
 - Sin Vosk inicializado: `gate_unavailable`.
 - Palabra `zxqvyw`: `no_supported_wake_word`, con `no_soportadas = ["zxqvyw"]`.
 - Gramática de `ignite`: contiene `ignore` y `[unk]`, y no contiene `bot`.
 - RMS: silencio da 0, y `ignite-sample.wav` da más de 1000.
 - Unitarios de las funciones internas: `splitCompound` y `hasVoicedTail`, con audio sintético de silencio y de voz.
-- Paridad con Node: `scripts/puerta-paridad-ref.js` guarda `abierta`, `motivo`, `palabra` y `oido` de cada WAV, para `ignite` y para `bot`. El test de Rust compara.
+- Paridad con Node: `scripts/puerta-paridad-ref.js` guarda `abierta`, `motivo`, `palabra` y `oido` de cada WAV, para `ignite`, para `bot` y para `ignite bot`. El test de Rust compara.
 - Gates: `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test`, y `npm test` sin cambios.
 
 ## Criterio de aceptación
 
-- Los 11 WAV de `test/fixtures/` dan el mismo veredicto y motivo que Node para `ignite`.
+- Los 11 WAV de `test/fixtures/` dan el mismo veredicto y motivo que Node para `ignite`, `bot` e `ignite bot`.
 - Sin la DLL, la puerta da `gate_unavailable` y nunca abre.
 - Se mide la latencia de cada evaluación en Node y en Rust con los mismos WAV. Esta spec no fija un umbral.
 - `cargo test` pasa. Los tests con Vosk se saltan con aviso si falta la DLL.
@@ -97,8 +97,9 @@ Cada archivo tiene como máximo 250 líneas.
 ## Decisiones
 
 - Corpus: la paridad de F3 usa los 11 WAV de `test/fixtures/`. Un corpus mayor es tarea aparte. Ningún documento menciona otra cifra.
-- `wake-mb-neg-bot-solo.wav`: ningún test lo usa. Por su nombre parece un negativo con `bot` sola. Se verifica con Vosk antes de usarlo en la paridad de `bot`.
+- `wake-mb-neg-bot-solo.wav`: ningún test de Node lo usa. Entra en la paridad de `bot` e `ignite bot`. Su veredicto esperado es el que da Node al generar `puerta-casos.json`. Por su nombre se espera cerrada; si Node la abriera, se revisa antes de congelar la referencia.
 
-## Preguntas abiertas
-- Palabras de activación de varias palabras: la gramática recibe la frase completa como una entrada. Node no tiene pruebas con frases en la puerta. Propuesta: añadir una prueba con `bot` y con `ignite bot` antes de dar la puerta por buena.
-- Un reconocedor nuevo por evaluación: Node lo hace porque `reset` conserva el tiempo de la anterior. Propuesta: mantenerlo.
+## Preguntas resueltas
+
+- Palabras de activación de varias palabras: resuelta (decisión del plan, 9.7). La paridad añade `bot` e `ignite bot` a los 11 WAV. La gramática ya recibe la frase completa; `tokensFor` parte cada palabra y `buildGrammar` la asigna al primer modelo que la conoce completa, con respaldo de partes (regla 2).
+- Un reconocedor nuevo por evaluación: se mantiene. Node lo hace porque `reset` conserva el tiempo de la anterior, lo que desplazaría las marcas de palabra.

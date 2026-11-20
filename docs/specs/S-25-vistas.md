@@ -1,6 +1,6 @@
 # Spec S-25: Vistas de cola, letras, búsqueda, ayuda y playlists
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F5
 - Módulo: M5
 - Origen en Node (solo lectura): `src/ui/auxiliary-views.js` (`queueView`, `lyricsView`, `searchView`, `playlistsView`, `helpView`, `languageView`, `splitLyrics`, `pager`), `src/commands/queue.js`, `search.js`, `lyrics.js`, `help.js`, `playlists.js`, `new-playlist.js` y `language.js`, `src/handlers/interactions.js` (`handleQueuePage`, `handleLyricsPage`, `handleSearchPick`, `handleLanguage`), `src/music/lyrics.js` (`findLyrics`, `cleanTitle`, `pickBest`), `src/music/playlists.js` (`resolvePlaylist`, `fetchUserPlaylists`, `upsertUserPlaylist`, `deriveName`, `detectSource`; la tabla de Supabase está en S-30), `src/core/format.js` (`formatDuration`, `parseTime`, `progressBar`, `truncate`, `escapeMarkdown`, `safeUrl`, `link`, `linkLabel`, `chunk`). Pruebas: `test/views.test.js`, `test/core.test.js` (formato), `test/misc.test.js` (`cleanTitle`, `pickBest`).

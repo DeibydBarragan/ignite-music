@@ -1,6 +1,6 @@
 # Spec S-32: Binarios y arranque en Windows
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F7
 - Módulo: M8
 - Origen en Node (solo lectura): `src/core/binaries/index.js`, `src/core/binaries/installers/ytdlp.js` (`ensureYtDlp`, `updateYtDlp`, `installYtDlp`, `assetChecksum`), `src/core/binaries/installers/ffmpeg.js` (`ensureFfmpeg`), `src/core/binaries/installers/cloudflared.js` (`ensureCloudflared`), `src/core/binaries/downloader.js` (`downloadToFile`), `src/core/binaries/probe.js` (`probe`), `src/voice/model-downloader.js`, `src/setup/preflight.js` (bloque de herramientas de audio), `scripts/install-binaries.js` (postinstall de npm) y `start.bat`.
@@ -27,16 +27,21 @@ Solo Windows (decisión 7 del plan). No incluye la carga de Vosk (S-05), la lóg
 
 ## Archivos
 
-- Crear: `rust/crates/bot/src/binarios/mod.rs`: orden de arranque y rutas resultantes.
-- Crear: `rust/crates/bot/src/binarios/descarga.rs`: descarga a fichero con tamaño mínimo y máximo, SHA-256 opcional y tiempo límite.
-- Crear: `rust/crates/bot/src/binarios/ytdlp.rs`: instalación, verificación, extracción y actualización de cada 24 horas.
-- Crear: `rust/crates/bot/src/binarios/ffmpeg.rs`: búsqueda y descarga.
-- Crear: `rust/crates/bot/src/binarios/cloudflared.rs`: búsqueda y descarga.
-- Crear: `rust/crates/bot/src/binarios/vosk.rs`: DLL y modelos.
-- Crear: `rust/crates/bot/src/binarios/sonda.rs`: ejecuta `--version` o `-version` con tiempo límite.
-- Crear: `rust/crates/bot/tests/binarios.rs`: pruebas con un servidor HTTP local.
-- Crear: `start-rust.bat` en la raíz de `ignite-music`.
-- Modificar: `rust/crates/bot/Cargo.toml`: cliente HTTP con TLS (crate a elegir al añadirlo), `zip` y `sha2`, con versiones fijadas al añadirlas.
+- Creado: `rust/crates/bot/src/binarios/mod.rs`: orden de arranque y rutas resultantes.
+- Creado: `rust/crates/bot/src/binarios/descarga.rs`: descarga a fichero con tamaño mínimo y máximo, SHA-256 y asset_checksum.
+- Creado: `rust/crates/bot/src/binarios/descompresion.rs`: descompresión segura de archivos zip y gz.
+- Creado: `rust/crates/bot/src/binarios/ytdlp.rs`: instalación, verificación, extracción y actualización de cada 24 horas.
+- Creado: `rust/crates/bot/src/binarios/ffmpeg.rs`: búsqueda y descarga.
+- Creado: `rust/crates/bot/src/binarios/cloudflared.rs`: búsqueda y descarga.
+- Creado: `rust/crates/bot/src/binarios/vosk.rs`: DLL y modelos.
+- Creado: `rust/crates/bot/src/binarios/sonda.rs`: ejecuta `--version` o `-version` con tiempo límite.
+- Creado: `rust/crates/bot/tests/binarios.rs`: pruebas de mirrors e integración de arranque.
+- Creado: `rust/crates/bot/tests/binarios_descarga.rs`: pruebas con servidor HTTP local.
+- Creado: `rust/crates/bot/tests/binarios_orden.rs`: orden de búsqueda y protección de candidatos.
+- Creado: `rust/crates/bot/tests/binarios_ytdlp_vosk.rs`: límites de zip, actualización y modelos de Vosk.
+- Creado: `start-rust.bat` en la raíz de `ignite-music`.
+- Modificado: `rust/crates/bot/Cargo.toml`: dependencias `zip` (=2.6.1 con deflate/flate2) y `flate2` (=1.1).
+- Modificado: `rust/crates/bot/src/lib.rs` y `rust/crates/bot/src/main.rs`: integración en el arranque antes del gateway.
 - No tocar: `src/core/binaries/`, `src/voice/model-downloader.js`, `scripts/install-binaries.js` y `start.bat`.
 
 Cada archivo tiene como máximo 250 líneas.
@@ -112,7 +117,15 @@ Errores de arranque:
 - Tras una caída (código 1), `start-rust.bat` vuelve a lanzar el bot en 5 segundos.
 - `cargo test` pasa sin red.
 
+## Preguntas resueltas
+
+1. SHA-256 de ffmpeg: el paquete de Node (`ffmpeg-static` release `b6.1.1`) distribuye `ffmpeg-win32-x64.gz` con SHA-256 `8883a3dffbd0a16cf4ef95206ea05283f78908dbfb118f73c83f4951dcc06d77`. Una vez descomprimido, el `ffmpeg.exe` obtenido tiene SHA-256 `04e1307997530f9cf2fe35cba2ca7e8875ca91da02f89d6c7243df819c94ad00`, coincidiendo exactamente con el hash del ejecutable de Node.
+2. SHA-256 fijados y verificados:
+   - Vosk DLL `vosk-win64-0.3.45.zip`: `f1dcc9cca460630f81ea8f71794f69c80bed6556d2a4e6237b5785e1d2dff34b` (`libvosk.dll`: `9331c2f6a32cf77141af27c9750e79532718f51bbc2e3cea3c60f14ca4251e4e`).
+   - Vosk modelo inglés (`vosk-model-small-en-us-0.15.zip`): `30f26242c4eb449f948e42cb302dd7a686cb29a3423a8367f99ff41780942498`.
+   - Vosk modelo español (`vosk-model-small-es-0.42.zip`): `09b239888f633ef2f0b4e09736e3d9936acfd810bc65d53fad45261762c6511f`.
+   - cloudflared Windows amd64 (`cloudflared-windows-amd64.exe`): `2493dbc168923bb3e59e5e7716f71deced92992eea9acd6e9d74f84ac7751343`.
+
 ## Preguntas abiertas
 
-1. SHA-256 del zip 6.1.1 de gyan.dev. El hash que se tiene (`04E1307997530F9CF2FE35CBA2CA7E8875CA91DA02F89D6C7243DF819C94AD00`) es del `.exe` del paquete de Node, no del zip. No está comprobado en la página de gyan.dev. Se resuelve antes de F7: comprobar que el zip sigue publicado, descargarlo y fijar su hash. Si no está publicado, aplica la decisión de ffmpeg.
-2. SHA-256 de cloudflared, de la DLL de Vosk y de sus modelos. Node no verifica estos archivos. Se resuelve antes de F7: descargar cada archivo oficial, revisarlo a mano y fijar su hash.
+Ninguna.

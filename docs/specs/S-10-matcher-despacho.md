@@ -1,6 +1,6 @@
 # Spec S-10: Matcher y despacho de comandos de voz
 
-- Estado: borrador
+- Estado: implementado
 - Fase: F3
 - Módulo: M2 (el despacho usa la música de M4 y el panel de M5)
 - Origen en Node (solo lectura): `src/voice/matcher.js` (`matchVoiceCommand` y funciones auxiliares; `DEFAULT_COMMAND_BINDINGS`, `COURTESY_PREFIXES`, `ALLOWED_NON_ARG_SUFFIXES`, `WAKE_WORD_PHONETIC_VARIANTS`), `src/voice/dispatcher.js` (`dispatchVoiceCommand`), `src/music/events.js` (conexión con el receptor). Tests: `test/voice.test.js` (matcher y despacho), `test/vosk.test.js` (matcher).
@@ -41,22 +41,22 @@ Cada archivo tiene como máximo 250 líneas.
 
 ## Comportamiento
 
-1. Normalización del texto: quita los acentos (también á con diéresis, y las mayúsculas acentuadas), pasa a minúsculas, cambia por espacio los signos `¿ ? ¡ ! . , ; : ( ) [ ] { } " ' \ / ~ _ # * < >` y los guiones, colapsa espacios y recorta. La ñ no cambia.
+1. Normalización del texto: quita los acentos (también la ü, u con diéresis, y las mayúsculas acentuadas), pasa a minúsculas, cambia por espacio los signos `¿ ? ¡ ! . , ; : ( ) [ ] { } " ' \ / ~ _ # * < >` y los guiones `— – -`, colapsa espacios y recorta. La ñ no cambia.
 2. Palabras de activación: si la entrada está vacía, `ignite`. Si es texto, se separa por comas. Cada palabra se normaliza. Si la lista queda vacía, `ignite`.
 3. Variantes de la palabra de activación. Para `ignite` estas formas que escribe Whisper: `ignait`, `ignaite`, `inight`, `inayt`, `ignit`, `ignayt`, `inite`, `ignete`. Una palabra con espacio también se busca sin espacio. Una palabra de 8 o más letras se busca partida con un espacio en cualquier punto entre la letra 3 y la letra len-3. Las formas se ordenan de la más larga a la más corta.
 4. Apariciones: la palabra de activación se busca como palabra completa, sin distinguir mayúsculas. Cada aparición guarda el texto antes (prefijo) y el texto después (resto).
 5. Frases: primero las de `DEFAULT_COMMAND_BINDINGS`, después las del servidor, que se suman. Todas se normalizan y se ordenan de la más larga a la más corta.
 6. Por cada aparición, en orden:
-   a. Saludo: si el prefijo termina en `hola` u `ola`, y el resto empieza por `que haces`, `ke haces`, `k ase` o `q haces`, el comando es `hola_que_hace`.
-   b. Coincidencia directa: la frase debe empezar el resto y seguir un espacio, o ser el resto completo. Si el comando no lleva consulta, lo que sigue a la frase debe estar en la lista de sufijos permitidos (vacío, `por favor`, `porfa`, `favor`, `gracias`, `muchas gracias`, `ya`, `ahora`, `de una`, y las formas de `la cancion`, `el tema`, `la musica`, `la pista`, `la reproduccion`, `la lista`, `la cola`). Si no, esa frase se descarta.
+   a. Saludo: si el prefijo termina en `hola` u `ola`, y el resto empieza por `que hace`, `que haces`, `ke hace`, `ke haces`, `k ase`, `q hace` o `q haces`, el comando es `hola_que_hace`.
+   b. Coincidencia directa: la frase debe empezar el resto y seguir un espacio, o ser el resto completo. Si el comando no lleva consulta, lo que sigue a la frase debe estar en la lista de sufijos permitidos: vacío, `por favor`, `porfa`, `favor`, `gracias`, `muchas gracias`, `ya`, `ahora`, `de una`, `la cancion`, `esta cancion`, `el tema`, `este tema`, `la musica`, `la pista`, `la reproduccion`, `la lista`, `la cola`, `la cancion por favor`, `esta cancion por favor`, `la cancion ya`, `la musica por favor` o `la musica ya`. Si no, esa frase se descarta.
    c. La preposición `para`: se descarta si la primera palabra del resto termina en `ar`, `er`, `ir`, `le`, `les`, `me`, `te`, `se` o `nos`, o es una de `que`, `mi`, `ti`, `el`, `la`, `los`, `las`, `un`, `una`, `eso`, `esto` o `nada`.
-   d. Consulta: en `play`, `play_next`, `enqueue` y `volume`, la consulta es el resto después de la frase, sin conectores del principio (`la cancion de`, `el tema de`, `la musica de`, `a`, `de`, `por`). Si queda vacía, `falta_consulta` es verdadero.
+   d. Consulta: en `play`, `play_next`, `enqueue` y `volume`, la consulta es el resto después de la frase, sin conectores del principio (`la cancion de`, `el tema de`, `la musica de` —con `de` opcional—, `a`, `de` o `por`). Si queda vacía, `falta_consulta` es verdadero.
    e. Cortesía: si el resto empieza por un prefijo de cortesía (`por favor puedes`, `porfa puedes`, `hazme el favor de`, `hazme el favor y`, `por favor`, `porfa`, `puedes`, `favor de`, `please`, `can you`), se prueba la coincidencia directa en lo que sigue. El prefijo queda en `relleno`.
    f. Gana la primera coincidencia.
 7. Sin coincidencia:
    a. Si la última aparición no tiene resto: `only_wake_word`.
    b. Si la última aparición tiene resto: `command_not_found`.
-   c. Sin aparición: `wake_word_missing`. Si el texto es el saludo `hola que haces` sin palabra de activación, el comando es `hola_que_hace`.
+   c. Sin aparición: `wake_word_missing`. Si el texto entero es un saludo (`hola` u `ola`, seguido de `que hace`, `que haces`, `ke hace`, `ke haces`, `k ase`, `q hace` o `q haces`) sin palabra de activación, el comando es `hola_que_hace`.
 8. Texto vacío: `empty_text`.
 9. Despacho: si el ajuste del servidor tiene `enabled` en falso, `voice_disabled_for_guild`. Si no hay coincidencia, se devuelve el motivo del matcher.
 10. `play` sin consulta: si hay cola y está pausada o parada, se reanuda (`resume`) y se avisa. Si no, `missing_argument`.
@@ -66,8 +66,8 @@ Cada archivo tiene como máximo 250 líneas.
     - `play`: aviso TTS, luego `manager.play` con `skip` en verdadero, sin posición.
     - `play_next`: aviso TTS, luego `play` con posición 1 y sin saltar.
     - `enqueue`: aviso TTS, luego `play` con posición 0 y sin saltar.
-    - `pause`, `resume`, `skip`, `previous`, `stop`, `shuffle` y `volume`: sin cola, `no_active_queue`. `volume` usa `parseInt` sobre la consulta.
-    - `autoplay_on` y `autoplay_off`: fijan el estado de forma idempotente y refrescan el panel.
+    - `pause`, `resume`, `skip`, `previous`, `stop`, `shuffle`, `volume`, `autoplay_on`, `autoplay_off` y `queue`: sin cola, `no_active_queue`. `volume` usa `parseInt` sobre la consulta.
+    - `autoplay_on` y `autoplay_off`: fijan el estado de forma idempotente y refrescan el panel. Hasta F5 el panel de S-24 es un stub; el despacho refresca solo si la música lo expone (en Node, si `refreshPanel` existe).
     - `queue`: devuelve el número de canciones.
     - `hola_que_hace`: devuelve éxito con el mensaje.
     - Cualquier otro: `unsupported_command`.
@@ -121,10 +121,10 @@ Cada archivo tiene como máximo 250 líneas.
 ## Decisiones
 
 - `findWakeWordMatch` de `matcher.js` no se porta. No tiene llamadas (ver S-05).
+- La ñ no se normaliza (regla 1), así que las frases con ñ no tienen variantes. Se mantiene por paridad (decisión del plan, 9.7).
+- Frases que se pisan: `apaga` es de `stop`, y `apaga el autoplay` es de `autoplay_off`. Gana la frase más larga, porque la lista se ordena de mayor a menor longitud. Si dos frases miden lo mismo, gana la de por defecto: en Node el orden es estable y las personalizadas se añaden después. Se mantiene el mismo criterio (decisión del plan, 9.7).
+- Las frases personalizadas las guarda S-30. El despacho solo las recibe en las opciones. No se validan duplicados: se suman a la lista.
 
 ## Preguntas abiertas
 
-- Frases en español e inglés (`skip`, `pause`, `autoplay on`): ¿se mantienen juntas o se separan por idioma?
-- La ñ no se normaliza, así que las frases con ñ no tienen variantes. Propuesta: mantenerlo.
-- Las frases personalizadas las guarda S-30. El despacho solo las recibe.
-- Frases que se pisan: `apaga` es de `stop`, y `apaga el autoplay` es de `autoplay_off`. Node gana la frase más larga. Propuesta: el mismo criterio.
+- Frases en español e inglés (`skip`, `pause`, `autoplay on`): Node las mantiene juntas en la misma tabla. Separarlas por idioma es decisión del usuario (plan, 9.7). Hasta que se decida, Rust porta la tabla tal cual.
