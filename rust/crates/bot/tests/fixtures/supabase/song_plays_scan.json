@@ -1,0 +1,44 @@
+[
+  {
+    "id": "p1-111",
+    "guild_id": "123456789012345678",
+    "song_id": "track_1",
+    "title": "Cancion A",
+    "artist": "Artista A",
+    "album_art": "https://example.com/coverA.jpg",
+    "url": "https://www.youtube.com/watch?v=AAA",
+    "duration": 180,
+    "source": "youtube",
+    "user_id": "472144161357824000",
+    "username": "UserTest",
+    "played_at": "2026-10-18T10:00:00.000Z"
+  },
+  {
+    "id": "p2-222",
+    "guild_id": "123456789012345678",
+    "song_id": "track_1",
+    "title": "Cancion A",
+    "artist": "Artista A",
+    "album_art": "https://example.com/coverA.jpg",
+    "url": "https://www.youtube.com/watch?v=AAA",
+    "duration": 180,
+    "source": "youtube",
+    "user_id": "472144161357824000",
+    "username": "UserTest",
+    "played_at": "2026-10-18T12:00:00.000Z"
+  },
+  {
+    "id": "p3-333",
+    "guild_id": "123456789012345678",
+    "song_id": "track_2",
+    "title": "Cancion B",
+    "artist": "Artista B",
+    "album_art": null,
+    "url": "https://www.youtube.com/watch?v=BBB",
+    "duration": 240,
+    "source": "youtube",
+    "user_id": "472144161357824000",
+    "username": "UserTest",
+    "played_at": "2026-10-18T11:00:00.000Z"
+  }
+]

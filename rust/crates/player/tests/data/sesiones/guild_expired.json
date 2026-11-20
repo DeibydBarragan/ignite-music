@@ -1,0 +1,40 @@
+{
+  "voiceChannelId": "voice_channel_1",
+  "textChannelId": "text_channel_1",
+  "songs": [
+    {
+      "plugin": "youtube",
+      "source": "youtube",
+      "playFromSource": true,
+      "id": "vid0001",
+      "name": "Song Title 1",
+      "url": "https://www.youtube.com/watch?v=vid0001",
+      "duration": 210,
+      "isLive": false,
+      "thumbnail": "https://i.ytimg.com/vi/vid1/hqdefault.jpg",
+      "uploader": {
+        "name": "Artist 1",
+        "url": "https://youtube.com/@artist1"
+      },
+      "ageRestricted": false,
+      "requesterId": "user_123456",
+      "requesterUser": {
+        "id": "user_123456",
+        "username": "User1",
+        "avatar": null,
+        "bot": false
+      },
+      "autoplay": false
+    }
+  ],
+  "position": 45,
+  "volume": 75,
+  "repeatMode": 1,
+  "autoplay": true,
+  "filters": [
+    "bassboost",
+    "nightcore"
+  ],
+  "paused": false,
+  "savedAt": 1794247322528
+}

@@ -1,0 +1,255 @@
+{
+  "templateCases": [
+    {
+      "commandId": "play",
+      "params": {
+        "query": "Starboy"
+      },
+      "resolved": "Reproduciendo Starboy"
+    },
+    {
+      "commandId": "play",
+      "params": {},
+      "resolved": "Reproduciendo"
+    },
+    {
+      "commandId": "play_next",
+      "params": {
+        "query": "Starboy"
+      },
+      "resolved": "Añadida Starboy a continuación"
+    },
+    {
+      "commandId": "play_next",
+      "params": {},
+      "resolved": "Añadida  a continuación"
+    },
+    {
+      "commandId": "enqueue",
+      "params": {
+        "query": "Starboy"
+      },
+      "resolved": "Añadida Starboy a la lista"
+    },
+    {
+      "commandId": "enqueue",
+      "params": {},
+      "resolved": "Añadida  a la lista"
+    },
+    {
+      "commandId": "skip",
+      "params": {
+        "query": "Starboy"
+      },
+      "resolved": "Saltando canción"
+    },
+    {
+      "commandId": "skip",
+      "params": {},
+      "resolved": "Saltando canción"
+    },
+    {
+      "commandId": "pause",
+      "params": {
+        "query": "Starboy"
+      },
+      "resolved": "Música pausada"
+    },
+    {
+      "commandId": "pause",
+      "params": {},
+      "resolved": "Música pausada"
+    },
+    {
+      "commandId": "resume",
+      "params": {
+        "query": "Starboy"
+      },
+      "resolved": "Reanudando música"
+    },
+    {
+      "commandId": "resume",
+      "params": {},
+      "resolved": "Reanudando música"
+    },
+    {
+      "commandId": "stop",
+      "params": {
+        "query": "Starboy"
+      },
+      "resolved": "Reproducción detenida"
+    },
+    {
+      "commandId": "stop",
+      "params": {},
+      "resolved": "Reproducción detenida"
+    },
+    {
+      "commandId": "previous",
+      "params": {
+        "query": "Starboy"
+      },
+      "resolved": "Canción anterior"
+    },
+    {
+      "commandId": "previous",
+      "params": {},
+      "resolved": "Canción anterior"
+    },
+    {
+      "commandId": "shuffle",
+      "params": {
+        "query": "Starboy"
+      },
+      "resolved": "Lista en modo aleatorio"
+    },
+    {
+      "commandId": "shuffle",
+      "params": {},
+      "resolved": "Lista en modo aleatorio"
+    },
+    {
+      "commandId": "autoplay_on",
+      "params": {
+        "query": "Starboy"
+      },
+      "resolved": "Autoplay activado"
+    },
+    {
+      "commandId": "autoplay_on",
+      "params": {},
+      "resolved": "Autoplay activado"
+    },
+    {
+      "commandId": "autoplay_off",
+      "params": {
+        "query": "Starboy"
+      },
+      "resolved": "Autoplay desactivado"
+    },
+    {
+      "commandId": "autoplay_off",
+      "params": {},
+      "resolved": "Autoplay desactivado"
+    },
+    {
+      "commandId": "volume",
+      "params": {
+        "query": "Starboy"
+      },
+      "resolved": "Volumen ajustado al Starboy"
+    },
+    {
+      "commandId": "volume",
+      "params": {},
+      "resolved": "Volumen ajustado al"
+    },
+    {
+      "commandId": "queue",
+      "params": {
+        "query": "Starboy"
+      },
+      "resolved": "Mostrando la lista"
+    },
+    {
+      "commandId": "queue",
+      "params": {},
+      "resolved": "Mostrando la lista"
+    },
+    {
+      "commandId": "hola_que_hace",
+      "params": {
+        "query": "Starboy"
+      },
+      "resolved": "Hola que hace"
+    },
+    {
+      "commandId": "hola_que_hace",
+      "params": {},
+      "resolved": "Hola que hace"
+    },
+    {
+      "commandId": "play",
+      "params": {
+        "query": "Starboy"
+      },
+      "customTemplates": {
+        "play": "Playing {query} now"
+      },
+      "resolved": "Playing Starboy now"
+    },
+    {
+      "commandId": "non_existent_command",
+      "params": {
+        "query": "Test"
+      },
+      "resolved": null
+    }
+  ],
+  "interpolationCases": [
+    {
+      "template": "Reproduciendo {query}",
+      "params": {
+        "query": "Starboy"
+      },
+      "result": "Reproduciendo Starboy"
+    },
+    {
+      "template": "Reproduciendo {query}",
+      "params": {},
+      "result": "Reproduciendo"
+    },
+    {
+      "template": "Hola {user}, tu consulta es {query}",
+      "params": {
+        "user": "Juan"
+      },
+      "result": "Hola Juan, tu consulta es"
+    },
+    {
+      "template": "Sin tokens",
+      "params": {},
+      "result": "Sin tokens"
+    }
+  ],
+  "httpCases": [
+    {
+      "label": "full_options",
+      "captured": {
+        "method": "POST",
+        "url": "/api/v1/tts/speak",
+        "headers": {
+          "authorization": "Bearer sec-secret-123",
+          "x-user-discord-id": "user-333",
+          "content-type": "application/json"
+        },
+        "body": {
+          "text": "Reproduciendo Bohemian Rhapsody",
+          "guildId": "guild-111",
+          "channelId": "channel-222",
+          "userId": "user-333",
+          "voice": "es-MX-DaliaNeural",
+          "rate": 1.25,
+          "pitch": 0.9
+        }
+      }
+    },
+    {
+      "label": "minimal_options",
+      "captured": {
+        "method": "POST",
+        "url": "/api/v1/tts/speak",
+        "headers": {
+          "authorization": "Bearer test-secret-value-do-not-use",
+          "x-user-discord-id": null,
+          "content-type": "application/json"
+        },
+        "body": {
+          "text": "Música pausada",
+          "guildId": "guild-999",
+          "channelId": "channel-888"
+        }
+      }
+    }
+  ]
+}

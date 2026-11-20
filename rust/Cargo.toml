@@ -1,0 +1,20 @@
+[workspace]
+members = ["crates/*"]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+# Minimum Rust from the highest rust-version in Cargo.lock (uuid, twilight 0.17).
+# Verified by CI job "msrv" with cargo +1.89.0 check; see docs/evidencia/T1-minimo-rust.md.
+rust-version = "1.89"
+
+[workspace.lints.clippy]
+print_stdout = "deny"
+print_stderr = "deny"
+
+[profile.dev]
+debug = 1
+
+[profile.test]
+debug = 1
+

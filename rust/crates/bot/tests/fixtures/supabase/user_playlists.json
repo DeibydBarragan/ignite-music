@@ -1,0 +1,15 @@
+[
+  {
+    "id": "pl-0001",
+    "user_id": "472144161357824000",
+    "name": "Rock Clasico",
+    "source": "youtube",
+    "url": "https://youtube.com/playlist?list=PLRock",
+    "cover": "https://example.com/rock.jpg",
+    "tracks": [
+      { "title": "Bohemian Rhapsody", "albumArt": "https://example.com/queen.jpg" }
+    ],
+    "synced_at": null,
+    "created_at": "2026-10-16T10:00:00.000Z"
+  }
+]

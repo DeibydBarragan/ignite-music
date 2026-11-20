@@ -1,0 +1,24 @@
+[
+  {
+    "song_id": "song_abc",
+    "title": "Never Gonna Give You Up",
+    "artist": "Rick Astley",
+    "album_art": "https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg",
+    "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "duration": 212,
+    "source": "youtube",
+    "play_count": 42,
+    "last_played": "2026-10-18T15:30:00.000Z"
+  },
+  {
+    "song_id": "song_def",
+    "title": "Together Forever",
+    "artist": "Rick Astley",
+    "album_art": "https://img.youtube.com/vi/yPYZpwSpKmA/0.jpg",
+    "url": "https://www.youtube.com/watch?v=yPYZpwSpKmA",
+    "duration": 204,
+    "source": "youtube",
+    "play_count": 18,
+    "last_played": "2026-10-17T20:15:00.000Z"
+  }
+]

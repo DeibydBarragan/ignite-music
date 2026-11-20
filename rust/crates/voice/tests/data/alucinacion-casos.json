@@ -1,0 +1,3397 @@
+[
+  {
+    "texto": "",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "   ",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "   ",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "   ",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "   ",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "   ",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "   ",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "   ",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "   ",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "   ",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "!!!???",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "!!!???",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "!!!???",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "!!!???",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "!!!???",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "!!!???",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "!!!???",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "!!!???",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "!!!???",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": ". , ; : - ",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": ". , ; : - ",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": ". , ; : - ",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": ". , ; : - ",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": ". , ; : - ",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": ". , ; : - ",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": ". , ; : - ",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": ". , ; : - ",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": ". , ; : - ",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Gracias.",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Gracias.",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Gracias.",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Gracias.",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Gracias.",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Gracias.",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Gracias.",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Gracias.",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Gracias.",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Suscríbete!",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Suscríbete!",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Suscríbete!",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Suscríbete!",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Suscríbete!",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Suscríbete!",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Suscríbete!",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Suscríbete!",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Suscríbete!",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Subtítulos por la comunidad de Amara.org",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Subtítulos por la comunidad de Amara.org",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Subtítulos por la comunidad de Amara.org",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Subtítulos por la comunidad de Amara.org",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Subtítulos por la comunidad de Amara.org",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Subtítulos por la comunidad de Amara.org",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Subtítulos por la comunidad de Amara.org",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Subtítulos por la comunidad de Amara.org",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Subtítulos por la comunidad de Amara.org",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Thank you.",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Thank you.",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Thank you.",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Thank you.",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Thank you.",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Thank you.",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Thank you.",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Thank you.",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Thank you.",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "muchas gracias",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "muchas gracias",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "muchas gracias",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "muchas gracias",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "muchas gracias",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "muchas gracias",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "muchas gracias",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "muchas gracias",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "muchas gracias",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el video",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el video",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el video",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el video",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el video",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el video",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el video",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el video",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el video",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el vídeo",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el vídeo",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el vídeo",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el vídeo",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el vídeo",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el vídeo",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el vídeo",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el vídeo",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver el vídeo",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "gracias por ver",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks for watching",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks for watching",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks for watching",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks for watching",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks for watching",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks for watching",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks for watching",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks for watching",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thanks for watching",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you for watching",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you for watching",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you for watching",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you for watching",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you for watching",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you for watching",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you for watching",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you for watching",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "thank you for watching",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete al canal",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete al canal",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete al canal",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete al canal",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete al canal",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete al canal",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete al canal",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete al canal",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "suscribete al canal",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "no olvides suscribirte",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "no olvides suscribirte",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "no olvides suscribirte",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "no olvides suscribirte",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "no olvides suscribirte",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "no olvides suscribirte",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "no olvides suscribirte",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "no olvides suscribirte",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "no olvides suscribirte",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos por la comunidad de amara org",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos por la comunidad de amara org",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos por la comunidad de amara org",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos por la comunidad de amara org",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos por la comunidad de amara org",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos por la comunidad de amara org",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos por la comunidad de amara org",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos por la comunidad de amara org",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos por la comunidad de amara org",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulado por la comunidad de amara org",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulado por la comunidad de amara org",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulado por la comunidad de amara org",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulado por la comunidad de amara org",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulado por la comunidad de amara org",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulado por la comunidad de amara org",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulado por la comunidad de amara org",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulado por la comunidad de amara org",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulado por la comunidad de amara org",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos realizados por la comunidad de amara org",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos realizados por la comunidad de amara org",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos realizados por la comunidad de amara org",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos realizados por la comunidad de amara org",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos realizados por la comunidad de amara org",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos realizados por la comunidad de amara org",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos realizados por la comunidad de amara org",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos realizados por la comunidad de amara org",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "subtitulos realizados por la comunidad de amara org",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "amara org",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "amara org",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "amara org",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "amara org",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "amara org",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "amara org",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "amara org",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "amara org",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "amara org",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "you",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "you",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "you",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "you",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "you",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "you",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "you",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "you",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "you",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "bye",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "bye",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "bye",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "bye",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "bye",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "bye",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "bye",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "bye",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "bye",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "adios",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "adios",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "adios",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "adios",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "adios",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "adios",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "adios",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "adios",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "adios",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Adiós!",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Adiós!",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Adiós!",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Adiós!",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Adiós!",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Adiós!",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Adiós!",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Adiós!",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "¡Adiós!",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "hasta la proxima",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "hasta la proxima",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "hasta la proxima",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "hasta la proxima",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "hasta la proxima",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "hasta la proxima",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "hasta la proxima",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "hasta la proxima",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "hasta la proxima",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Hasta la próxima...",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Hasta la próxima...",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Hasta la próxima...",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Hasta la próxima...",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Hasta la próxima...",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Hasta la próxima...",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Hasta la próxima...",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Hasta la próxima...",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "Hasta la próxima...",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "ignite pausa",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "ignite pausa",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "ignite pausa",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "ignite pausa",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "ignite pausa",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "ignite pausa",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "ignite pausa",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "ignite pausa",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "ignite pausa",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "ignite pon algo",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "ignite pon algo",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "ignite pon algo",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "ignite pon algo",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "ignite pon algo",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "ignite pon algo",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "ignite pon algo",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "ignite pon algo",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "ignite pon algo",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "reproduce bad bunny",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "reproduce bad bunny",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "reproduce bad bunny",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "reproduce bad bunny",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "reproduce bad bunny",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "reproduce bad bunny",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "reproduce bad bunny",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "reproduce bad bunny",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "reproduce bad bunny",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "oye ignite siguiente cancion",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "oye ignite siguiente cancion",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "oye ignite siguiente cancion",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "oye ignite siguiente cancion",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "oye ignite siguiente cancion",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "oye ignite siguiente cancion",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "oye ignite siguiente cancion",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "oye ignite siguiente cancion",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "oye ignite siguiente cancion",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "sube el volumen al 50",
+    "etiquetaSegmentos": "none",
+    "segmentos": [],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "sube el volumen al 50",
+    "etiquetaSegmentos": "one_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "sube el volumen al 50",
+    "etiquetaSegmentos": "one_borderline",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.6,
+        "avg_logprob": -1
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "sube el volumen al 50",
+    "etiquetaSegmentos": "one_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "sube el volumen al 50",
+    "etiquetaSegmentos": "two_silent",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.85,
+        "avg_logprob": -1.2
+      },
+      {
+        "no_speech_prob": 0.95,
+        "avg_logprob": -2
+      }
+    ],
+    "esAlucinacion": true
+  },
+  {
+    "texto": "sube el volumen al 50",
+    "etiquetaSegmentos": "silent_and_real",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.9,
+        "avg_logprob": -1.5
+      },
+      {
+        "no_speech_prob": 0.05,
+        "avg_logprob": -0.2
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "sube el volumen al 50",
+    "etiquetaSegmentos": "empty_segment_obj",
+    "segmentos": [
+      {}
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "sube el volumen al 50",
+    "etiquetaSegmentos": "only_no_speech",
+    "segmentos": [
+      {
+        "no_speech_prob": 0.95
+      }
+    ],
+    "esAlucinacion": false
+  },
+  {
+    "texto": "sube el volumen al 50",
+    "etiquetaSegmentos": "only_avg_logprob",
+    "segmentos": [
+      {
+        "avg_logprob": -2.5
+      }
+    ],
+    "esAlucinacion": false
+  }
+]

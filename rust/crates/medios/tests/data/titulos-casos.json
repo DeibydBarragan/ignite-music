@@ -1,0 +1,243 @@
+{
+  "titles": [
+    {
+      "rawTitle": "Xavi - La Diabla (Official Video)",
+      "uploader": "Xavi Oficial",
+      "expectedTitle": "La Diabla",
+      "expectedArtist": "Xavi",
+      "isLyric": false
+    },
+    {
+      "rawTitle": "La Diabla",
+      "uploader": "Xavi - Topic",
+      "expectedTitle": "La Diabla",
+      "expectedArtist": "Xavi",
+      "isLyric": false
+    },
+    {
+      "rawTitle": "lofi hip hop radio - beats to relax/study to 📚",
+      "uploader": "Lofi Girl",
+      "expectedTitle": "lofi hip hop radio - beats to relax/study to 📚",
+      "expectedArtist": "Lofi Girl",
+      "isLyric": false
+    },
+    {
+      "rawTitle": "Shakira - BZRP Music Sessions #53",
+      "uploader": "Shakira",
+      "expectedTitle": "BZRP Music Sessions #53",
+      "expectedArtist": "Shakira",
+      "isLyric": false
+    },
+    {
+      "rawTitle": "Queen - Bohemian Rhapsody (Official Video)",
+      "uploader": "QueenVEVO",
+      "expectedTitle": "Bohemian Rhapsody",
+      "expectedArtist": "Queen",
+      "isLyric": false
+    },
+    {
+      "rawTitle": "Queen - Don't Stop Me Now [Official Video]",
+      "uploader": "Queen",
+      "expectedTitle": "Don't Stop Me Now",
+      "expectedArtist": "Queen",
+      "isLyric": false
+    },
+    {
+      "rawTitle": "Feid - LUNA (Audio Oficial)",
+      "uploader": "Feid",
+      "expectedTitle": "LUNA",
+      "expectedArtist": "Feid",
+      "isLyric": false
+    },
+    {
+      "rawTitle": "Bad Bunny - Monaco (Video Oficial)",
+      "uploader": "Bad Bunny",
+      "expectedTitle": "Monaco",
+      "expectedArtist": "Bad Bunny",
+      "isLyric": false
+    },
+    {
+      "rawTitle": "Xavi - Diablita (Official Lyric Video)",
+      "uploader": "Xavi Official",
+      "expectedTitle": "Diablita",
+      "expectedArtist": "Xavi",
+      "isLyric": true
+    },
+    {
+      "rawTitle": "Coldplay - Yellow (Lyrics)",
+      "uploader": "Coldplay",
+      "expectedTitle": "Yellow",
+      "expectedArtist": "Coldplay",
+      "isLyric": true
+    },
+    {
+      "rawTitle": "Dua Lipa - Houdini (Visualizer)",
+      "uploader": "Dua Lipa",
+      "expectedTitle": "Houdini",
+      "expectedArtist": "Dua Lipa",
+      "isLyric": false
+    },
+    {
+      "rawTitle": "Alone Without Dash Here",
+      "uploader": "SomeArtist",
+      "expectedTitle": "Alone Without Dash Here",
+      "expectedArtist": "SomeArtist",
+      "isLyric": false
+    },
+    {
+      "rawTitle": "Artist - Song With Multiple - Dashes in Title",
+      "uploader": "Artist",
+      "expectedTitle": "Song With Multiple - Dashes in Title",
+      "expectedArtist": "Artist",
+      "isLyric": false
+    },
+    {
+      "rawTitle": "Unknown Channel Song",
+      "uploader": "",
+      "expectedTitle": "Unknown Channel Song",
+      "expectedArtist": "",
+      "isLyric": false
+    },
+    {
+      "rawTitle": "Topic Without Prefix - Topic",
+      "uploader": "Topic",
+      "expectedTitle": "Topic",
+      "expectedArtist": "Topic Without Prefix",
+      "isLyric": false
+    },
+    {
+      "rawTitle": "Artista Con Acentos - Canción (Audio Oficial)",
+      "uploader": "Artista Con Acentos",
+      "expectedTitle": "Canción",
+      "expectedArtist": "Artista Con Acentos",
+      "isLyric": false
+    }
+  ],
+  "urls": [
+    {
+      "input": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "expected": {
+        "type": "video",
+        "id": "dQw4w9WgXcQ"
+      }
+    },
+    {
+      "input": "https://youtu.be/dQw4w9WgXcQ?si=abc",
+      "expected": {
+        "type": "video",
+        "id": "dQw4w9WgXcQ"
+      }
+    },
+    {
+      "input": "https://m.youtube.com/watch?v=dQw4w9WgXcQ&t=10",
+      "expected": {
+        "type": "video",
+        "id": "dQw4w9WgXcQ"
+      }
+    },
+    {
+      "input": "https://music.youtube.com/watch?v=dQw4w9WgXcQ",
+      "expected": {
+        "type": "video",
+        "id": "dQw4w9WgXcQ"
+      }
+    },
+    {
+      "input": "https://www.youtube.com/shorts/dQw4w9WgXcQ",
+      "expected": {
+        "type": "video",
+        "id": "dQw4w9WgXcQ"
+      }
+    },
+    {
+      "input": "https://www.youtube.com/live/dQw4w9WgXcQ",
+      "expected": {
+        "type": "video",
+        "id": "dQw4w9WgXcQ"
+      }
+    },
+    {
+      "input": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      "expected": {
+        "type": "video",
+        "id": "dQw4w9WgXcQ"
+      }
+    },
+    {
+      "input": "https://www.youtube.com/v/dQw4w9WgXcQ",
+      "expected": {
+        "type": "video",
+        "id": "dQw4w9WgXcQ"
+      }
+    },
+    {
+      "input": "https://www.youtube.com/playlist?list=PL1234567890",
+      "expected": {
+        "type": "playlist",
+        "id": "PL1234567890"
+      }
+    },
+    {
+      "input": "https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=PL1234567890",
+      "expected": {
+        "type": "playlist",
+        "id": "PL1234567890"
+      }
+    },
+    {
+      "input": "https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ",
+      "expected": {
+        "type": "video",
+        "id": "dQw4w9WgXcQ"
+      }
+    },
+    {
+      "input": "https://www.youtube.com/channel/abc",
+      "expected": null
+    },
+    {
+      "input": "https://soundcloud.com/a/b",
+      "expected": null
+    },
+    {
+      "input": "not a url",
+      "expected": null
+    },
+    {
+      "input": "https://www.youtube.com/watch?v=short",
+      "expected": null
+    },
+    {
+      "input": "https://youtube-nocookie.com/embed/dQw4w9WgXcQ",
+      "expected": {
+        "type": "video",
+        "id": "dQw4w9WgXcQ"
+      }
+    },
+    {
+      "input": "https://www.youtu.be/dQw4w9WgXcQ",
+      "expected": {
+        "type": "video",
+        "id": "dQw4w9WgXcQ"
+      }
+    }
+  ],
+  "ttls": [
+    {
+      "input": "https://rr1.googlevideo.com/videoplayback?id=123&expire=1800000000",
+      "expected": 14400000
+    },
+    {
+      "input": "https://example.com/audio.mp3",
+      "expected": 3600000
+    },
+    {
+      "input": "https://not-a-valid-url-at-all",
+      "expected": 3600000
+    },
+    {
+      "input": "https://rr1.googlevideo.com/videoplayback?expire=invalid",
+      "expected": 3600000
+    }
+  ]
+}

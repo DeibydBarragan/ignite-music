@@ -1,0 +1,546 @@
+[
+  {
+    "options": [],
+    "name": "autoplay",
+    "description": "Turn autoplay of related songs on or off",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "clear",
+    "description": "Remove every upcoming song from the queue",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "type": 3,
+        "choices": [
+          {
+            "name": "None",
+            "value": "none"
+          },
+          {
+            "name": "Bass Boost",
+            "value": "bassboost"
+          },
+          {
+            "name": "Nightcore",
+            "value": "nightcore"
+          },
+          {
+            "name": "Vaporwave",
+            "value": "vaporwave"
+          },
+          {
+            "name": "8D",
+            "value": "3d"
+          },
+          {
+            "name": "Karaoke",
+            "value": "karaoke"
+          },
+          {
+            "name": "Echo",
+            "value": "echo"
+          },
+          {
+            "name": "Surround",
+            "value": "surround"
+          },
+          {
+            "name": "Tremolo",
+            "value": "tremolo"
+          }
+        ],
+        "name": "name",
+        "description": "Filter",
+        "required": true
+      }
+    ],
+    "name": "filter",
+    "description": "Apply an audio filter",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "help",
+    "description": "Show commands and bot information",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "min_value": 1,
+        "type": 4,
+        "name": "position",
+        "description": "Position in the queue",
+        "required": true
+      }
+    ],
+    "name": "jump",
+    "description": "Skip to a song in the queue",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "language",
+    "description": "Change the bot language for this server",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "default_member_permissions": "32",
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "type": 3,
+        "choices": [
+          {
+            "name": "Off",
+            "value": "off"
+          },
+          {
+            "name": "Song",
+            "value": "song"
+          },
+          {
+            "name": "Queue",
+            "value": "queue"
+          }
+        ],
+        "name": "mode",
+        "description": "Loop mode",
+        "required": true
+      }
+    ],
+    "name": "loop",
+    "description": "Repeat the current song or the whole queue",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "type": 3,
+        "name": "song",
+        "description": "Song to look up (defaults to the current song)",
+        "required": false,
+        "max_length": 200
+      }
+    ],
+    "name": "lyrics",
+    "description": "Show the lyrics of the current song or any song",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "min_value": 1,
+        "type": 4,
+        "name": "from",
+        "description": "Current position",
+        "required": true
+      },
+      {
+        "min_value": 1,
+        "type": 4,
+        "name": "to",
+        "description": "New position",
+        "required": true
+      }
+    ],
+    "name": "move",
+    "description": "Move a song to another position in the queue",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "type": 3,
+        "name": "url",
+        "description": "Enlace de Spotify o YouTube",
+        "required": true,
+        "max_length": 1000
+      },
+      {
+        "type": 3,
+        "name": "nombre",
+        "description": "Nombre personalizado para la playlist",
+        "required": false,
+        "max_length": 60
+      }
+    ],
+    "name": "new-playlist",
+    "description": "Importar una playlist por enlace y guardarla en tu colección",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "nowplaying",
+    "description": "Show the player panel again at the bottom of the chat",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "pause",
+    "description": "Pause the music",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "autocomplete": true,
+        "type": 3,
+        "name": "query",
+        "description": "Song name or link",
+        "description_localizations": {
+          "cs": "Název skladby, interpret, YouTube/Spotify/SoundCloud URL nebo přímý odkaz",
+          "da": "Sangnavn, kunstner, YouTube/Spotify/SoundCloud URL eller direkte link",
+          "de": "Songname, Künstler, YouTube/Spotify/SoundCloud-URL oder Direktlink",
+          "es-ES": "Nombre de canción, artista, URL de YouTube/Spotify o enlace directo",
+          "es-419": "Nombre de canción, artista, URL de YouTube/Spotify o enlace directo",
+          "fi": "Kappaleen nimi, artisti, YouTube/Spotify/SoundCloud-URL tai suora linkki",
+          "fr": "Nom de la chanson, artiste, URL YouTube/Spotify/SoundCloud ou lien direct",
+          "hi": "गाने का नाम, कलाकार, YouTube/Spotify/SoundCloud URL या सीधा लिंक",
+          "id": "Nama lagu, artis, URL YouTube/Spotify/SoundCloud atau tautan langsung",
+          "it": "Nome canzone, artista, URL YouTube/Spotify/SoundCloud o link diretto",
+          "ja": "曲名、アーティスト、YouTube/Spotify/SoundCloud URL、または直接リンク",
+          "ko": "노래 제목, 아티스트, YouTube/Spotify/SoundCloud URL 또는 직접 링크",
+          "nl": "Nummernaam, artiest, YouTube/Spotify/SoundCloud URL of directe link",
+          "no": "Sangnavn, artist, YouTube/Spotify/SoundCloud URL eller direkte lenke",
+          "pl": "Nazwa piosenki, artysta, URL YouTube/Spotify/SoundCloud lub link bezpośredni",
+          "pt-BR": "Nome da música, artista, URL do YouTube/Spotify/SoundCloud ou link direto",
+          "ru": "Название песни, исполнитель, URL YouTube/Spotify/SoundCloud или прямая ссылка",
+          "sv-SE": "Låtnamn, artist, YouTube/Spotify/SoundCloud URL eller direktlänk",
+          "th": "ชื่อเพลง, ศิลปิน, URL YouTube/Spotify/SoundCloud หรือลิงก์โดยตรง",
+          "tr": "Şarkı adı, sanatçı, YouTube/Spotify/SoundCloud URL'i veya direkt link",
+          "zh-CN": "歌曲名称、艺术家、YouTube/Spotify/SoundCloud 网址或直接链接",
+          "zh-TW": "歌曲名稱、藝術家、YouTube/Spotify/SoundCloud 網址或直接連結"
+        },
+        "required": true,
+        "max_length": 1000
+      },
+      {
+        "name": "next",
+        "description": "Play it right after the current song",
+        "required": false,
+        "type": 5
+      }
+    ],
+    "name": "play",
+    "description": "Play a song or playlist from YouTube, Spotify or a link",
+    "description_localizations": {
+      "cs": "Přehrát hudbu – podporuje YouTube, Spotify, SoundCloud nebo přímý odkaz",
+      "da": "Afspil musik - understøtter YouTube, Spotify, SoundCloud eller direkte link",
+      "de": "Musik abspielen - unterstützt YouTube, Spotify, SoundCloud oder Direktlink",
+      "es-ES": "Reproducir música - soporta YouTube, Spotify o enlace directo",
+      "es-419": "Reproducir música - soporta YouTube, Spotify o enlace directo",
+      "fi": "Soita musiikkia - tukee YouTubea, Spotifyta, SoundCloudia tai suoraa linkkiä",
+      "fr": "Jouer de la musique - prend en charge YouTube, Spotify, SoundCloud ou lien direct",
+      "hi": "संगीत चलाएं - YouTube, Spotify, SoundCloud या सीधा लिंक समर्थित है",
+      "id": "Putar musik - mendukung YouTube, Spotify, SoundCloud atau tautan langsung",
+      "it": "Riproduci musica - supporta YouTube, Spotify, SoundCloud o link diretto",
+      "ja": "音楽を再生 - YouTube、Spotify、SoundCloud、または直接リンクに対応",
+      "ko": "음악 재생 - YouTube, Spotify, SoundCloud 또는 직접 링크 지원",
+      "nl": "Speel muziek af - ondersteunt YouTube, Spotify, SoundCloud of directe link",
+      "no": "Spill musikk - støtter YouTube, Spotify, SoundCloud eller direkte lenke",
+      "pl": "Odtwórz muzykę - obsługuje YouTube, Spotify, SoundCloud lub link bezpośredni",
+      "pt-BR": "Reproduzir música - suporta YouTube, Spotify, SoundCloud ou link direto",
+      "ru": "Воспроизвести музыку - поддерживает YouTube, Spotify, SoundCloud или прямую ссылку",
+      "sv-SE": "Spela musik - stöder YouTube, Spotify, SoundCloud eller direktlänk",
+      "th": "เล่นเพลง - รองรับ YouTube, Spotify, SoundCloud หรือลิงก์โดยตรง",
+      "tr": "Müzik çalar - YouTube, Spotify, SoundCloud veya direkt link destekler",
+      "zh-CN": "播放音乐 - 支持 YouTube、Spotify、SoundCloud 或直接链接",
+      "zh-TW": "播放音樂 - 支援 YouTube、Spotify、SoundCloud 或直接連結"
+    },
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "type": 3,
+        "name": "nombre",
+        "description": "Filtrar por nombre de playlist",
+        "required": false,
+        "max_length": 60
+      },
+      {
+        "type": 3,
+        "name": "reproducir",
+        "description": "Nombre o enlace de tu playlist para sonarla ahora",
+        "required": false,
+        "max_length": 500
+      },
+      {
+        "min_value": 1,
+        "type": 4,
+        "name": "page",
+        "description": "Número de página",
+        "required": false
+      }
+    ],
+    "name": "playlists",
+    "description": "Ver tus playlists guardadas y reproducirlas",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "autocomplete": true,
+        "type": 3,
+        "name": "query",
+        "description": "Song name or link",
+        "description_localizations": {
+          "cs": "Název skladby, interpret, URL YouTube/Spotify nebo přímý odkaz",
+          "da": "Sangnavn, kunstner, YouTube/Spotify-URL eller direkte link",
+          "de": "Songname, Künstler, YouTube/Spotify-URL oder Direktlink",
+          "es-ES": "Nombre de canción, artista, URL de YouTube/Spotify o enlace directo",
+          "es-419": "Nombre de canción, artista, URL de YouTube/Spotify o enlace directo",
+          "fi": "Kappaleen nimi, artisti, YouTube/Spotify-URL tai suora linkki",
+          "fr": "Nom du titre, artiste, URL YouTube/Spotify ou lien direct",
+          "hi": "गाने का नाम, कलाकार, YouTube/Spotify URL या सीधा लिंक",
+          "id": "Nama lagu, artis, URL YouTube/Spotify, atau tautan langsung",
+          "it": "Nome del brano, artista, URL YouTube/Spotify o link diretto",
+          "ja": "曲名、アーティスト、YouTube/Spotify URL または直接リンク",
+          "ko": "곡 이름, 아티스트, YouTube/Spotify URL 또는 직접 링크",
+          "nl": "Naam van nummer, artiest, YouTube/Spotify-URL of directe link",
+          "no": "Sangnavn, artist, YouTube/Spotify-URL eller direkte lenke",
+          "pl": "Nazwa utworu, wykonawca, URL YouTube/Spotify lub bezpośredni link",
+          "pt-BR": "Nome da música, artista, URL do YouTube/Spotify ou link direto",
+          "ru": "Название песни, исполнитель, ссылка YouTube/Spotify или прямая ссылка",
+          "sv-SE": "Låtnamn, artist, YouTube/Spotify-URL eller direktlänk",
+          "th": "ชื่อเพลง ศิลปิน URL ของ YouTube/Spotify หรือลิงก์โดยตรง",
+          "tr": "Şarkı adı, sanatçı, YouTube/Spotify URL'si veya doğrudan bağlantı",
+          "zh-CN": "歌曲名、歌手、YouTube/Spotify URL 或直链",
+          "zh-TW": "歌曲名稱、歌手、YouTube/Spotify URL 或直連連結"
+        },
+        "required": true,
+        "max_length": 1000
+      }
+    ],
+    "name": "playnext",
+    "description": "Play a song right after the current one (jump the queue)",
+    "description_localizations": {
+      "cs": "Přehrát skladbu hned po aktuální (předběhne frontu)",
+      "da": "Afspil en sang lige efter den nuværende (spring køen over)",
+      "de": "Einen Song direkt nach dem aktuellen abspielen (überspringt die Warteschlange)",
+      "es-ES": "Reproduce una canción siguiente a la actual (se salta la cola)",
+      "es-419": "Reproduce una canción siguiente a la actual (se salta la cola)",
+      "fi": "Toista kappale heti nykyisen jälkeen (ohittaa jonon)",
+      "fr": "Jouer un titre juste après le titre actuel (passe devant la file)",
+      "hi": "मौजूदा गाने के तुरंत बाद गाना चलाएँ (कतार में आगे)",
+      "id": "Putar lagu tepat setelah lagu saat ini (menyerobot antrean)",
+      "it": "Riproduci un brano subito dopo quello attuale (salta la coda)",
+      "ja": "現在の曲の直後に再生（キューを飛び越えます）",
+      "ko": "현재 곡 바로 다음에 재생 (대기열 건너뛰기)",
+      "nl": "Speel een nummer direct na het huidige (slaat de wachtrij over)",
+      "no": "Spill en sang rett etter den nåværende (hopper over køen)",
+      "pl": "Odtwórz utwór od razu po bieżącym (poza kolejką)",
+      "pt-BR": "Toque uma música logo após a atual (fura a fila)",
+      "ru": "Воспроизвести песню сразу после текущей (вне очереди)",
+      "sv-SE": "Spela en låt direkt efter den nuvarande (går före kön)",
+      "th": "เล่นเพลงต่อจากเพลงปัจจุบันทันที (แซงคิว)",
+      "tr": "Şarkıyı mevcut şarkıdan hemen sonra çal (sırayı atlar)",
+      "zh-CN": "在当前歌曲之后立即播放（跳过队列）",
+      "zh-TW": "在目前歌曲之後立即播放（跳過佇列）"
+    },
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "previous",
+    "description": "Play the previous song again",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "min_value": 1,
+        "type": 4,
+        "name": "page",
+        "description": "Page number",
+        "required": false
+      }
+    ],
+    "name": "queue",
+    "description": "Show the songs in the queue",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "min_value": 1,
+        "type": 4,
+        "name": "position",
+        "description": "Position in the queue",
+        "required": true
+      }
+    ],
+    "name": "remove",
+    "description": "Remove a song from the queue",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "resume",
+    "description": "Resume the music",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "type": 3,
+        "name": "query",
+        "description": "What to search for",
+        "required": true,
+        "max_length": 200
+      }
+    ],
+    "name": "search",
+    "description": "Search YouTube and pick a song from the results",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "type": 3,
+        "name": "time",
+        "description": "For example 1:30 or 90",
+        "required": true,
+        "max_length": 10
+      }
+    ],
+    "name": "seek",
+    "description": "Jump to a time in the current song",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "shuffle",
+    "description": "Shuffle the queue",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "skip",
+    "description": "Skip the current song",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "stop",
+    "description": "Stop the music, clear the queue and leave the voice channel",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "max_value": 100,
+        "min_value": 0,
+        "type": 4,
+        "name": "level",
+        "description": "Volume from 0 to 100",
+        "required": true
+      }
+    ],
+    "name": "volume",
+    "description": "Change the volume",
+    "description_localizations": {},
+    "contexts": [
+      0
+    ],
+    "type": 1
+  }
+]

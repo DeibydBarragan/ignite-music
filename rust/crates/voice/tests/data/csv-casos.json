@@ -1,0 +1,108 @@
+{
+  "cellCases": [
+    {
+      "input": "hola",
+      "expected": "hola"
+    },
+    {
+      "input": "a,b",
+      "expected": "\"a,b\""
+    },
+    {
+      "input": "di \"hola\"",
+      "expected": "\"di \"\"hola\"\"\""
+    },
+    {
+      "input": "a\nb",
+      "expected": "\"a\nb\""
+    },
+    {
+      "input": "a\r\nb",
+      "expected": "\"a\r\nb\""
+    },
+    {
+      "input": null,
+      "expected": ""
+    },
+    {
+      "expected": ""
+    },
+    {
+      "input": 0,
+      "expected": "0"
+    },
+    {
+      "input": 12345,
+      "expected": "12345"
+    },
+    {
+      "input": true,
+      "expected": "true"
+    },
+    {
+      "input": false,
+      "expected": "false"
+    },
+    {
+      "input": "",
+      "expected": ""
+    }
+  ],
+  "entries": [
+    {
+      "id": "vlog_1731000000000_abc12",
+      "timestamp": "2026-11-08T22:00:00.000Z",
+      "guildId": "123456789",
+      "userId": "987654321",
+      "audioBytes": 32000,
+      "voskHeard": "ignite reproduce starboy",
+      "wakeWordSpotted": true,
+      "matchedWakeWord": "ignite",
+      "gateReason": "ok",
+      "groqEngaged": true,
+      "groqText": "ignite reproduce starboy",
+      "groqElapsedMs": 342,
+      "commandId": "play",
+      "query": "starboy",
+      "ttsMessage": "Reproduciendo starboy",
+      "status": "executed"
+    },
+    {
+      "id": "vlog_1731000001000_def34",
+      "timestamp": "2026-11-08T22:00:01.000Z",
+      "guildId": "123456789",
+      "userId": null,
+      "audioBytes": 0,
+      "voskHeard": "",
+      "wakeWordSpotted": false,
+      "matchedWakeWord": null,
+      "gateReason": "gate_unavailable",
+      "groqEngaged": false,
+      "groqText": null,
+      "groqElapsedMs": null,
+      "commandId": null,
+      "query": null,
+      "ttsMessage": null,
+      "status": "filtered_out"
+    },
+    {
+      "id": "vlog_1731000002000_ghi56",
+      "timestamp": "2026-11-08T22:00:02.000Z",
+      "guildId": "999",
+      "userId": "888",
+      "audioBytes": 16000,
+      "voskHeard": "di \"hola\", que tal",
+      "wakeWordSpotted": true,
+      "matchedWakeWord": "ignite",
+      "gateReason": "ok",
+      "groqEngaged": true,
+      "groqText": "linea 1\nlinea 2\r\nlinea 3 con, comas y \"comillas\"",
+      "groqElapsedMs": 1200,
+      "commandId": "play",
+      "query": "cancion, con coma y \"comillas\"",
+      "ttsMessage": "Mensaje con\nsaltos de linea",
+      "status": "executed"
+    }
+  ],
+  "expectedCsv": "id,timestamp,guildId,userId,audioBytes,voskHeard,wakeWordSpotted,matchedWakeWord,gateReason,groqEngaged,groqText,groqElapsedMs,commandId,query,ttsMessage,status\nvlog_1731000000000_abc12,2026-11-08T22:00:00.000Z,123456789,987654321,32000,ignite reproduce starboy,true,ignite,ok,true,ignite reproduce starboy,342,play,starboy,Reproduciendo starboy,executed\nvlog_1731000001000_def34,2026-11-08T22:00:01.000Z,123456789,,0,,false,,gate_unavailable,false,,,,,,filtered_out\nvlog_1731000002000_ghi56,2026-11-08T22:00:02.000Z,999,888,16000,\"di \"\"hola\"\", que tal\",true,ignite,ok,true,\"linea 1\nlinea 2\r\nlinea 3 con, comas y \"\"comillas\"\"\",1200,play,\"cancion, con coma y \"\"comillas\"\"\",\"Mensaje con\nsaltos de linea\",executed\n"
+}

@@ -1,0 +1,89 @@
+{
+  "debug": false,
+  "noColor": false,
+  "shardId": null,
+  "devUserIds": [
+    "472144161357824000"
+  ],
+  "discord": {
+    "token": "",
+    "clientId": "",
+    "guildId": null
+  },
+  "bot": {
+    "status": "/play",
+    "color": 5793266,
+    "supportServer": "",
+    "website": "",
+    "defaultLanguage": "en",
+    "defaultVolume": 12,
+    "maxVolume": 100,
+    "maxQueueSize": 1,
+    "maxPlaylistSize": 1,
+    "leaveOnEmptyMs": 0,
+    "leaveOnFinishMs": 300000,
+    "panelRefreshMs": 5000,
+    "invite": ""
+  },
+  "spotify": {
+    "clientId": "",
+    "clientSecret": ""
+  },
+  "supabase": {
+    "url": "",
+    "key": "",
+    "serviceRoleKey": ""
+  },
+  "ytdlp": {
+    "path": "",
+    "cookiesFile": "",
+    "cookiesFromBrowser": "",
+    "poToken": "",
+    "potGenerator": "",
+    "potGeneratorPath": "",
+    "extractorArgs": "",
+    "concurrency": 32,
+    "timeoutMs": 5000,
+    "downloadBase": ""
+  },
+  "innertube": {
+    "hl": "es",
+    "gl": "CO"
+  },
+  "ffmpegPath": "",
+  "proxies": [],
+  "sharding": {
+    "totalShards": "1",
+    "shardList": "auto",
+    "mode": "process",
+    "managed": false,
+    "respawn": true,
+    "spawnDelay": 5500,
+    "spawnTimeout": 60000
+  },
+  "api": {
+    "enabled": true,
+    "port": 1024,
+    "secret": "",
+    "allowedOrigins": [],
+    "rateLimitPerMinute": 100000,
+    "publicUrl": "",
+    "autoTunnel": false
+  },
+  "voice": {
+    "enabled": true,
+    "defaultWakeWord": "ignite",
+    "groqApiKey": "",
+    "silenceDurationMs": 400,
+    "model": "whisper-large-v3-turbo",
+    "prompt": "Ignite, mierdabot, bot mierda, reproduce, pon, toca, pausa, salta, siguiente, anterior, agrega, añade, cola, lista, volumen, activa autoplay, desactiva autoplay, autoplay on, autoplay off.",
+    "offlineGating": true,
+    "minRms": 5000,
+    "groqCooldownMs": 30000,
+    "soundApiUrl": "https://wsnbbnbdc7.execute-api.us-east-2.amazonaws.com/sound",
+    "soundApiSecret": "",
+    "ttsFeedbackEnabled": true,
+    "allowBotInput": false,
+    "soundBotId": "1558180312050180317"
+  }
+}

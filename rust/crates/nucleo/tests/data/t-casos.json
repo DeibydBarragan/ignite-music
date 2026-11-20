@@ -1,0 +1,387 @@
+{
+  "clean": [
+    {
+      "input": "✅ Done 🎵 now",
+      "output": "Done now"
+    },
+    {
+      "input": "  Hello   world \t test  ",
+      "output": "Hello world test"
+    },
+    {
+      "input": "  Line 1\n   Line 2\n\tLine 3  ",
+      "output": "Line 1\nLine 2\nLine 3"
+    },
+    {
+      "input": "🎵 Music 🎶 Note 🎧 Headphone",
+      "output": "Music Note Headphone"
+    },
+    {
+      "input": "Flag: 🇺🇸 US and skin tone: 👍🏽 thumbs up",
+      "output": "Flag: US and skin tone: thumbs up"
+    },
+    {
+      "input": "Keycap 1️⃣ one",
+      "output": "Keycap 1 one"
+    },
+    {
+      "input": "Normal text without emoji",
+      "output": "Normal text without emoji"
+    },
+    {
+      "input": "",
+      "output": ""
+    },
+    {
+      "input": "   leading and trailing spaces   ",
+      "output": "leading and trailing spaces"
+    },
+    {
+      "input": "Multiple \n\n   lines \n   with spaces  ",
+      "output": "Multiple \n\nlines \nwith spaces"
+    }
+  ],
+  "t": [
+    {
+      "lang": "tr",
+      "key": "buttonhandler.songs_shuffled",
+      "vars": {
+        "count": "3"
+      },
+      "output": "3 şarkı karıştırıldı!"
+    },
+    {
+      "lang": "xx",
+      "key": "buttons.skip",
+      "vars": {},
+      "output": "Skip"
+    },
+    {
+      "lang": "en",
+      "key": "does.not.exist",
+      "vars": {},
+      "output": "does.not.exist"
+    },
+    {
+      "lang": "en",
+      "key": "commands.help.stats_servers",
+      "vars": {
+        "count": "42"
+      },
+      "output": "**Servers:** 42"
+    },
+    {
+      "lang": "en",
+      "key": "commands.help.stats_servers",
+      "vars": {},
+      "output": "**Servers:** {count}"
+    },
+    {
+      "lang": "es",
+      "key": "commands.language.changed_desc",
+      "vars": {
+        "language": "Español"
+      },
+      "output": "¡El idioma del servidor se ha establecido en **Español**!"
+    },
+    {
+      "lang": "es",
+      "key": "commands.nowplaying.volume",
+      "vars": {
+        "volume": "80"
+      },
+      "output": "Volumen: 80%"
+    },
+    {
+      "lang": "ja",
+      "key": "commands.search.no_results",
+      "vars": {},
+      "output": "検索結果が見つかりませんでした！"
+    },
+    {
+      "lang": "zh_CN",
+      "key": "commands.play.voice_channel_required",
+      "vars": {},
+      "output": "您必须在语音频道中！"
+    },
+    {
+      "lang": "zh_TW",
+      "key": "commands.play.voice_channel_required",
+      "vars": {},
+      "output": "您必須在語音頻道中！"
+    },
+    {
+      "lang": "de",
+      "key": "commands.play.track_started",
+      "vars": {
+        "title": "Song 🎵 Title"
+      },
+      "output": "**Song 🎵 Title** wird jetzt abgespielt!"
+    },
+    {
+      "lang": "fr",
+      "key": "commands.play.track_queued",
+      "vars": {
+        "title": "Title",
+        "position": "5"
+      },
+      "output": "**Title** ajouté à la file! (à la position 5)"
+    },
+    {
+      "lang": "pt",
+      "key": "commands.language.title",
+      "vars": {},
+      "output": "Definições de Idioma"
+    },
+    {
+      "lang": "ru",
+      "key": "commands.language.title",
+      "vars": {},
+      "output": "Настройки Языка"
+    }
+  ],
+  "discordLocales": [
+    {
+      "locale": "en-US",
+      "output": "en"
+    },
+    {
+      "locale": "en-GB",
+      "output": "en"
+    },
+    {
+      "locale": "tr",
+      "output": "tr"
+    },
+    {
+      "locale": "de",
+      "output": "de"
+    },
+    {
+      "locale": "es-ES",
+      "output": "es"
+    },
+    {
+      "locale": "es-419",
+      "output": "es"
+    },
+    {
+      "locale": "fr",
+      "output": "fr"
+    },
+    {
+      "locale": "it",
+      "output": "it"
+    },
+    {
+      "locale": "nl",
+      "output": "nl"
+    },
+    {
+      "locale": "pl",
+      "output": "pl"
+    },
+    {
+      "locale": "pt-BR",
+      "output": "pt"
+    },
+    {
+      "locale": "ru",
+      "output": "ru"
+    },
+    {
+      "locale": "sv-SE",
+      "output": "sv"
+    },
+    {
+      "locale": "no",
+      "output": "no"
+    },
+    {
+      "locale": "da",
+      "output": "da"
+    },
+    {
+      "locale": "fi",
+      "output": "fi"
+    },
+    {
+      "locale": "cs",
+      "output": "cs"
+    },
+    {
+      "locale": "ja",
+      "output": "ja"
+    },
+    {
+      "locale": "ko",
+      "output": "ko"
+    },
+    {
+      "locale": "zh-CN",
+      "output": "zh_CN"
+    },
+    {
+      "locale": "zh-TW",
+      "output": "zh_TW"
+    },
+    {
+      "locale": "hi",
+      "output": "hi"
+    },
+    {
+      "locale": "th",
+      "output": "th"
+    },
+    {
+      "locale": "id",
+      "output": "id"
+    },
+    {
+      "locale": "xx",
+      "output": null
+    }
+  ],
+  "list": [
+    {
+      "code": "ar",
+      "name": "العربية"
+    },
+    {
+      "code": "cs",
+      "name": "Čeština"
+    },
+    {
+      "code": "da",
+      "name": "Dansk"
+    },
+    {
+      "code": "de",
+      "name": "Deutsch"
+    },
+    {
+      "code": "en",
+      "name": "English"
+    },
+    {
+      "code": "es",
+      "name": "Español"
+    },
+    {
+      "code": "fi",
+      "name": "Suomi"
+    },
+    {
+      "code": "fr",
+      "name": "Français"
+    },
+    {
+      "code": "hi",
+      "name": "हिन्दी"
+    },
+    {
+      "code": "id",
+      "name": "Bahasa Indonesia"
+    },
+    {
+      "code": "it",
+      "name": "Italiano"
+    },
+    {
+      "code": "ja",
+      "name": "日本語"
+    },
+    {
+      "code": "ko",
+      "name": "한국어"
+    },
+    {
+      "code": "nl",
+      "name": "Nederlands"
+    },
+    {
+      "code": "no",
+      "name": "Norsk"
+    },
+    {
+      "code": "pl",
+      "name": "Polski"
+    },
+    {
+      "code": "pt",
+      "name": "Português"
+    },
+    {
+      "code": "ru",
+      "name": "Русский"
+    },
+    {
+      "code": "sv",
+      "name": "Svenska"
+    },
+    {
+      "code": "th",
+      "name": "Thai"
+    },
+    {
+      "code": "tr",
+      "name": "Türkçe"
+    },
+    {
+      "code": "zh_CN",
+      "name": "简体中文"
+    },
+    {
+      "code": "zh_TW",
+      "name": "繁體中文"
+    }
+  ],
+  "localizationsPlay": {
+    "cs": "Přehrát hudbu – podporuje YouTube, Spotify, SoundCloud nebo přímý odkaz",
+    "da": "Afspil musik - understøtter YouTube, Spotify, SoundCloud eller direkte link",
+    "de": "Musik abspielen - unterstützt YouTube, Spotify, SoundCloud oder Direktlink",
+    "es-ES": "Reproducir música - soporta YouTube, Spotify o enlace directo",
+    "es-419": "Reproducir música - soporta YouTube, Spotify o enlace directo",
+    "fi": "Soita musiikkia - tukee YouTubea, Spotifyta, SoundCloudia tai suoraa linkkiä",
+    "fr": "Jouer de la musique - prend en charge YouTube, Spotify, SoundCloud ou lien direct",
+    "hi": "संगीत चलाएं - YouTube, Spotify, SoundCloud या सीधा लिंक समर्थित है",
+    "id": "Putar musik - mendukung YouTube, Spotify, SoundCloud atau tautan langsung",
+    "it": "Riproduci musica - supporta YouTube, Spotify, SoundCloud o link diretto",
+    "ja": "音楽を再生 - YouTube、Spotify、SoundCloud、または直接リンクに対応",
+    "ko": "음악 재생 - YouTube, Spotify, SoundCloud 또는 직접 링크 지원",
+    "nl": "Speel muziek af - ondersteunt YouTube, Spotify, SoundCloud of directe link",
+    "no": "Spill musikk - støtter YouTube, Spotify, SoundCloud eller direkte lenke",
+    "pl": "Odtwórz muzykę - obsługuje YouTube, Spotify, SoundCloud lub link bezpośredni",
+    "pt-BR": "Reproduzir música - suporta YouTube, Spotify, SoundCloud ou link direto",
+    "ru": "Воспроизвести музыку - поддерживает YouTube, Spotify, SoundCloud или прямую ссылку",
+    "sv-SE": "Spela musik - stöder YouTube, Spotify, SoundCloud eller direktlänk",
+    "th": "เล่นเพลง - รองรับ YouTube, Spotify, SoundCloud หรือลิงก์โดยตรง",
+    "tr": "Müzik çalar - YouTube, Spotify, SoundCloud veya direkt link destekler",
+    "zh-CN": "播放音乐 - 支持 YouTube、Spotify、SoundCloud 或直接链接",
+    "zh-TW": "播放音樂 - 支援 YouTube、Spotify、SoundCloud 或直接連結"
+  },
+  "localizationsLangTitle": {
+    "cs": "Nastavení jazyka",
+    "da": "Sprogindstillinger",
+    "de": "Spracheinstellungen",
+    "es-ES": "Configuración de Idioma",
+    "es-419": "Configuración de Idioma",
+    "fi": "Kieliasetukset",
+    "fr": "Paramètres de langue",
+    "hi": "भाषा सेटिंग्स",
+    "id": "Pengaturan Bahasa",
+    "it": "Impostazioni Lingua",
+    "ja": "言語設定",
+    "ko": "언어 설정",
+    "nl": "Taalinstellingen",
+    "no": "Språkinnstillinger",
+    "pl": "Ustawienia Języka",
+    "pt-BR": "Definições de Idioma",
+    "ru": "Настройки Языка",
+    "sv-SE": "Språkinställningar",
+    "th": "การตั้งค่าภาษา",
+    "tr": "Dil Ayarları",
+    "zh-CN": "语言设置",
+    "zh-TW": "語言設定"
+  }
+}

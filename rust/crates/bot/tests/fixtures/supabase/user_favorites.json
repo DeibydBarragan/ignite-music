@@ -1,0 +1,13 @@
+[
+  {
+    "id": "fav-0001",
+    "user_id": "472144161357824000",
+    "song_id": "song_abc",
+    "title": "Never Gonna Give You Up",
+    "artist": "Rick Astley",
+    "album_art": "https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg",
+    "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "duration": 212,
+    "source": "youtube"
+  }
+]

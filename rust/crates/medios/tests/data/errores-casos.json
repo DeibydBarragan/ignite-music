@@ -1,0 +1,373 @@
+[
+  {
+    "nombre": "voice_full",
+    "codigo": "VOICE_FULL",
+    "mensaje": null,
+    "stderr": null,
+    "esperado": "ui.voice_full"
+  },
+  {
+    "nombre": "voice_missing_perms",
+    "codigo": "VOICE_MISSING_PERMS",
+    "mensaje": null,
+    "stderr": null,
+    "esperado": "errors.voice_no_permission"
+  },
+  {
+    "nombre": "voice_connect_failed",
+    "codigo": "VOICE_CONNECT_FAILED",
+    "mensaje": null,
+    "stderr": null,
+    "esperado": "musicplayer.failed_connect_voice"
+  },
+  {
+    "nombre": "voice_reconnect_failed",
+    "codigo": "VOICE_RECONNECT_FAILED",
+    "mensaje": null,
+    "stderr": null,
+    "esperado": "musicplayer.failed_connect_voice"
+  },
+  {
+    "nombre": "non_nsfw",
+    "codigo": "NON_NSFW",
+    "mensaje": null,
+    "stderr": null,
+    "esperado": "errors.youtube_age_restricted"
+  },
+  {
+    "nombre": "not_supported_url",
+    "codigo": "NOT_SUPPORTED_URL",
+    "mensaje": null,
+    "stderr": null,
+    "esperado": "ui.unsupported"
+  },
+  {
+    "nombre": "not_supported_song",
+    "codigo": "NOT_SUPPORTED_SONG",
+    "mensaje": null,
+    "stderr": null,
+    "esperado": "ui.unsupported"
+  },
+  {
+    "nombre": "empty_playlist",
+    "codigo": "EMPTY_PLAYLIST",
+    "mensaje": null,
+    "stderr": null,
+    "esperado": "youtube.no_valid_tracks"
+  },
+  {
+    "nombre": "empty_filtered_playlist",
+    "codigo": "EMPTY_FILTERED_PLAYLIST",
+    "mensaje": null,
+    "stderr": null,
+    "esperado": "youtube.no_valid_tracks"
+  },
+  {
+    "nombre": "no_result",
+    "codigo": "NO_RESULT",
+    "mensaje": null,
+    "stderr": null,
+    "esperado": "musicplayer.no_results_found"
+  },
+  {
+    "nombre": "drm_protected_code",
+    "codigo": "DRM_PROTECTED",
+    "mensaje": null,
+    "stderr": null,
+    "esperado": "errors.drm_protected"
+  },
+  {
+    "nombre": "ffmpeg_exited",
+    "codigo": "FFMPEG_EXITED",
+    "mensaje": null,
+    "stderr": null,
+    "esperado": "errors.stream_failed"
+  },
+  {
+    "nombre": "no_stream_url",
+    "codigo": "NO_STREAM_URL",
+    "mensaje": null,
+    "stderr": null,
+    "esperado": "errors.stream_failed"
+  },
+  {
+    "nombre": "cannot_get_stream_url",
+    "codigo": "CANNOT_GET_STREAM_URL",
+    "mensaje": null,
+    "stderr": null,
+    "esperado": "errors.stream_failed"
+  },
+  {
+    "nombre": "bot_check_sign_in",
+    "codigo": null,
+    "mensaje": "Sign in to confirm you are not a bot",
+    "stderr": null,
+    "esperado": "errors.youtube_bot_detection"
+  },
+  {
+    "nombre": "bot_check_not_a_bot",
+    "codigo": null,
+    "mensaje": "Please prove you are not a bot",
+    "stderr": null,
+    "esperado": "errors.youtube_bot_detection"
+  },
+  {
+    "nombre": "bot_check_confirm_you_re_not",
+    "codigo": null,
+    "mensaje": "Confirm you're not a robot",
+    "stderr": null,
+    "esperado": "errors.youtube_bot_detection"
+  },
+  {
+    "nombre": "bot_check_in_stderr",
+    "codigo": null,
+    "mensaje": "Failed",
+    "stderr": "ERROR: Sign in to confirm you are not a bot",
+    "esperado": "errors.youtube_bot_detection"
+  },
+  {
+    "nombre": "age_restrict_hyphen",
+    "codigo": null,
+    "mensaje": "This video is age-restricted",
+    "stderr": null,
+    "esperado": "errors.youtube_age_restricted"
+  },
+  {
+    "nombre": "age_restrict_space",
+    "codigo": null,
+    "mensaje": "Age restricted content",
+    "stderr": null,
+    "esperado": "errors.youtube_age_restricted"
+  },
+  {
+    "nombre": "age_restrict_confirm_age",
+    "codigo": null,
+    "mensaje": "Please confirm your age to watch",
+    "stderr": null,
+    "esperado": "errors.youtube_age_restricted"
+  },
+  {
+    "nombre": "age_restrict_inappropriate",
+    "codigo": null,
+    "mensaje": "May be inappropriate for some users",
+    "stderr": null,
+    "esperado": "errors.youtube_age_restricted"
+  },
+  {
+    "nombre": "geo_not_available_country",
+    "codigo": null,
+    "mensaje": "The video is not available in your country",
+    "stderr": null,
+    "esperado": "errors.youtube_geo_blocked"
+  },
+  {
+    "nombre": "geo_restrict_hyphen",
+    "codigo": null,
+    "mensaje": "Video is geo-restricted by copyright owner",
+    "stderr": null,
+    "esperado": "errors.youtube_geo_blocked"
+  },
+  {
+    "nombre": "geo_blocked_it",
+    "codigo": null,
+    "mensaje": "The uploader has blocked it in your country",
+    "stderr": null,
+    "esperado": "errors.youtube_geo_blocked"
+  },
+  {
+    "nombre": "rate_limit_429_word",
+    "codigo": null,
+    "mensaje": "HTTP 429 response from server",
+    "stderr": null,
+    "esperado": "errors.rate_limited"
+  },
+  {
+    "nombre": "rate_limit_too_many",
+    "codigo": null,
+    "mensaje": "Too many requests received",
+    "stderr": null,
+    "esperado": "errors.rate_limited"
+  },
+  {
+    "nombre": "rate_limit_words",
+    "codigo": null,
+    "mensaje": "Rate limit has been exceeded",
+    "stderr": null,
+    "esperado": "errors.rate_limited"
+  },
+  {
+    "nombre": "rate_limit_hyphen",
+    "codigo": null,
+    "mensaje": "Client hit rate-limit",
+    "stderr": null,
+    "esperado": "errors.rate_limited"
+  },
+  {
+    "nombre": "unavailable_video_unavailable",
+    "codigo": null,
+    "mensaje": "Video unavailable",
+    "stderr": null,
+    "esperado": "errors.youtube_unavailable"
+  },
+  {
+    "nombre": "unavailable_private",
+    "codigo": null,
+    "mensaje": "This is a private video",
+    "stderr": null,
+    "esperado": "errors.youtube_unavailable"
+  },
+  {
+    "nombre": "unavailable_removed",
+    "codigo": null,
+    "mensaje": "Video has been removed",
+    "stderr": null,
+    "esperado": "errors.youtube_unavailable"
+  },
+  {
+    "nombre": "unavailable_does_not_exist",
+    "codigo": null,
+    "mensaje": "The requested resource does not exist",
+    "stderr": null,
+    "esperado": "errors.youtube_unavailable"
+  },
+  {
+    "nombre": "unavailable_is_not_available",
+    "codigo": null,
+    "mensaje": "Content is not available",
+    "stderr": null,
+    "esperado": "errors.youtube_unavailable"
+  },
+  {
+    "nombre": "unavailable_no_longer",
+    "codigo": null,
+    "mensaje": "This video is no longer available",
+    "stderr": null,
+    "esperado": "errors.youtube_unavailable"
+  },
+  {
+    "nombre": "network_econnreset",
+    "codigo": null,
+    "mensaje": "Connection error ECONNRESET",
+    "stderr": null,
+    "esperado": "errors.network_error"
+  },
+  {
+    "nombre": "network_etimedout",
+    "codigo": null,
+    "mensaje": "Socket connection ETIMEDOUT",
+    "stderr": null,
+    "esperado": "errors.network_error"
+  },
+  {
+    "nombre": "network_enotfound",
+    "codigo": null,
+    "mensaje": "Lookup failed: ENOTFOUND",
+    "stderr": null,
+    "esperado": "errors.network_error"
+  },
+  {
+    "nombre": "network_eai_again",
+    "codigo": null,
+    "mensaje": "DNS failure EAI_AGAIN",
+    "stderr": null,
+    "esperado": "errors.network_error"
+  },
+  {
+    "nombre": "network_socket_hang_up",
+    "codigo": null,
+    "mensaje": "Error: socket hang up",
+    "stderr": null,
+    "esperado": "errors.network_error"
+  },
+  {
+    "nombre": "network_word",
+    "codigo": null,
+    "mensaje": "Temporary network failure",
+    "stderr": null,
+    "esperado": "errors.network_error"
+  },
+  {
+    "nombre": "network_timed_out",
+    "codigo": null,
+    "mensaje": "Process timed out after 30s",
+    "stderr": null,
+    "esperado": "errors.network_error"
+  },
+  {
+    "nombre": "drm_word",
+    "codigo": null,
+    "mensaje": "Stream requires drm license",
+    "stderr": null,
+    "esperado": "errors.drm_protected"
+  },
+  {
+    "nombre": "drm_protected_phrase",
+    "codigo": null,
+    "mensaje": "This stream is drm protected",
+    "stderr": null,
+    "esperado": "errors.drm_protected"
+  },
+  {
+    "nombre": "stream_ffmpeg_text",
+    "codigo": null,
+    "mensaje": "ffmpeg error while decoding",
+    "stderr": null,
+    "esperado": "errors.stream_failed"
+  },
+  {
+    "nombre": "stream_403",
+    "codigo": null,
+    "mensaje": "HTTP Error 403: Forbidden",
+    "stderr": null,
+    "esperado": "errors.stream_failed"
+  },
+  {
+    "nombre": "stream_forbidden",
+    "codigo": null,
+    "mensaje": "Access forbidden by upstream",
+    "stderr": null,
+    "esperado": "errors.stream_failed"
+  },
+  {
+    "nombre": "precedence_code_over_text",
+    "codigo": "VOICE_FULL",
+    "mensaje": "HTTP 403 forbidden",
+    "stderr": null,
+    "esperado": "ui.voice_full"
+  },
+  {
+    "nombre": "precedence_bot_over_age",
+    "codigo": null,
+    "mensaje": "Sign in to confirm you are not a bot and confirm your age",
+    "stderr": null,
+    "esperado": "errors.youtube_bot_detection"
+  },
+  {
+    "nombre": "precedence_drm_over_ffmpeg",
+    "codigo": null,
+    "mensaje": "ffmpeg error on drm protected media",
+    "stderr": null,
+    "esperado": "errors.drm_protected"
+  },
+  {
+    "nombre": "unknown_empty",
+    "codigo": null,
+    "mensaje": null,
+    "stderr": null,
+    "esperado": "errors.unknown"
+  },
+  {
+    "nombre": "unknown_random_text",
+    "codigo": null,
+    "mensaje": "Something completely unpredicted happened",
+    "stderr": null,
+    "esperado": "errors.unknown"
+  },
+  {
+    "nombre": "unknown_unrecognized_code",
+    "codigo": "SOME_WEIRD_CODE",
+    "mensaje": "unrelated",
+    "stderr": null,
+    "esperado": "errors.unknown"
+  }
+]

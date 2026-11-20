@@ -1,0 +1,318 @@
+{
+  "formatDuration": [
+    {
+      "input": 0,
+      "output": "0:00"
+    },
+    {
+      "input": 65,
+      "output": "1:05"
+    },
+    {
+      "input": 3661,
+      "output": "1:01:01"
+    },
+    {
+      "input": -5,
+      "output": "0:00"
+    }
+  ],
+  "parseTime": [
+    {
+      "input": "90",
+      "output": 90
+    },
+    {
+      "input": "1:30",
+      "output": 90
+    },
+    {
+      "input": "1:02:03",
+      "output": 3723
+    },
+    {
+      "input": "1:60",
+      "output": null
+    },
+    {
+      "input": "abc",
+      "output": null
+    },
+    {
+      "input": "",
+      "output": null
+    },
+    {
+      "input": "-5",
+      "output": null
+    },
+    {
+      "input": "0",
+      "output": 0
+    },
+    {
+      "input": "0:00",
+      "output": 0
+    },
+    {
+      "input": "0:59",
+      "output": 59
+    },
+    {
+      "input": "2:00:00",
+      "output": 7200
+    }
+  ],
+  "progressBar": [
+    {
+      "current": 0,
+      "total": 100,
+      "size": 12,
+      "output": "●───────────"
+    },
+    {
+      "current": 50,
+      "total": 100,
+      "size": 12,
+      "output": "━━━━━━●─────"
+    },
+    {
+      "current": 100,
+      "total": 100,
+      "size": 12,
+      "output": "━━━━━━━━━━━●"
+    },
+    {
+      "current": 150,
+      "total": 100,
+      "size": 12,
+      "output": "━━━━━━━━━━━●"
+    },
+    {
+      "current": 10,
+      "total": 0,
+      "size": 12,
+      "output": "────────────"
+    },
+    {
+      "current": 42,
+      "total": 181,
+      "size": 16,
+      "output": "━━━●────────────"
+    }
+  ],
+  "truncate": [
+    {
+      "text": "abcdef",
+      "max": 4,
+      "output": "abc…"
+    },
+    {
+      "text": "abc",
+      "max": 4,
+      "output": "abc"
+    },
+    {
+      "text": "hello world",
+      "max": 5,
+      "output": "hell…"
+    },
+    {
+      "text": "hi",
+      "max": 10,
+      "output": "hi"
+    }
+  ],
+  "escapeMarkdown": [
+    {
+      "text": "a*b_[c](d)",
+      "output": "a\\*b\\_\\[c\\]\\(d\\)"
+    },
+    {
+      "text": "test_string~with|special>chars\\and`quotes",
+      "output": "test\\_string\\~with\\|special\\>chars\\\\and\\`quotes"
+    }
+  ],
+  "safeUrl": [
+    {
+      "url": "https://x.y/a)b",
+      "output": "https://x.y/a%29b"
+    },
+    {
+      "url": "javascript:alert(1)",
+      "output": null
+    },
+    {
+      "url": "ftp://x",
+      "output": null
+    },
+    {
+      "url": "http://example.com/test?a=1&b=2",
+      "output": "http://example.com/test?a=1&b=2"
+    }
+  ],
+  "linkLabel": [
+    {
+      "title": "Title",
+      "max": 80,
+      "output": "Title"
+    },
+    {
+      "title": "lofi hip hop radio 📚 beats to relax/study to 2026-10-09 05:36",
+      "max": 80,
+      "output": "lofi hip hop radio beats to relax/study to 2026-10-09 05:36"
+    },
+    {
+      "title": "[MV] Song (Live)",
+      "max": 80,
+      "output": "\\(MV\\) Song \\(Live\\)"
+    },
+    {
+      "title": "a\nb​c",
+      "max": 80,
+      "output": "a b c"
+    },
+    {
+      "title": "👨‍👩‍👧 🇹🇷 Türkçe şarkı",
+      "max": 80,
+      "output": "Türkçe şarkı"
+    },
+    {
+      "title": "see https://example.com",
+      "max": 80,
+      "output": "see example․com"
+    },
+    {
+      "title": "🔥🔥",
+      "max": 80,
+      "output": "Untitled"
+    },
+    {
+      "title": null,
+      "max": 80,
+      "output": "Untitled"
+    }
+  ],
+  "link": [
+    {
+      "title": "Title",
+      "url": "https://x.y/a)b",
+      "max": 80,
+      "output": "[Title](https://x.y/a%29b)"
+    },
+    {
+      "title": "Title",
+      "url": "javascript:alert(1)",
+      "max": 80,
+      "output": "Title"
+    },
+    {
+      "title": "lofi hip hop radio 📚 beats to relax/study to 2026-10-09 05:36",
+      "url": "https://www.youtube.com/watch?v=rFZHOHl-L8A",
+      "max": 80,
+      "output": "[lofi hip hop radio beats to relax/study to 2026-10-09 05:36](https://www.youtube.com/watch?v=rFZHOHl-L8A)"
+    },
+    {
+      "title": "[MV] Song (Live)",
+      "url": "https://www.youtube.com/watch?v=rFZHOHl-L8A",
+      "max": 80,
+      "output": "[\\(MV\\) Song \\(Live\\)](https://www.youtube.com/watch?v=rFZHOHl-L8A)"
+    },
+    {
+      "title": "a\nb​c",
+      "url": "https://www.youtube.com/watch?v=rFZHOHl-L8A",
+      "max": 80,
+      "output": "[a b c](https://www.youtube.com/watch?v=rFZHOHl-L8A)"
+    },
+    {
+      "title": "👨‍👩‍👧 🇹🇷 Türkçe şarkı",
+      "url": "https://www.youtube.com/watch?v=rFZHOHl-L8A",
+      "max": 80,
+      "output": "[Türkçe şarkı](https://www.youtube.com/watch?v=rFZHOHl-L8A)"
+    },
+    {
+      "title": "see https://example.com",
+      "url": "https://www.youtube.com/watch?v=rFZHOHl-L8A",
+      "max": 80,
+      "output": "[see example․com](https://www.youtube.com/watch?v=rFZHOHl-L8A)"
+    },
+    {
+      "title": "🔥🔥",
+      "url": "https://www.youtube.com/watch?v=rFZHOHl-L8A",
+      "max": 80,
+      "output": "[Untitled](https://www.youtube.com/watch?v=rFZHOHl-L8A)"
+    },
+    {
+      "title": null,
+      "url": "https://www.youtube.com/watch?v=rFZHOHl-L8A",
+      "max": 80,
+      "output": "[Untitled](https://www.youtube.com/watch?v=rFZHOHl-L8A)"
+    }
+  ],
+  "formatUptime": [
+    {
+      "ms": 0,
+      "output": "0m"
+    },
+    {
+      "ms": 1000,
+      "output": "0m"
+    },
+    {
+      "ms": 60000,
+      "output": "1m"
+    },
+    {
+      "ms": 3660000,
+      "output": "1h 1m"
+    },
+    {
+      "ms": 90000000,
+      "output": "1d 1h 0m"
+    },
+    {
+      "ms": 90120000,
+      "output": "1d 1h 2m"
+    }
+  ],
+  "chunk": [
+    {
+      "items": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "size": 2,
+      "output": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          5
+        ]
+      ]
+    },
+    {
+      "items": [
+        1,
+        2,
+        3
+      ],
+      "size": 5,
+      "output": [
+        [
+          1,
+          2,
+          3
+        ]
+      ]
+    }
+  ]
+}

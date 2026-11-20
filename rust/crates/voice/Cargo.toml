@@ -1,0 +1,29 @@
+[package]
+name = "voice"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+async-trait = "0.1"
+chrono = { version = "0.4", features = ["serde"] }
+libloading = "0.8"
+nucleo = { path = "../nucleo" }
+player = { path = "../player" }
+rand = "0.8"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "multipart"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+songbird = { version = "=0.6.0", default-features = false, features = ["driver", "gateway", "receive", "tungstenite", "rustls", "twilight"] }
+tokio = { version = "1", features = ["sync", "time"] }
+tracing = "0.1"
+twilight-http = "0.17"
+twilight-model = "0.17"
+
+[dev-dependencies]
+sha2 = "0.10"
+tempfile = "3.10"
+tokio = { version = "1", features = ["full"] }

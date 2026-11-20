@@ -1,0 +1,70 @@
+{
+  "player_state_empty": {
+    "hasQueue": false,
+    "isPlaying": false,
+    "isPaused": false,
+    "currentTime": 0,
+    "duration": 0,
+    "volume": 100,
+    "repeatMode": "off",
+    "autoplay": false,
+    "filter": null,
+    "voiceChannel": null,
+    "currentSong": null,
+    "queue": [],
+    "disconnectReason": null
+  },
+  "control_success": {
+    "success": true,
+    "message": "Música pausada"
+  },
+  "dev_mode_get": {
+    "success": true,
+    "devMode": false,
+    "userId": "123456789012345678"
+  },
+  "dev_mode_post": {
+    "success": true,
+    "devMode": true,
+    "userId": "123456789012345678"
+  },
+  "search_empty": {
+    "query": "lofi beats",
+    "results": []
+  },
+  "suggestions_empty": {
+    "query": "lofi",
+    "suggestions": []
+  },
+  "voice_settings_default": {
+    "enabled": false,
+    "wake_word": "ignite",
+    "language": "es",
+    "tts_feedback_enabled": false,
+    "tts_voice": "es-MX-DaliaNeural",
+    "tts_pitch": 1,
+    "tts_rate": 1,
+    "tts_templates": {
+      "play": "Reproduciendo {query}"
+    },
+    "bindings": []
+  },
+  "blocked_url_problem": {
+    "type": "https://ignite.bot/errors/blocked-url",
+    "title": "Invalid Request Parameter",
+    "status": 400,
+    "detail": "URLs pointing to local or private networks are not allowed.",
+    "code": "BLOCKED_URL",
+    "timestamp": "2026-11-10T11:48:13.763Z",
+    "error": "URLs pointing to local or private networks are not allowed."
+  },
+  "invalid_snowflake_problem": {
+    "type": "https://ignite.bot/errors/invalid-snowflake",
+    "title": "Invalid Request Parameter",
+    "status": 400,
+    "detail": "Guild ID must be a valid Discord snowflake.",
+    "code": "INVALID_SNOWFLAKE",
+    "timestamp": "2026-11-10T11:48:13.763Z",
+    "error": "Guild ID must be a valid Discord snowflake."
+  }
+}

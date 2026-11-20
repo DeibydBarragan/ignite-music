@@ -1,0 +1,71 @@
+{
+  "fixture": "ignite-sample.wav",
+  "filters": [
+    {
+      "name": "bassboost",
+      "label": "Bass Boost",
+      "ffmpeg_arg": "bass=g=10",
+      "audio_sha256": "c4f2be3f5486dedde765e58d0f8dde6f89fb778495cc95d5d691bc99529b9df0",
+      "audio_bytes": 266880
+    },
+    {
+      "name": "nightcore",
+      "label": "Nightcore",
+      "ffmpeg_arg": "asetrate=48000*1.25,aresample=48000,bass=g=5",
+      "audio_sha256": "c44fbc50d5d8fa3f2e19586b76b63c9274e282998f6d73dfefbf418e6ccbc628",
+      "audio_bytes": 71168
+    },
+    {
+      "name": "vaporwave",
+      "label": "Vaporwave",
+      "ffmpeg_arg": "asetrate=48000*0.8,aresample=48000,atempo=1.1",
+      "audio_sha256": "19045b913b79bda178bf60d3bb3152b006265756446bbd8dbbd804256a28302b",
+      "audio_bytes": 97684
+    },
+    {
+      "name": "3d",
+      "label": "8D",
+      "ffmpeg_arg": "apulsator=hz=0.125",
+      "audio_sha256": "0c426960e93513cf39e7fabbf681be8c264323c334653861ce6450ef5142616b",
+      "audio_bytes": 266880
+    },
+    {
+      "name": "karaoke",
+      "label": "Karaoke",
+      "ffmpeg_arg": "stereotools=mlev=0.1",
+      "audio_sha256": "a5c117be3f6a68a7f54a3f5d7d527779fe01d8932afd99689379b346f83e3065",
+      "audio_bytes": 266880
+    },
+    {
+      "name": "echo",
+      "label": "Echo",
+      "ffmpeg_arg": "aecho=0.8:0.9:1000:0.3",
+      "audio_sha256": "b908d376af46254241c81a6feeac4e20e84411ce2aadf2e20a9588589dc9b87f",
+      "audio_bytes": 458880
+    },
+    {
+      "name": "surround",
+      "label": "Surround",
+      "ffmpeg_arg": "surround",
+      "audio_sha256": "5405accd8c0888f2f82b26c6a163f069135c13e11d331e7d8f6dc0d1822535d9",
+      "audio_bytes": 266880
+    },
+    {
+      "name": "tremolo",
+      "label": "Tremolo",
+      "ffmpeg_arg": "tremolo",
+      "audio_sha256": "5bd74e48c2221cc7f37883e4ce36833d16c51e95b7e506a8b1533c5033c5e186",
+      "audio_bytes": 266880
+    }
+  ],
+  "order": [
+    "bassboost",
+    "nightcore",
+    "vaporwave",
+    "3d",
+    "karaoke",
+    "echo",
+    "surround",
+    "tremolo"
+  ]
+}

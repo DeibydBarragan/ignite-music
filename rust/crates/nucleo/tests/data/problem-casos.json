@@ -1,0 +1,196 @@
+[
+  {
+    "name": "bad_request",
+    "doc": {
+      "type": "https://ignite.bot/errors/invalid-snowflake",
+      "title": "Invalid Request Parameter",
+      "status": 400,
+      "detail": "must be a Discord snowflake",
+      "code": "INVALID_SNOWFLAKE",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "must be a Discord snowflake"
+    }
+  },
+  {
+    "name": "unauthorized",
+    "doc": {
+      "type": "https://ignite.bot/errors/unauthorized",
+      "title": "Unauthorized",
+      "status": 401,
+      "detail": "Invalid or missing bearer token",
+      "code": "UNAUTHORIZED",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "Invalid or missing bearer token"
+    }
+  },
+  {
+    "name": "forbidden",
+    "doc": {
+      "type": "https://ignite.bot/errors/forbidden",
+      "title": "Forbidden",
+      "status": 403,
+      "detail": "Insufficient permissions",
+      "code": "FORBIDDEN",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "Insufficient permissions"
+    }
+  },
+  {
+    "name": "not_found",
+    "doc": {
+      "type": "https://ignite.bot/errors/guild-not-found",
+      "title": "Not Found",
+      "status": 404,
+      "detail": "The bot is not in this guild",
+      "code": "GUILD_NOT_FOUND",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "The bot is not in this guild"
+    }
+  },
+  {
+    "name": "conflict",
+    "doc": {
+      "type": "https://ignite.bot/errors/already-playing",
+      "title": "Conflict",
+      "status": 409,
+      "detail": "Queue busy",
+      "code": "ALREADY_PLAYING",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "Queue busy"
+    }
+  },
+  {
+    "name": "payload_too_large",
+    "doc": {
+      "type": "https://ignite.bot/errors/payload-too-large",
+      "title": "Payload Too Large",
+      "status": 413,
+      "detail": "Payload exceeded limit",
+      "code": "PAYLOAD_TOO_LARGE",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "Payload exceeded limit"
+    }
+  },
+  {
+    "name": "unprocessable",
+    "doc": {
+      "type": "https://ignite.bot/errors/unprocessable-entity",
+      "title": "Unprocessable Entity",
+      "status": 422,
+      "detail": "Cannot parse song structure",
+      "code": "UNPROCESSABLE_ENTITY",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "Cannot parse song structure"
+    }
+  },
+  {
+    "name": "rate_limit",
+    "doc": {
+      "type": "https://ignite.bot/errors/rate-limited",
+      "title": "Too Many Requests",
+      "status": 429,
+      "detail": "Too many requests, slow down",
+      "code": "RATE_LIMITED",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "Too many requests, slow down"
+    }
+  },
+  {
+    "name": "bad_gateway",
+    "doc": {
+      "type": "https://ignite.bot/errors/bad-gateway",
+      "title": "Bad Gateway",
+      "status": 502,
+      "detail": "Upstream gateway error",
+      "code": "BAD_GATEWAY",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "Upstream gateway error"
+    }
+  },
+  {
+    "name": "service_unavailable",
+    "doc": {
+      "type": "https://ignite.bot/errors/shard-timeout",
+      "title": "Service Unavailable",
+      "status": 503,
+      "detail": "Shard did not answer.",
+      "code": "shard_timeout",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "Shard did not answer."
+    }
+  },
+  {
+    "name": "api_error_custom",
+    "doc": {
+      "type": "https://custom.org/err",
+      "title": "Custom Title",
+      "status": 400,
+      "detail": "Custom detail",
+      "code": "CUSTOM_ERR",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "Custom detail"
+    }
+  },
+  {
+    "name": "extra_fields",
+    "doc": {
+      "type": "https://ignite.bot/errors/rate-limited",
+      "title": "Too Many Requests",
+      "status": 429,
+      "detail": "Slow down",
+      "code": "RATE_LIMITED",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "Slow down",
+      "retryAfter": 120,
+      "limit": 100
+    }
+  },
+  {
+    "name": "generic_500_with_message",
+    "doc": {
+      "type": "https://ignite.bot/errors/internal-error",
+      "title": "Internal Server Error",
+      "status": 500,
+      "detail": "secret internal detail",
+      "code": "INTERNAL_ERROR",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "secret internal detail"
+    }
+  },
+  {
+    "name": "generic_500_empty_message",
+    "doc": {
+      "type": "https://ignite.bot/errors/internal-error",
+      "title": "Internal Server Error",
+      "status": 500,
+      "detail": "Internal server error",
+      "code": "INTERNAL_ERROR",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "Internal server error"
+    }
+  },
+  {
+    "name": "transport_guild_not_found",
+    "doc": {
+      "type": "https://ignite.bot/errors/guild-not-found",
+      "title": "Not Found",
+      "status": 404,
+      "detail": "Guild not found",
+      "code": "guild_not_found",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "Guild not found"
+    }
+  },
+  {
+    "name": "transport_not_ready",
+    "doc": {
+      "type": "https://ignite.bot/errors/not-ready",
+      "title": "Service Unavailable",
+      "status": 503,
+      "detail": "System not ready",
+      "code": "not_ready",
+      "timestamp": "2026-11-08T15:38:35.982Z",
+      "error": "System not ready"
+    }
+  }
+]

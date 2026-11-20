@@ -1,0 +1,1268 @@
+{
+  "reproduciendo": {
+    "flags": 32768,
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 5793266,
+        "components": [
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "-# Now Playing\n### [Song 1](https://www.youtube.com/watch?v=vid00000001)\nArtist 1 · 3:01"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://i.ytimg.com/vi/vid1/hqdefault.jpg"
+              }
+            }
+          },
+          {
+            "type": 10,
+            "content": "`0:42` ━━━●──────────── `3:01`"
+          },
+          {
+            "type": 10,
+            "content": "-# Added by autoplay · Volume: 80% · Loop: Off · Autoplay: Off"
+          },
+          {
+            "type": 10,
+            "content": "Next Song: [Song 2](https://www.youtube.com/watch?v=vid00000002)\n-# There are 29 more songs in the queue · 1:23:20"
+          },
+          {
+            "type": 14,
+            "divider": true,
+            "spacing": 1
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:prev",
+                "label": "Previous",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:pause",
+                "label": "Pause",
+                "style": 1
+              },
+              {
+                "type": 2,
+                "custom_id": "m:skip",
+                "label": "Skip",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:stop",
+                "label": "Stop",
+                "style": 4
+              },
+              {
+                "type": 2,
+                "custom_id": "m:vol",
+                "label": "Volume",
+                "style": 2
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:shuffle",
+                "label": "Shuffle",
+                "style": 2,
+                "disabled": false
+              },
+              {
+                "type": 2,
+                "custom_id": "m:loop",
+                "label": "Loop: Off",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:auto",
+                "label": "Autoplay: Off",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:queue",
+                "label": "Queue",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:fav",
+                "label": "Favorite",
+                "style": 2
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "m:filter",
+                "placeholder": "Audio filter: No filter",
+                "options": [
+                  {
+                    "label": "No filter",
+                    "value": "none",
+                    "default": true
+                  },
+                  {
+                    "label": "Bass Boost",
+                    "value": "bassboost",
+                    "default": false
+                  },
+                  {
+                    "label": "Nightcore",
+                    "value": "nightcore",
+                    "default": false
+                  },
+                  {
+                    "label": "Vaporwave",
+                    "value": "vaporwave",
+                    "default": false
+                  },
+                  {
+                    "label": "8D",
+                    "value": "3d",
+                    "default": false
+                  },
+                  {
+                    "label": "Karaoke",
+                    "value": "karaoke",
+                    "default": false
+                  },
+                  {
+                    "label": "Echo",
+                    "value": "echo",
+                    "default": false
+                  },
+                  {
+                    "label": "Surround",
+                    "value": "surround",
+                    "default": false
+                  },
+                  {
+                    "label": "Tremolo",
+                    "value": "tremolo",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:lyrics",
+                "label": "Lyrics",
+                "style": 2
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "en_pausa_bucle_cola_autoplay": {
+    "flags": 32768,
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 5793266,
+        "components": [
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "-# Paused\n### [Song 1](https://www.youtube.com/watch?v=vid00000001)\nArtist 1 · 3:01"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://i.ytimg.com/vi/vid1/hqdefault.jpg"
+              }
+            }
+          },
+          {
+            "type": 10,
+            "content": "`0:42` ━━━●──────────── `3:01`"
+          },
+          {
+            "type": 10,
+            "content": "-# Added by autoplay · Volume: 80% · Loop: Queue · Autoplay: On"
+          },
+          {
+            "type": 10,
+            "content": "Next Song: [Song 2](https://www.youtube.com/watch?v=vid00000002)\n-# There are 29 more songs in the queue · 1:23:20"
+          },
+          {
+            "type": 14,
+            "divider": true,
+            "spacing": 1
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:prev",
+                "label": "Previous",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:pause",
+                "label": "Resume",
+                "style": 1
+              },
+              {
+                "type": 2,
+                "custom_id": "m:skip",
+                "label": "Skip",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:stop",
+                "label": "Stop",
+                "style": 4
+              },
+              {
+                "type": 2,
+                "custom_id": "m:vol",
+                "label": "Volume",
+                "style": 2
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:shuffle",
+                "label": "Shuffle",
+                "style": 2,
+                "disabled": false
+              },
+              {
+                "type": 2,
+                "custom_id": "m:loop",
+                "label": "Loop: Queue",
+                "style": 3
+              },
+              {
+                "type": 2,
+                "custom_id": "m:auto",
+                "label": "Autoplay: On",
+                "style": 3
+              },
+              {
+                "type": 2,
+                "custom_id": "m:queue",
+                "label": "Queue",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:fav",
+                "label": "Favorite",
+                "style": 2
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "m:filter",
+                "placeholder": "Audio filter: No filter",
+                "options": [
+                  {
+                    "label": "No filter",
+                    "value": "none",
+                    "default": true
+                  },
+                  {
+                    "label": "Bass Boost",
+                    "value": "bassboost",
+                    "default": false
+                  },
+                  {
+                    "label": "Nightcore",
+                    "value": "nightcore",
+                    "default": false
+                  },
+                  {
+                    "label": "Vaporwave",
+                    "value": "vaporwave",
+                    "default": false
+                  },
+                  {
+                    "label": "8D",
+                    "value": "3d",
+                    "default": false
+                  },
+                  {
+                    "label": "Karaoke",
+                    "value": "karaoke",
+                    "default": false
+                  },
+                  {
+                    "label": "Echo",
+                    "value": "echo",
+                    "default": false
+                  },
+                  {
+                    "label": "Surround",
+                    "value": "surround",
+                    "default": false
+                  },
+                  {
+                    "label": "Tremolo",
+                    "value": "tremolo",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:lyrics",
+                "label": "Lyrics",
+                "style": 2
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "en_directo": {
+    "flags": 32768,
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 5793266,
+        "components": [
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "-# Now Playing\n### [Song 98](https://www.youtube.com/watch?v=vid00000098)\nArtist 98 · Live"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://i.ytimg.com/vi/vid98/hqdefault.jpg"
+              }
+            }
+          },
+          {
+            "type": 10,
+            "content": "-# Added by autoplay · Volume: 80% · Loop: Off · Autoplay: Off"
+          },
+          {
+            "type": 10,
+            "content": "Next Song: [Song 2](https://www.youtube.com/watch?v=vid00000002)\n-# There are 29 more songs in the queue · 1:23:20"
+          },
+          {
+            "type": 14,
+            "divider": true,
+            "spacing": 1
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:prev",
+                "label": "Previous",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:pause",
+                "label": "Pause",
+                "style": 1
+              },
+              {
+                "type": 2,
+                "custom_id": "m:skip",
+                "label": "Skip",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:stop",
+                "label": "Stop",
+                "style": 4
+              },
+              {
+                "type": 2,
+                "custom_id": "m:vol",
+                "label": "Volume",
+                "style": 2
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:shuffle",
+                "label": "Shuffle",
+                "style": 2,
+                "disabled": false
+              },
+              {
+                "type": 2,
+                "custom_id": "m:loop",
+                "label": "Loop: Off",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:auto",
+                "label": "Autoplay: Off",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:queue",
+                "label": "Queue",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:fav",
+                "label": "Favorite",
+                "style": 2
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "m:filter",
+                "placeholder": "Audio filter: No filter",
+                "options": [
+                  {
+                    "label": "No filter",
+                    "value": "none",
+                    "default": true
+                  },
+                  {
+                    "label": "Bass Boost",
+                    "value": "bassboost",
+                    "default": false
+                  },
+                  {
+                    "label": "Nightcore",
+                    "value": "nightcore",
+                    "default": false
+                  },
+                  {
+                    "label": "Vaporwave",
+                    "value": "vaporwave",
+                    "default": false
+                  },
+                  {
+                    "label": "8D",
+                    "value": "3d",
+                    "default": false
+                  },
+                  {
+                    "label": "Karaoke",
+                    "value": "karaoke",
+                    "default": false
+                  },
+                  {
+                    "label": "Echo",
+                    "value": "echo",
+                    "default": false
+                  },
+                  {
+                    "label": "Surround",
+                    "value": "surround",
+                    "default": false
+                  },
+                  {
+                    "label": "Tremolo",
+                    "value": "tremolo",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:lyrics",
+                "label": "Lyrics",
+                "style": 2
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "duracion_cero": {
+    "flags": 32768,
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 5793266,
+        "components": [
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "-# Now Playing\n### [Song 96](https://www.youtube.com/watch?v=vid00000096)\nArtist 96 · 0:00"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://i.ytimg.com/vi/vid96/hqdefault.jpg"
+              }
+            }
+          },
+          {
+            "type": 10,
+            "content": "-# Added by autoplay · Volume: 80% · Loop: Off · Autoplay: Off"
+          },
+          {
+            "type": 10,
+            "content": "Next Song: [Song 2](https://www.youtube.com/watch?v=vid00000002)\n-# There are 29 more songs in the queue · 1:23:20"
+          },
+          {
+            "type": 14,
+            "divider": true,
+            "spacing": 1
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:prev",
+                "label": "Previous",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:pause",
+                "label": "Pause",
+                "style": 1
+              },
+              {
+                "type": 2,
+                "custom_id": "m:skip",
+                "label": "Skip",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:stop",
+                "label": "Stop",
+                "style": 4
+              },
+              {
+                "type": 2,
+                "custom_id": "m:vol",
+                "label": "Volume",
+                "style": 2
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:shuffle",
+                "label": "Shuffle",
+                "style": 2,
+                "disabled": false
+              },
+              {
+                "type": 2,
+                "custom_id": "m:loop",
+                "label": "Loop: Off",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:auto",
+                "label": "Autoplay: Off",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:queue",
+                "label": "Queue",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:fav",
+                "label": "Favorite",
+                "style": 2
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "m:filter",
+                "placeholder": "Audio filter: No filter",
+                "options": [
+                  {
+                    "label": "No filter",
+                    "value": "none",
+                    "default": true
+                  },
+                  {
+                    "label": "Bass Boost",
+                    "value": "bassboost",
+                    "default": false
+                  },
+                  {
+                    "label": "Nightcore",
+                    "value": "nightcore",
+                    "default": false
+                  },
+                  {
+                    "label": "Vaporwave",
+                    "value": "vaporwave",
+                    "default": false
+                  },
+                  {
+                    "label": "8D",
+                    "value": "3d",
+                    "default": false
+                  },
+                  {
+                    "label": "Karaoke",
+                    "value": "karaoke",
+                    "default": false
+                  },
+                  {
+                    "label": "Echo",
+                    "value": "echo",
+                    "default": false
+                  },
+                  {
+                    "label": "Surround",
+                    "value": "surround",
+                    "default": false
+                  },
+                  {
+                    "label": "Tremolo",
+                    "value": "tremolo",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:lyrics",
+                "label": "Lyrics",
+                "style": 2
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "nombre_500_caracteres": {
+    "flags": 32768,
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 5793266,
+        "components": [
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "-# Now Playing\n### [xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx…](https://www.youtube.com/watch?v=vid00000099)\nyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy… · 4:39"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://i.ytimg.com/vi/vid99/hqdefault.jpg"
+              }
+            }
+          },
+          {
+            "type": 10,
+            "content": "`0:42` ━━●───────────── `4:39`"
+          },
+          {
+            "type": 10,
+            "content": "-# Added by autoplay · Volume: 80% · Loop: Off · Autoplay: Off"
+          },
+          {
+            "type": 10,
+            "content": "Next Song: [Song 2](https://www.youtube.com/watch?v=vid00000002)\n-# There are 29 more songs in the queue · 1:23:20"
+          },
+          {
+            "type": 14,
+            "divider": true,
+            "spacing": 1
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:prev",
+                "label": "Previous",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:pause",
+                "label": "Pause",
+                "style": 1
+              },
+              {
+                "type": 2,
+                "custom_id": "m:skip",
+                "label": "Skip",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:stop",
+                "label": "Stop",
+                "style": 4
+              },
+              {
+                "type": 2,
+                "custom_id": "m:vol",
+                "label": "Volume",
+                "style": 2
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:shuffle",
+                "label": "Shuffle",
+                "style": 2,
+                "disabled": false
+              },
+              {
+                "type": 2,
+                "custom_id": "m:loop",
+                "label": "Loop: Off",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:auto",
+                "label": "Autoplay: Off",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:queue",
+                "label": "Queue",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:fav",
+                "label": "Favorite",
+                "style": 2
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "m:filter",
+                "placeholder": "Audio filter: No filter",
+                "options": [
+                  {
+                    "label": "No filter",
+                    "value": "none",
+                    "default": true
+                  },
+                  {
+                    "label": "Bass Boost",
+                    "value": "bassboost",
+                    "default": false
+                  },
+                  {
+                    "label": "Nightcore",
+                    "value": "nightcore",
+                    "default": false
+                  },
+                  {
+                    "label": "Vaporwave",
+                    "value": "vaporwave",
+                    "default": false
+                  },
+                  {
+                    "label": "8D",
+                    "value": "3d",
+                    "default": false
+                  },
+                  {
+                    "label": "Karaoke",
+                    "value": "karaoke",
+                    "default": false
+                  },
+                  {
+                    "label": "Echo",
+                    "value": "echo",
+                    "default": false
+                  },
+                  {
+                    "label": "Surround",
+                    "value": "surround",
+                    "default": false
+                  },
+                  {
+                    "label": "Tremolo",
+                    "value": "tremolo",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:lyrics",
+                "label": "Lyrics",
+                "style": 2
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "sin_proximas": {
+    "flags": 32768,
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 5793266,
+        "components": [
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "-# Now Playing\n### [Song 1](https://www.youtube.com/watch?v=vid00000001)\nArtist 1 · 3:01"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://i.ytimg.com/vi/vid1/hqdefault.jpg"
+              }
+            }
+          },
+          {
+            "type": 10,
+            "content": "`0:42` ━━━●──────────── `3:01`"
+          },
+          {
+            "type": 10,
+            "content": "-# Added by autoplay · Volume: 80% · Loop: Off · Autoplay: Off"
+          },
+          {
+            "type": 10,
+            "content": "-# No more songs in the queue"
+          },
+          {
+            "type": 14,
+            "divider": true,
+            "spacing": 1
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:prev",
+                "label": "Previous",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:pause",
+                "label": "Pause",
+                "style": 1
+              },
+              {
+                "type": 2,
+                "custom_id": "m:skip",
+                "label": "Skip",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:stop",
+                "label": "Stop",
+                "style": 4
+              },
+              {
+                "type": 2,
+                "custom_id": "m:vol",
+                "label": "Volume",
+                "style": 2
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:shuffle",
+                "label": "Shuffle",
+                "style": 2,
+                "disabled": true
+              },
+              {
+                "type": 2,
+                "custom_id": "m:loop",
+                "label": "Loop: Off",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:auto",
+                "label": "Autoplay: Off",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:queue",
+                "label": "Queue",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:fav",
+                "label": "Favorite",
+                "style": 2
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "m:filter",
+                "placeholder": "Audio filter: No filter",
+                "options": [
+                  {
+                    "label": "No filter",
+                    "value": "none",
+                    "default": true
+                  },
+                  {
+                    "label": "Bass Boost",
+                    "value": "bassboost",
+                    "default": false
+                  },
+                  {
+                    "label": "Nightcore",
+                    "value": "nightcore",
+                    "default": false
+                  },
+                  {
+                    "label": "Vaporwave",
+                    "value": "vaporwave",
+                    "default": false
+                  },
+                  {
+                    "label": "8D",
+                    "value": "3d",
+                    "default": false
+                  },
+                  {
+                    "label": "Karaoke",
+                    "value": "karaoke",
+                    "default": false
+                  },
+                  {
+                    "label": "Echo",
+                    "value": "echo",
+                    "default": false
+                  },
+                  {
+                    "label": "Surround",
+                    "value": "surround",
+                    "default": false
+                  },
+                  {
+                    "label": "Tremolo",
+                    "value": "tremolo",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:lyrics",
+                "label": "Lyrics",
+                "style": 2
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "con_filtro": {
+    "flags": 32768,
+    "components": [
+      {
+        "type": 17,
+        "accent_color": 5793266,
+        "components": [
+          {
+            "type": 9,
+            "components": [
+              {
+                "type": 10,
+                "content": "-# Now Playing\n### [Song 1](https://www.youtube.com/watch?v=vid00000001)\nArtist 1 · 3:01"
+              }
+            ],
+            "accessory": {
+              "type": 11,
+              "media": {
+                "url": "https://i.ytimg.com/vi/vid1/hqdefault.jpg"
+              }
+            }
+          },
+          {
+            "type": 10,
+            "content": "`0:42` ━━━●──────────── `3:01`"
+          },
+          {
+            "type": 10,
+            "content": "-# Added by autoplay · Volume: 80% · Loop: Off · Autoplay: Off · Filter: Nightcore"
+          },
+          {
+            "type": 10,
+            "content": "Next Song: [Song 2](https://www.youtube.com/watch?v=vid00000002)\n-# There are 29 more songs in the queue · 1:23:20"
+          },
+          {
+            "type": 14,
+            "divider": true,
+            "spacing": 1
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:prev",
+                "label": "Previous",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:pause",
+                "label": "Pause",
+                "style": 1
+              },
+              {
+                "type": 2,
+                "custom_id": "m:skip",
+                "label": "Skip",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:stop",
+                "label": "Stop",
+                "style": 4
+              },
+              {
+                "type": 2,
+                "custom_id": "m:vol",
+                "label": "Volume",
+                "style": 2
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:shuffle",
+                "label": "Shuffle",
+                "style": 2,
+                "disabled": false
+              },
+              {
+                "type": 2,
+                "custom_id": "m:loop",
+                "label": "Loop: Off",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:auto",
+                "label": "Autoplay: Off",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:queue",
+                "label": "Queue",
+                "style": 2
+              },
+              {
+                "type": 2,
+                "custom_id": "m:fav",
+                "label": "Favorite",
+                "style": 2
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 3,
+                "custom_id": "m:filter",
+                "placeholder": "Audio filter: Nightcore",
+                "options": [
+                  {
+                    "label": "No filter",
+                    "value": "none",
+                    "default": false
+                  },
+                  {
+                    "label": "Bass Boost",
+                    "value": "bassboost",
+                    "default": false
+                  },
+                  {
+                    "label": "Nightcore",
+                    "value": "nightcore",
+                    "default": true
+                  },
+                  {
+                    "label": "Vaporwave",
+                    "value": "vaporwave",
+                    "default": false
+                  },
+                  {
+                    "label": "8D",
+                    "value": "3d",
+                    "default": false
+                  },
+                  {
+                    "label": "Karaoke",
+                    "value": "karaoke",
+                    "default": false
+                  },
+                  {
+                    "label": "Echo",
+                    "value": "echo",
+                    "default": false
+                  },
+                  {
+                    "label": "Surround",
+                    "value": "surround",
+                    "default": false
+                  },
+                  {
+                    "label": "Tremolo",
+                    "value": "tremolo",
+                    "default": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "components": [
+              {
+                "type": 2,
+                "custom_id": "m:lyrics",
+                "label": "Lyrics",
+                "style": 2
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

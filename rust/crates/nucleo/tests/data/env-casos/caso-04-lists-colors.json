@@ -1,0 +1,96 @@
+{
+  "debug": false,
+  "noColor": false,
+  "shardId": null,
+  "devUserIds": [
+    "111111111111111111",
+    "222222222222222222"
+  ],
+  "discord": {
+    "token": "",
+    "clientId": "",
+    "guildId": null
+  },
+  "bot": {
+    "status": "/custom status",
+    "color": 5793266,
+    "supportServer": "https://discord.gg/test",
+    "website": "https://ignite.test",
+    "defaultLanguage": "es",
+    "defaultVolume": 100,
+    "maxVolume": 100,
+    "maxQueueSize": 500,
+    "maxPlaylistSize": 200,
+    "leaveOnEmptyMs": 60000,
+    "leaveOnFinishMs": 120000,
+    "panelRefreshMs": 20000,
+    "invite": ""
+  },
+  "spotify": {
+    "clientId": "",
+    "clientSecret": ""
+  },
+  "supabase": {
+    "url": "",
+    "key": "",
+    "serviceRoleKey": ""
+  },
+  "ytdlp": {
+    "path": "",
+    "cookiesFile": "",
+    "cookiesFromBrowser": "",
+    "poToken": "",
+    "potGenerator": "",
+    "potGeneratorPath": "",
+    "extractorArgs": "",
+    "concurrency": 4,
+    "timeoutMs": 30000,
+    "downloadBase": ""
+  },
+  "innertube": {
+    "hl": "es",
+    "gl": "CO"
+  },
+  "ffmpegPath": "",
+  "proxies": [
+    "http://user:pass@proxy1:8080",
+    "https://proxy2:8443"
+  ],
+  "sharding": {
+    "totalShards": "1",
+    "shardList": "auto",
+    "mode": "process",
+    "managed": false,
+    "respawn": true,
+    "spawnDelay": 5500,
+    "spawnTimeout": 60000
+  },
+  "api": {
+    "enabled": true,
+    "port": 3001,
+    "secret": "",
+    "allowedOrigins": [
+      "http://localhost:3000",
+      "https://app.example.com"
+    ],
+    "rateLimitPerMinute": 120,
+    "publicUrl": "",
+    "autoTunnel": false
+  },
+  "voice": {
+    "enabled": true,
+    "defaultWakeWord": "ignite",
+    "groqApiKey": "",
+    "silenceDurationMs": 500,
+    "model": "whisper-large-v3-turbo",
+    "prompt": "Ignite, mierdabot, bot mierda, reproduce, pon, toca, pausa, salta, siguiente, anterior, agrega, añade, cola, lista, volumen, activa autoplay, desactiva autoplay, autoplay on, autoplay off.",
+    "offlineGating": true,
+    "minRms": 200,
+    "groqCooldownMs": 2000,
+    "soundApiUrl": "https://wsnbbnbdc7.execute-api.us-east-2.amazonaws.com/sound",
+    "soundApiSecret": "",
+    "ttsFeedbackEnabled": true,
+    "allowBotInput": false,
+    "soundBotId": "1558180312050180317"
+  }
+}

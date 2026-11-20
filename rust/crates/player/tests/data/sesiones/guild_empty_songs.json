@@ -1,0 +1,15 @@
+{
+  "voiceChannelId": "voice_channel_1",
+  "textChannelId": "text_channel_1",
+  "songs": [],
+  "position": 45,
+  "volume": 75,
+  "repeatMode": 1,
+  "autoplay": true,
+  "filters": [
+    "bassboost",
+    "nightcore"
+  ],
+  "paused": false,
+  "savedAt": 1794249422529
+}
